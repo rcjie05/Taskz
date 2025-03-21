@@ -51,6 +51,7 @@ public class LoginForm extends javax.swing.JFrame {
         user = new javax.swing.JTextField();
         pass = new javax.swing.JTextField();
         login = new javax.swing.JButton();
+        loginShort = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -98,7 +99,21 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
         jPanel1.add(login);
-        login.setBounds(420, 270, 70, 30);
+        login.setBounds(430, 310, 70, 30);
+
+        loginShort.setBackground(new java.awt.Color(51, 51, 51));
+        loginShort.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        loginShort.setForeground(new java.awt.Color(255, 255, 255));
+        loginShort.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        loginShort.setText("New User? Click Here To Register>>");
+        loginShort.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 2));
+        loginShort.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                loginShortMouseClicked(evt);
+            }
+        });
+        jPanel1.add(loginShort);
+        loginShort.setBounds(250, 260, 220, 20);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
         jPanel1.add(jLabel2);
@@ -137,6 +152,12 @@ public class LoginForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Login Failed");
         }
     }//GEN-LAST:event_loginActionPerformed
+
+    private void loginShortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginShortMouseClicked
+        RegForm rf = new RegForm();
+        rf.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_loginShortMouseClicked
 
     /**
      * @param args the command line arguments
@@ -180,6 +201,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton login;
+    public javax.swing.JLabel loginShort;
     private javax.swing.JTextField pass;
     private javax.swing.JTextField user;
     // End of variables declaration//GEN-END:variables
