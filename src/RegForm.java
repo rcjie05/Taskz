@@ -250,11 +250,13 @@ public class RegForm extends javax.swing.JFrame {
         dbc.insertData("INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
                 + "VALUES('"+fname.getText()+"','"+lname.getText()+"','"+email.getText()+"','"+contact.getText()+"','"+gender.getSelectedItem()+"','"+user.getText()+"','"+pass.getText()+"',"
                         + "'"+type.getSelectedItem()+"','Pending')");
+        }
+        
     }//GEN-LAST:event_regbuttonActionPerformed
 
     private void RegshortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RegshortMouseClicked
-        LoginForm lf = new LoginForm();
-        lf.setVisible(true);
+        LoginForm lfs = new LoginForm();
+        lfs.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_RegshortMouseClicked
 

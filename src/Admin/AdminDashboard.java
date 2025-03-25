@@ -5,6 +5,8 @@
  */
 package Admin;
 
+import java.awt.Color;
+
 /**
  *
  * @author PC15
@@ -17,6 +19,10 @@ public class AdminDashboard extends javax.swing.JFrame {
     public AdminDashboard() {
         initComponents();
     }
+    
+    Color navcolor = new Color(51,255,153);
+    Color headcolor = new Color(153,204,255);
+    Color bodycolor = new Color(204,255,102);
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,6 +35,12 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jDesktopPane1 = new javax.swing.JDesktopPane();
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        userPage = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -36,17 +48,58 @@ public class AdminDashboard extends javax.swing.JFrame {
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(51, 255, 153));
-        jPanel1.setLayout(null);
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("ADMIN DASHBOARD");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(10, 10, 190, 30);
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 30));
+
+        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
+        jDesktopPane1.setLayout(jDesktopPane1Layout);
+        jDesktopPane1Layout.setHorizontalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 540, Short.MAX_VALUE)
+        );
+        jDesktopPane1Layout.setVerticalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 370, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(jDesktopPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 80, -1, -1));
+
+        jPanel2.setBackground(new java.awt.Color(51, 255, 153));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton1.setText("Acoount");
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 120, 40));
+
+        userPage.setText("User Page");
+        userPage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                userPageMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                userPageMouseExited(evt);
+            }
+        });
+        userPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userPageActionPerformed(evt);
+            }
+        });
+        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 120, 40));
+
+        jButton3.setText("Project Page");
+        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 120, 40));
+
+        jButton4.setText("Task Page");
+        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 120, 40));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 140, 370));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(0, 0, 675, 450);
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -62,6 +115,18 @@ public class AdminDashboard extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void userPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userPageActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userPageActionPerformed
+
+    private void userPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseEntered
+        userPage.setBackground(bodycolor);
+    }//GEN-LAST:event_userPageMouseEntered
+
+    private void userPageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseExited
+        userPage.setBackground(navcolor);
+    }//GEN-LAST:event_userPageMouseExited
 
     /**
      * @param args the command line arguments
@@ -99,8 +164,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton userPage;
     // End of variables declaration//GEN-END:variables
 }

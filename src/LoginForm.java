@@ -84,6 +84,7 @@ public class LoginForm extends javax.swing.JFrame {
 
         pass.setBackground(new java.awt.Color(204, 204, 204));
         pass.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 11))); // NOI18N
+        pass.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 passActionPerformed(evt);
