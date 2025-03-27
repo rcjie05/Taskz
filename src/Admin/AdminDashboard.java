@@ -5,6 +5,7 @@
  */
 package Admin;
 
+import internalPage.Userpage;
 import java.awt.Color;
 
 /**
@@ -35,16 +36,16 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jDesktopPane1 = new javax.swing.JDesktopPane();
+        mainDesktop = new javax.swing.JDesktopPane();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         userPage = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(675, 450));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(51, 255, 153));
@@ -55,24 +56,24 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel2.setText("ADMIN DASHBOARD");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 30));
 
-        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
-        jDesktopPane1.setLayout(jDesktopPane1Layout);
-        jDesktopPane1Layout.setHorizontalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout mainDesktopLayout = new javax.swing.GroupLayout(mainDesktop);
+        mainDesktop.setLayout(mainDesktopLayout);
+        mainDesktopLayout.setHorizontalGroup(
+            mainDesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 540, Short.MAX_VALUE)
         );
-        jDesktopPane1Layout.setVerticalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        mainDesktopLayout.setVerticalGroup(
+            mainDesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 370, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jDesktopPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 80, -1, -1));
+        jPanel1.add(mainDesktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 80, 540, -1));
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton1.setText("Acoount");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 120, 40));
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 120, 40));
 
         userPage.setText("User Page");
         userPage.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -88,13 +89,18 @@ public class AdminDashboard extends javax.swing.JFrame {
                 userPageActionPerformed(evt);
             }
         });
-        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 120, 40));
+        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 120, 40));
 
         jButton3.setText("Project Page");
-        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 120, 40));
+        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 120, 40));
 
         jButton4.setText("Task Page");
-        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 120, 40));
+        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 120, 40));
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-user-50.png"))); // NOI18N
+        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 100, 100));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 140, 370));
 
@@ -117,7 +123,8 @@ public class AdminDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void userPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userPageActionPerformed
-        // TODO add your handling code here:
+        Userpage ap = new Userpage();
+        mainDesktop.add(ap).setVisible(true);
     }//GEN-LAST:event_userPageActionPerformed
 
     private void userPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseEntered
@@ -167,11 +174,12 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JDesktopPane mainDesktop;
     private javax.swing.JButton userPage;
     // End of variables declaration//GEN-END:variables
 }
