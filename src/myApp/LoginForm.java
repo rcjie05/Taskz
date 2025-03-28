@@ -1,3 +1,5 @@
+package myApp;
+
 
 import Admin.AdminDashboard;
 import config.dbConnector;
@@ -23,6 +25,9 @@ public class LoginForm extends javax.swing.JFrame {
     public LoginForm() {
         initComponents();
     }
+    
+    static String u_status;
+    static String u_type;
     
     public static boolean loginAcc(String username, String password){
         dbConnector connector = new dbConnector();
@@ -145,10 +150,20 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         if(loginAcc(user.getText(),pass.getText())){
-          JOptionPane.showMessageDialog(null,"Login Success");
-          AdminDashboard ads = new AdminDashboard();
-          ads.setVisible(true);
-          this.dispose();
+            if(!u_status.equals("Active")){
+                 
+               JOptionPane.showMessageDialog(null,"In-Active Account, Contact Admin!!");
+               
+            }else{
+                if(type.equals("Admin")){
+            JOptionPane.showMessageDialog(null,"Login Success");
+            AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+             this.dispose();
+             
+                }else if(type.equals)
+                
+            }
         }else{
             JOptionPane.showMessageDialog(null,"Login Failed");
         }

@@ -1,4 +1,7 @@
+package myApp;
 
+
+import myApp.LoginForm;
 import config.dbConnector;
 import javax.swing.JOptionPane;
 
@@ -313,7 +316,7 @@ public class RegForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    public javax.swing.JPanel jPanel2;
     private javax.swing.JTextField lname;
     private javax.swing.JTextField pass;
     private javax.swing.JButton regbutton;

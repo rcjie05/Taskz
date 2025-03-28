@@ -6,7 +6,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -28,7 +28,10 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanel1" alignment="0" pref="451" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="jPanel1" min="-2" pref="450" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -50,6 +53,9 @@
               <Color blue="99" green="ff" red="33" type="rgb"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="290" y="40" width="360" height="390"/>
@@ -62,29 +68,29 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel4" pref="78" max="32767" attributes="0"/>
+                          <Component id="jLabel4" alignment="0" pref="78" max="32767" attributes="0"/>
                           <Component id="jLabel6" alignment="0" pref="78" max="32767" attributes="0"/>
                           <Component id="jLabel7" alignment="0" pref="78" max="32767" attributes="0"/>
                           <Component id="jLabel5" alignment="1" pref="78" max="32767" attributes="0"/>
                           <Component id="jLabel9" alignment="1" pref="78" max="32767" attributes="0"/>
                           <Component id="jLabel10" alignment="0" pref="78" max="32767" attributes="0"/>
                           <Component id="jLabel3" alignment="0" max="32767" attributes="0"/>
-                          <Component id="jLabel8" max="32767" attributes="0"/>
+                          <Component id="jLabel8" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jButton2" min="-2" pref="76" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                              <Component id="regbutton" min="-2" pref="81" max="-2" attributes="0"/>
+                              <Component id="save" min="-2" pref="81" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="user" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="gender" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="contact" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="email" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="fname" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="lname" min="-2" pref="220" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                              <Component id="user" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="gender" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="contact" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="email" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="fname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="lname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
                               <Component id="pass" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
                               <Component id="type" alignment="1" min="-2" pref="220" max="-2" attributes="0"/>
                           </Group>
@@ -139,7 +145,7 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="regbutton" min="-2" pref="28" max="-2" attributes="0"/>
+                          <Component id="save" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                           <Component id="jButton2" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -179,12 +185,12 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="regbutton">
+            <Component class="javax.swing.JButton" name="save">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Register"/>
+                <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="regbuttonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButton2">
@@ -297,11 +303,11 @@
               <Font name="Century Gothic" size="24" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="REGISTER FORM"/>
+            <Property name="text" type="java.lang.String" value="ADD User FORM"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="30" y="30" width="190" height="30"/>
+              <AbsoluteConstraints x="20" y="30" width="190" height="30"/>
             </Constraint>
           </Constraints>
         </Component>

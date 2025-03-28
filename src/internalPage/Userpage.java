@@ -5,6 +5,7 @@
  */
 package internalPage;
 
+import adds.add_users;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
@@ -34,14 +35,14 @@ public class Userpage extends javax.swing.JInternalFrame {
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
         
-        search.setOpaque(false);
-        search.setBackground(new Color(0,0,0,0));
+        searchBar.setOpaque(false);
+        searchBar.setBackground(new Color(0,0,0,0));
     }
     
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT * FROM tbl_user");
+            ResultSet rs = dbc.getData("SELECT * FROM tbl_users");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
             
         }catch(SQLException ex){
@@ -75,6 +76,11 @@ public class Userpage extends javax.swing.JInternalFrame {
         jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 80, -1, -1));
 
         addButton.setText("ADD");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
         jPanel1.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
@@ -99,10 +105,10 @@ public class Userpage extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(userTable);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 110, 510, 220));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 110, 510, 250));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 530, 340));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 540, 380));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -121,6 +127,12 @@ public class Userpage extends javax.swing.JInternalFrame {
     private void searchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchBarActionPerformed
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        add_users up = new add_users();
+        up.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_addButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
