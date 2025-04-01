@@ -2,6 +2,8 @@ package myApp;
 
 
 import Admin.AdminDashboard;
+import User.UserDashboard;
+import config.Session;
 import config.dbConnector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,19 +28,35 @@ public class LoginForm extends javax.swing.JFrame {
         initComponents();
     }
     
-    static String u_status;
-    static String u_type;
+    static String status;
+    static String type;
     
     public static boolean loginAcc(String username, String password){
         dbConnector connector = new dbConnector();
         try{
             String query = "SELECT * FROM tbl_users  WHERE u_username = '" + username + "' AND u_password = '" + password + "'";
             ResultSet resultSet = connector.getData(query);
-            return resultSet.next();
+            if(resultSet.next()){
+                status = resultSet.getString("u_status");
+                type = resultSet.getString("u_type");
+                Session sess = Session.getInstance();
+                  sess.setU_id(resultSet.getInt("u_id"));
+                  sess.setU_fname(resultSet.getString("u_fname"));
+                  sess.setU_lname(resultSet.getString("u_lname"));
+                  sess.setU_email(resultSet.getString("u_email"));
+                  sess.setU_username(resultSet.getString("u_username"));
+                  sess.setU_contact(resultSet.getString("u_contact"));
+                  sess.setU_gender(resultSet.getString("u_gender"));
+                  sess.setU_type(resultSet.getString("u_type"));
+                  sess.setU_status(resultSet.getString("u_status"));
+                return true;
+            }else{
+                return false;
+            }
+            
         }catch (SQLException ex) {
             return false;
         }
-
     }
 
     /**
@@ -150,22 +168,29 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         if(loginAcc(user.getText(),pass.getText())){
-            if(!u_status.equals("Active")){
-                 
-               JOptionPane.showMessageDialog(null,"In-Active Account, Contact Admin!!");
-               
+            if(!status.equals("Active")){
+            JOptionPane.showMessageDialog(null,"In-Active Account, Contact Admin!!");
+            }else{  
+            
+            if(type.equals("ADMIN")){
+                JOptionPane.showMessageDialog(null,"Welcome Back ADMIN!!!");
+                AdminDashboard ads = new AdminDashboard();
+                ads.setVisible(true);
+                this.dispose();
+
+            }else if(type.equals("USER")){
+                JOptionPane.showMessageDialog(null,"Welcome Back User!!!");
+                UserDashboard udb = new UserDashboard();
+                udb.setVisible(true);
+                this.dispose();
             }else{
-                if(type.equals("Admin")){
-            JOptionPane.showMessageDialog(null,"Login Success");
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);
-             this.dispose();
-             
-                }else if(type.equals)
-                
+                JOptionPane.showMessageDialog(null,"No Account Type Found");
+            }
+            
+            
             }
         }else{
-            JOptionPane.showMessageDialog(null,"Login Failed");
+            JOptionPane.showMessageDialog(null,"Invalid Account");
         }
     }//GEN-LAST:event_loginActionPerformed
 

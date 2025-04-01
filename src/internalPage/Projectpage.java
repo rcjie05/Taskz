@@ -21,12 +21,12 @@ import net.proteanit.sql.DbUtils;
  *
  * @author SCC-COLLEGE
  */
-public class Userpage extends javax.swing.JInternalFrame {
+public class Projectpage extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Userpage
      */
-    public Userpage() {
+    public Projectpage() {
         initComponents();
         
         displayData();
@@ -114,7 +114,7 @@ public class Userpage extends javax.swing.JInternalFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setText("USER PAGE");
+        jLabel2.setText("PROJECT PAGE");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N

@@ -5,8 +5,11 @@
  */
 package User;
 
+import config.Session;
 import internalPage.Userpage;
 import java.awt.Color;
+import javax.swing.JOptionPane;
+import myApp.LoginForm;
 
 /**
  *
@@ -38,11 +41,18 @@ public class UserDashboard extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         mainDesktop = new javax.swing.JDesktopPane();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        userPage = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        fname = new javax.swing.JLabel();
+        lname = new javax.swing.JLabel();
+        email = new javax.swing.JLabel();
+        contact = new javax.swing.JLabel();
+        gender = new javax.swing.JLabel();
+        username = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        accountSetting = new javax.swing.JButton();
+        userPage = new javax.swing.JButton();
+        projectPage = new javax.swing.JButton();
+        taskPage = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -59,7 +69,7 @@ public class UserDashboard extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("USER DASHBOARD");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 30));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 190, 30));
 
         javax.swing.GroupLayout mainDesktopLayout = new javax.swing.GroupLayout(mainDesktop);
         mainDesktop.setLayout(mainDesktopLayout);
@@ -72,13 +82,49 @@ public class UserDashboard extends javax.swing.JFrame {
             .addGap(0, 370, Short.MAX_VALUE)
         );
 
-        jPanel1.add(mainDesktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 80, 540, -1));
+        jPanel1.add(mainDesktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 80, 540, -1));
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("Acoount");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 120, 40));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-user-50.png"))); // NOI18N
+        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 100, 90));
+
+        fname.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        fname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        fname.setText("fname:");
+        jPanel2.add(fname, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
+
+        lname.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        lname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lname.setText("lname:");
+        jPanel2.add(lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, -1, -1));
+
+        email.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        email.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        email.setText("email:");
+        jPanel2.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, -1, -1));
+
+        contact.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        contact.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        contact.setText("contact:");
+        jPanel2.add(contact, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, -1));
+
+        gender.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        gender.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gender.setText("gender:");
+        jPanel2.add(gender, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, -1));
+
+        username.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        username.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        username.setText("username:");
+        jPanel2.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 80, -1));
+
+        jPanel3.setBackground(new java.awt.Color(153, 204, 255));
+
+        accountSetting.setText("Acoount");
 
         userPage.setText("User Page");
         userPage.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -94,29 +140,50 @@ public class UserDashboard extends javax.swing.JFrame {
                 userPageActionPerformed(evt);
             }
         });
-        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 120, 40));
 
-        jButton3.setText("Project Page");
-        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 120, 40));
+        projectPage.setText("Project Page");
 
-        jButton4.setText("Task Page");
-        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 120, 40));
+        taskPage.setText("Task Page");
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-user-50.png"))); // NOI18N
-        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 100, 100));
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(taskPage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(projectPage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userPage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(accountSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(userPage, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(projectPage, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(taskPage, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(accountSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 140, 370));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 200, 220));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 450));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,8 +208,21 @@ public class UserDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_userPageMouseExited
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        Userpage ap = new Userpage();
-        mainDesktop.add(ap).setVisible(true);
+      Session sess = Session.getInstance();
+      
+      if(sess.getU_id()==0){
+          JOptionPane.showMessageDialog(null,"No Account. Login First!");
+          LoginForm lf = new LoginForm();
+          lf.setVisible(true);
+          this.dispose();
+      }else{
+          username.setText(""+sess.getU_username());
+          fname.setText(""+sess.getU_fname());
+          lname.setText(""+sess.getU_lname());
+          email.setText(""+sess.getU_email());
+          contact.setText(""+sess.getU_contact());
+          gender.setText(""+sess.getU_gender());
+      }
     }//GEN-LAST:event_formWindowActivated
 
     /**
@@ -182,15 +262,22 @@ public class UserDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JDesktopPane mainDesktop;
-    private javax.swing.JButton userPage;
+    public javax.swing.JButton accountSetting;
+    public javax.swing.JLabel contact;
+    public javax.swing.JLabel email;
+    public javax.swing.JLabel fname;
+    public javax.swing.JLabel gender;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel3;
+    public javax.swing.JPanel jPanel1;
+    public javax.swing.JPanel jPanel2;
+    public javax.swing.JPanel jPanel3;
+    public javax.swing.JLabel lname;
+    public javax.swing.JDesktopPane mainDesktop;
+    public javax.swing.JButton projectPage;
+    public javax.swing.JButton taskPage;
+    public javax.swing.JButton userPage;
+    public javax.swing.JLabel username;
     // End of variables declaration//GEN-END:variables
 }

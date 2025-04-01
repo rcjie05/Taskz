@@ -1,8 +1,9 @@
 package myApp;
 
 
-import myApp.LoginForm;
 import config.dbConnector;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /*
@@ -23,7 +24,37 @@ public class RegForm extends javax.swing.JFrame {
     public RegForm() {
         initComponents();
     }
+    
+    public static String remail,rusername;
+    
+    public boolean duplicateCheck(){
+        dbConnector dbc = new dbConnector();
+      try{
+          String query = "SELECT * FROM tbl_users  WHERE u_username = '" + user.getText()+ "' OR u_email = '" + email.getText()+ "'";
+          ResultSet resultSet = dbc.getData(query);
 
+          if(resultSet.next()){
+              remail = resultSet.getString("u_email");
+              if(remail.equals(email.getText())){
+                  JOptionPane.showMessageDialog(null,"Email Already Used!");
+                  email.setText("");
+              }
+              
+              rusername = resultSet.getString("u_username");
+              if(rusername.equals(user.getText())){
+                  JOptionPane.showMessageDialog(null,"Username Already Used!");
+                  user.setText("");
+              }
+              return true;
+          }else{
+              return false;
+          }
+          
+      }catch(SQLException ex){
+          System.out.println(""+ex);
+          return false;
+      }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -235,6 +266,12 @@ public class RegForm extends javax.swing.JFrame {
         
         if(fname.getText().isEmpty()||lname.getText().isEmpty()||email.getText().isEmpty()||contact.getText().isEmpty()||user.getText().isEmpty()||pass.getText().isEmpty()){
             JOptionPane.showMessageDialog(null,"All Fields Required!");
+        }else if(pass.getText().length()<8){
+            JOptionPane.showMessageDialog(null,"The pass should be 8 above Required!");
+            pass.setText("");
+            
+        }else if(duplicateCheck()){
+            System.out.println("Duplicate Exist");  
         }else{
         
         dbConnector dbc = new dbConnector();
@@ -242,17 +279,13 @@ public class RegForm extends javax.swing.JFrame {
                 + "VALUES('"+fname.getText()+"','"+lname.getText()+"','"+email.getText()+"','"+contact.getText()+"','"+gender.getSelectedItem()+"','"+user.getText()+"','"+pass.getText()+"',"
                         + "'"+type.getSelectedItem()+"','Pending')"))
         {
-            JOptionPane.showMessageDialog(null,"Inserted Successfully!");
+            JOptionPane.showMessageDialog(null,"REGISTRATION SUCCESSFULLY!");
             LoginForm lf = new LoginForm();
             lf.setVisible(true);
             this.dispose();
         }else{
            JOptionPane.showMessageDialog(null,"Connection Error!"); 
-        }
-               
-        dbc.insertData("INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
-                + "VALUES('"+fname.getText()+"','"+lname.getText()+"','"+email.getText()+"','"+contact.getText()+"','"+gender.getSelectedItem()+"','"+user.getText()+"','"+pass.getText()+"',"
-                        + "'"+type.getSelectedItem()+"','Pending')");
+        }             
         }
         
     }//GEN-LAST:event_regbuttonActionPerformed
