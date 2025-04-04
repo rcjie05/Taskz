@@ -6,7 +6,7 @@
 package User;
 
 import config.Session;
-import internalPage.Userpage;
+import Admin.Userpage;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import myApp.LoginForm;

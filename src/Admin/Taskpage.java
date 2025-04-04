@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package internalPage;
+package Admin;
 
 import adds.add_users;
 import java.awt.Color;

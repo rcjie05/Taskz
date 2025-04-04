@@ -75,23 +75,21 @@
                           <Component id="jLabel8" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="jButton2" min="-2" pref="76" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                               <Component id="regbutton" min="-2" pref="81" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="user" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="gender" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="contact" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="email" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="fname" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="lname" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="pass" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="type" alignment="1" min="-2" pref="220" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="user" max="32767" attributes="0"/>
+                          <Component id="gender" max="32767" attributes="0"/>
+                          <Component id="contact" max="32767" attributes="0"/>
+                          <Component id="email" max="32767" attributes="0"/>
+                          <Component id="fname" max="32767" attributes="0"/>
+                          <Component id="lname" max="32767" attributes="0"/>
+                          <Component id="type" alignment="0" max="32767" attributes="0"/>
                           <Component id="Regshort" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
+                          <Component id="pass" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -131,9 +129,9 @@
                           <Component id="jLabel6" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="pass" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="jLabel10" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jLabel10" pref="26" max="32767" attributes="0"/>
+                          <Component id="pass" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -163,8 +161,6 @@
             <Component class="javax.swing.JTextField" name="fname">
             </Component>
             <Component class="javax.swing.JTextField" name="user">
-            </Component>
-            <Component class="javax.swing.JTextField" name="pass">
             </Component>
             <Component class="javax.swing.JTextField" name="lname">
             </Component>
@@ -291,6 +287,8 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JPasswordField" name="pass">
             </Component>
           </SubComponents>
         </Container>

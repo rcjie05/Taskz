@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package internalPage;
+package Admin;
 
 import adds.add_users;
 import java.awt.Color;
@@ -21,12 +21,12 @@ import net.proteanit.sql.DbUtils;
  *
  * @author SCC-COLLEGE
  */
-public class Projectpage extends javax.swing.JInternalFrame {
+public class Userpage extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Userpage
      */
-    public Projectpage() {
+    public Userpage() {
         initComponents();
         
         displayData();
@@ -87,6 +87,11 @@ public class Projectpage extends javax.swing.JInternalFrame {
         jPanel1.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
         editbutton.setText("EDIT");
+        editbutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editbuttonActionPerformed(evt);
+            }
+        });
         jPanel1.add(editbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
 
         deletebutton.setText("DELETE");
@@ -114,7 +119,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setText("PROJECT PAGE");
+        jLabel2.setText("USER PAGE");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
@@ -143,6 +148,36 @@ public class Projectpage extends javax.swing.JInternalFrame {
         up.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addButtonActionPerformed
+
+    private void editbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbuttonActionPerformed
+        int rowIndex = userTable.getSelectedRow();
+        if(rowIndex < 0){
+            JOptionPane.showMessageDialog(null,"Please Select an Item");
+        }else{
+            
+            
+            try{
+                dbConnector dbc = new dbConnector();
+                TableModel tbl = userTable.getModel();
+                ResultSet rs = dbc.getData("SELECT * FROM tbl_users WHERE u_id='"+tbl.getValueAt(rowIndex,0)+"'");
+                if(rs.next()){
+                add_users au = new add_users();
+                au.fname.setText(""+rs.getString("u_fname"));
+                au.lname.setText(""+rs.getString("u_lname"));
+                au.email.setText(""+rs.getString("u_email"));
+                au.contact.setText(""+rs.getString("u_contact"));
+                au.setVisible(true);
+                this.dispose();
+                } 
+            }catch(SQLException ex){
+                System.out.println(""+ex);
+            }
+            
+        }
+        
+        
+        
+    }//GEN-LAST:event_editbuttonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

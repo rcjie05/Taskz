@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package internalPage;
+package Admin;
 
-import adds.add_users;
+import adds.add_project;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
@@ -21,12 +21,12 @@ import net.proteanit.sql.DbUtils;
  *
  * @author SCC-COLLEGE
  */
-public class Userpage extends javax.swing.JInternalFrame {
+public class Projectpage extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Userpage
      */
-    public Userpage() {
+    public Projectpage() {
         initComponents();
         
         displayData();
@@ -42,7 +42,7 @@ public class Userpage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email FROM tbl_users");
+            ResultSet rs = dbc.getData("SELECT p_id, p_name, u_fname, p_date, p_due, p_status FROM tbl_project");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
             
         }catch(SQLException ex){
@@ -114,7 +114,7 @@ public class Userpage extends javax.swing.JInternalFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setText("USER PAGE");
+        jLabel2.setText("PROJECT PAGE");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
@@ -139,8 +139,8 @@ public class Userpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        add_users up = new add_users();
-        up.setVisible(true);
+        add_project ap = new add_project();
+        ap.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addButtonActionPerformed
 

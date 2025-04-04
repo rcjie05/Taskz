@@ -72,7 +72,7 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         user = new javax.swing.JTextField();
-        pass = new javax.swing.JTextField();
+        pass = new javax.swing.JPasswordField();
         login = new javax.swing.JButton();
         loginShort = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -106,15 +106,15 @@ public class LoginForm extends javax.swing.JFrame {
         user.setBounds(250, 150, 240, 40);
 
         pass.setBackground(new java.awt.Color(204, 204, 204));
-        pass.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 11))); // NOI18N
-        pass.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        pass.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
+        pass.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Password"));
         pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 passActionPerformed(evt);
             }
         });
         jPanel1.add(pass);
-        pass.setBounds(250, 210, 240, 40);
+        pass.setBounds(250, 200, 240, 40);
 
         login.setText("LOGIN");
         login.addActionListener(new java.awt.event.ActionListener() {
@@ -162,10 +162,6 @@ public class LoginForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_userActionPerformed
 
-    private void passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_passActionPerformed
-
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         if(loginAcc(user.getText(),pass.getText())){
             if(!status.equals("Active")){
@@ -199,6 +195,10 @@ public class LoginForm extends javax.swing.JFrame {
         rf.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_loginShortMouseClicked
+
+    private void passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,7 +243,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton login;
     public javax.swing.JLabel loginShort;
-    private javax.swing.JTextField pass;
+    private javax.swing.JPasswordField pass;
     private javax.swing.JTextField user;
     // End of variables declaration//GEN-END:variables
 }
