@@ -28,29 +28,28 @@ public class Userpage extends javax.swing.JInternalFrame {
      */
     public Userpage() {
         initComponents();
-        
+
         displayData();
-        
-        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
-        BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
+
+        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        BasicInternalFrameUI bi = (BasicInternalFrameUI) this.getUI();
         bi.setNorthPane(null);
-        
+
         searchBar.setOpaque(false);
-        searchBar.setBackground(new Color(0,0,0,0));
+        searchBar.setBackground(new Color(0, 0, 0, 0));
     }
-    
-    public void displayData(){
-        try{
+
+    public void displayData() {
+        try {
             dbConnector dbc = new dbConnector();
             ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email FROM tbl_users");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
-            
-        }catch(SQLException ex){
-                    System.out.println("Errors:"+ex.getMessage());
-      
+
+        } catch (SQLException ex) {
+            System.out.println("Errors:" + ex.getMessage());
+
         }
-        
-                
+
     }
 
     /**
@@ -95,6 +94,11 @@ public class Userpage extends javax.swing.JInternalFrame {
         jPanel1.add(editbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
 
         deletebutton.setText("DELETE");
+        deletebutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletebuttonActionPerformed(evt);
+            }
+        });
         jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
 
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
@@ -151,33 +155,69 @@ public class Userpage extends javax.swing.JInternalFrame {
 
     private void editbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbuttonActionPerformed
         int rowIndex = userTable.getSelectedRow();
-        if(rowIndex < 0){
-            JOptionPane.showMessageDialog(null,"Please Select an Item");
-        }else{
-            
-            
-            try{
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(null, "Please Select an Item");
+        } else {
+
+            try {
                 dbConnector dbc = new dbConnector();
                 TableModel tbl = userTable.getModel();
-                ResultSet rs = dbc.getData("SELECT * FROM tbl_users WHERE u_id='"+tbl.getValueAt(rowIndex,0)+"'");
-                if(rs.next()){
-                add_users au = new add_users();
-                au.fname.setText(""+rs.getString("u_fname"));
-                au.lname.setText(""+rs.getString("u_lname"));
-                au.email.setText(""+rs.getString("u_email"));
-                au.contact.setText(""+rs.getString("u_contact"));
-                au.setVisible(true);
-                this.dispose();
-                } 
-            }catch(SQLException ex){
-                System.out.println(""+ex);
+                ResultSet rs = dbc.getData("SELECT * FROM tbl_users WHERE u_id='" + tbl.getValueAt(rowIndex, 0) + "'");
+                if (rs.next()) {
+                    add_users au = new add_users();
+                    au.user_id.setText("" + rs.getString("u_id"));
+                    au.fname.setText("" + rs.getString("u_fname"));
+                    au.lname.setText("" + rs.getString("u_lname"));
+                    au.email.setText("" + rs.getString("u_email"));
+                    au.contact.setText("" + rs.getString("u_contact"));
+                    au.gender.setSelectedItem("" + rs.getString("u_gender"));
+                    au.user.setText("" + rs.getString("u_username"));
+                    au.pass.setText("" + rs.getString("u_password"));
+                    au.type.setSelectedItem("" + rs.getString("u_type"));
+                    au.status.setSelectedItem("" + rs.getString("u_status"));
+                    au.setVisible(true);
+                    // this.dispose();
+
+                    // Close parent JFrame (AdminDashboard)
+                    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    parent.dispose();
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            
+
         }
-        
-        
-        
+
+
     }//GEN-LAST:event_editbuttonActionPerformed
+
+    private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
+        int rowIndex = userTable.getSelectedRow();
+
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a user to delete.");
+            return;
+        }
+
+        TableModel model = userTable.getModel();
+        String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
+
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete this user?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            dbConnector dbc = new dbConnector();
+            String query = "DELETE FROM tbl_users WHERE u_id = '" + userId + "'";
+            dbc.deleteData(query);
+
+            JOptionPane.showMessageDialog(null, "User deleted successfully!");
+
+            // Refresh the table data after deletion
+            displayData();
+        }
+    }//GEN-LAST:event_deletebuttonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

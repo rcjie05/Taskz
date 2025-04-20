@@ -12,44 +12,76 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author PC15
  */
 public class dbConnector {
-    
+
     private Connection connect;
-    
-    public dbConnector(){
-            try{
-                connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/task", "root", "");
-            }catch(SQLException ex){
-                    System.out.println("Can't connect to database: "+ex.getMessage());
-            }
+
+    public dbConnector() {
+        try {
+            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/cj_gwapo", "root", "");
+        } catch (SQLException ex) {
+            System.out.println("Can't connect to database: " + ex.getMessage());
         }
-    
+    }
+
     //Function to retrieve data
-        public ResultSet getData(String sql) throws SQLException{
-            Statement stmt = connect.createStatement();
-            ResultSet rst = stmt.executeQuery(sql);
-            return rst;
-        }
-        
-        
+    public ResultSet getData(String sql) throws SQLException {
+        Statement stmt = connect.createStatement();
+        ResultSet rst = stmt.executeQuery(sql);
+        return rst;
+    }
+
     //Function to save data
-        public boolean insertData(String sql){
-            try{
-                PreparedStatement pst = connect.prepareStatement(sql);
-                pst.executeUpdate();
-                System.out.println("Inserted Successfully!");
-                pst.close();
-               return true;
-            }catch(SQLException ex){
-                System.out.println("Connection Error: "+ex);
-               return false;
-            }
+    public boolean insertData(String sql) {
+        try {
+            PreparedStatement pst = connect.prepareStatement(sql);
+            pst.executeUpdate();
+            System.out.println("Inserted Successfully!");
+            pst.close();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println("Connection Error: " + ex);
+            return false;
         }
+    }
+
+    //Function to update data
+    public void updateData(String sql) {
+        try {
+            PreparedStatement pst = connect.prepareStatement(sql);
+            int rowsUpdated = pst.executeUpdate();
+            if (rowsUpdated > 0) {
+                JOptionPane.showMessageDialog(null, "Data Updated Successfully!");
+            } else {
+                System.out.println("Data Update Failed!");
+            }
+            pst.close();
+        } catch (SQLException ex) {
+            System.out.println("Connection Error: " + ex);
+        }
+
+    }
+
+    public void deleteData(String query) {
+        try {
+            PreparedStatement pst = connect.prepareStatement(query);
+            int rowsDeleted = pst.executeUpdate();
+            if (rowsDeleted > 0) {
+                JOptionPane.showMessageDialog(null, "User deleted successfully!");
+            } else {
+                JOptionPane.showMessageDialog(null, "No user was deleted. Please check the ID.");
+            }
+            pst.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error deleting user: " + ex.getMessage());
+        }
+    }
 
     public Object getConnection() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

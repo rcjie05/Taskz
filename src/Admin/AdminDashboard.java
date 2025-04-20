@@ -51,6 +51,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         contact = new javax.swing.JLabel();
         gender = new javax.swing.JLabel();
         username = new javax.swing.JLabel();
+        home = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -86,7 +87,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton1.setText("Acoount");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, 120, 40));
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
 
         userPage.setText("User Page");
         userPage.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -102,7 +103,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 userPageActionPerformed(evt);
             }
         });
-        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 120, 40));
+        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 120, 40));
 
         projectPage.setText("Project Page");
         projectPage.addActionListener(new java.awt.event.ActionListener() {
@@ -110,7 +111,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 projectPageActionPerformed(evt);
             }
         });
-        jPanel2.add(projectPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 120, 40));
+        jPanel2.add(projectPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 120, 40));
 
         taskPage.setText("Task Page");
         taskPage.addActionListener(new java.awt.event.ActionListener() {
@@ -118,7 +119,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 taskPageActionPerformed(evt);
             }
         });
-        jPanel2.add(taskPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 120, 40));
+        jPanel2.add(taskPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, 120, 40));
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-user-50.png"))); // NOI18N
@@ -154,6 +155,22 @@ public class AdminDashboard extends javax.swing.JFrame {
         username.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         username.setText("username:");
         jPanel2.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 80, -1));
+
+        home.setText("Home");
+        home.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                homeMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                homeMouseExited(evt);
+            }
+        });
+        home.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                homeActionPerformed(evt);
+            }
+        });
+        jPanel2.add(home, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 70, 40));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 450));
 
@@ -216,6 +233,19 @@ public class AdminDashboard extends javax.swing.JFrame {
         mainDesktop.add(tp).setVisible(true);
     }//GEN-LAST:event_taskPageActionPerformed
 
+    private void homeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_homeMouseEntered
+
+    private void homeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_homeMouseExited
+
+    private void homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeActionPerformed
+        home h = new home();
+        mainDesktop.add(h).setVisible(true);
+    }//GEN-LAST:event_homeActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -256,6 +286,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     public javax.swing.JLabel email;
     public javax.swing.JLabel fname;
     public javax.swing.JLabel gender;
+    public javax.swing.JButton home;
     public javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;

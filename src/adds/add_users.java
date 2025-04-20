@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-
 /**
  *
  * @author PC15
@@ -26,34 +25,35 @@ public class add_users extends javax.swing.JFrame {
         initComponents();
     }
 
-    public static String aemail,ausername;
-    public boolean duplicateCheck(){
-        dbConnector dbc = new dbConnector();
-      try{
-          String query = "SELECT * FROM tbl_users  WHERE u_username = '" + user.getText()+ "' OR u_email = '" + email.getText()+ "'";
-          ResultSet resultSet = dbc.getData(query);
+    public static String aemail, ausername;
 
-          if(resultSet.next()){
-              aemail = resultSet.getString("u_email");
-              if(aemail.equals(email.getText())){
-                  JOptionPane.showMessageDialog(null,"Email Already Used!");
-                  email.setText("");
-              }
-              
-              ausername = resultSet.getString("u_username");
-              if(ausername.equals(user.getText())){
-                  JOptionPane.showMessageDialog(null,"Username Already Used!");
-                  user.setText("");
-              }
-              return true;
-          }else{
-              return false;
-          }
-          
-      }catch(SQLException ex){
-          System.out.println(""+ex);
-          return false;
-      }
+    public boolean duplicateCheck() {
+        dbConnector dbc = new dbConnector();
+        try {
+            String query = "SELECT * FROM tbl_users  WHERE u_username = '" + user.getText() + "' OR u_email = '" + email.getText() + "'";
+            ResultSet resultSet = dbc.getData(query);
+
+            if (resultSet.next()) {
+                aemail = resultSet.getString("u_email");
+                if (aemail.equals(email.getText())) {
+                    JOptionPane.showMessageDialog(null, "Email Already Used!");
+                    email.setText("");
+                }
+
+                ausername = resultSet.getString("u_username");
+                if (ausername.equals(user.getText())) {
+                    JOptionPane.showMessageDialog(null, "Username Already Used!");
+                    user.setText("");
+                }
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("" + ex);
+            return false;
+        }
     }
 
     /**
@@ -109,8 +109,6 @@ public class add_users extends javax.swing.JFrame {
             }
         });
 
-        user_id.setEnabled(false);
-
         gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Male", "Female" }));
 
         add.setText("Add");
@@ -160,6 +158,11 @@ public class add_users extends javax.swing.JFrame {
         jLabel10.setText("Password:");
 
         type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "ADMIN", "USER" }));
+        type.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeActionPerformed(evt);
+            }
+        });
 
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Active", "Pending" }));
 
@@ -340,33 +343,84 @@ public class add_users extends javax.swing.JFrame {
         }else if(pass.getText().length()<8){
             JOptionPane.showMessageDialog(null,"The pass should be 8 above Required!");
             pass.setText("");
-            
+
         }else if(duplicateCheck()){
-            System.out.println("Duplicate Exist");  
+            System.out.println("Duplicate Exist");
         }else{
-        
-        dbConnector dbc = new dbConnector();
+
+            dbConnector dbc = new dbConnector();
         if(dbc.insertData("INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
                 + "VALUES('"+user_id.getText()+"','"+lname.getText()+"','"+email.getText()+"','"+contact.getText()+"','"+gender.getSelectedItem()+"','"+user.getText()+"','"+pass.getText()+"',"
                         + "'"+type.getSelectedItem()+"','"+status.getSelectedItem()+"')"))
         {
             JOptionPane.showMessageDialog(null,"Inserted SUCCESSFULLY!");
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);            
-            this.dispose();
+                AdminDashboard ads = new AdminDashboard();
+                ads.setVisible(true);
+                this.dispose();
         }else{
            JOptionPane.showMessageDialog(null,"Connection Error!"); 
-        }             
+            }
         }
 
     }//GEN-LAST:event_addActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
         // TODO add your handling code here:
+        if (user_id.getText().isEmpty() || fname.getText().isEmpty() || lname.getText().isEmpty()
+                || email.getText().isEmpty() || contact.getText().isEmpty() || user.getText().isEmpty()
+                || pass.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(null, "All Fields are required!");
+        } else if (pass.getPassword().length < 3) {
+            JOptionPane.showMessageDialog(null, "Password must be at least 3 characters!");
+            pass.setText("");
+        } else {
+            dbConnector dbc = new dbConnector();
+
+            String query = "UPDATE tbl_users SET "
+                    + "u_fname = '" + fname.getText() + "', "
+                    + "u_lname = '" + lname.getText() + "', "
+                    + "u_email = '" + email.getText() + "', "
+                    + "u_contact = '" + contact.getText() + "', "
+                    + "u_gender = '" + gender.getSelectedItem() + "', "
+                    + "u_username = '" + user.getText() + "', "
+                    + "u_password = '" + new String(pass.getPassword()) + "', "
+                    + "u_type = '" + type.getSelectedItem() + "', "
+                    + "u_status = '" + status.getSelectedItem() + "' "
+                    + "WHERE u_id = '" + user_id.getText() + "'";
+
+            dbc.updateData(query); // No return value, handles its own messaging
+
+            // Optional: still navigate to AdminDashboard after update
+            AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+            this.dispose();
+        }
     }//GEN-LAST:event_updateActionPerformed
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
         // TODO add your handling code here:
+
+        if (user_id.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No user selected to delete.");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete this user?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            dbConnector dbc = new dbConnector();
+            String query = "DELETE FROM tbl_users WHERE u_id = '" + user_id.getText() + "'";
+
+            dbc.deleteData(query);  // ✅ just call it, no "if"
+
+            // Go back to admin dashboard after deletion
+            AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+            this.dispose();
+        }
     }//GEN-LAST:event_deleteActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -376,6 +430,10 @@ public class add_users extends javax.swing.JFrame {
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_refreshActionPerformed
+
+    private void typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeActionPerformed
 
     /**
      * @param args the command line arguments
