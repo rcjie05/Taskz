@@ -11,6 +11,8 @@ import Admin.Userpage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -336,29 +338,56 @@ public class add_users extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_contactActionPerformed
 
+    public String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));  // Convert byte to hex
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
+
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
 
-        if(user_id.getText().isEmpty()||lname.getText().isEmpty()||email.getText().isEmpty()||contact.getText().isEmpty()||user.getText().isEmpty()||pass.getText().isEmpty()){
-            JOptionPane.showMessageDialog(null,"All Fields Required!");
-        }else if(pass.getText().length()<8){
-            JOptionPane.showMessageDialog(null,"The pass should be 8 above Required!");
+        if (user_id.getText().isEmpty() || lname.getText().isEmpty() || email.getText().isEmpty()
+                || contact.getText().isEmpty() || user.getText().isEmpty() || pass.getText().isEmpty()) {
+
+            JOptionPane.showMessageDialog(null, "All Fields Required!");
+
+        } else if (pass.getText().length() < 8) {
+
+            JOptionPane.showMessageDialog(null, "The password should be 8 characters or more!");
             pass.setText("");
 
-        }else if(duplicateCheck()){
+        } else if (duplicateCheck()) {
+
             System.out.println("Duplicate Exist");
-        }else{
+
+        } else {
 
             dbConnector dbc = new dbConnector();
-        if(dbc.insertData("INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
-                + "VALUES('"+user_id.getText()+"','"+lname.getText()+"','"+email.getText()+"','"+contact.getText()+"','"+gender.getSelectedItem()+"','"+user.getText()+"','"+pass.getText()+"',"
-                        + "'"+type.getSelectedItem()+"','"+status.getSelectedItem()+"')"))
-        {
-            JOptionPane.showMessageDialog(null,"Inserted SUCCESSFULLY!");
+
+            // 👉 Hash the password before storing
+            String hashedPass = hashPassword(pass.getText());
+
+            String query = "INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
+                    + "VALUES('" + user_id.getText() + "','" + lname.getText() + "','" + email.getText() + "','" + contact.getText() + "','"
+                    + gender.getSelectedItem() + "','" + user.getText() + "','" + hashedPass + "','" + type.getSelectedItem() + "','"
+                    + status.getSelectedItem() + "')";
+
+            if (dbc.insertData(query)) {
+                JOptionPane.showMessageDialog(null, "Inserted SUCCESSFULLY!");
                 AdminDashboard ads = new AdminDashboard();
                 ads.setVisible(true);
                 this.dispose();
-        }else{
-           JOptionPane.showMessageDialog(null,"Connection Error!"); 
+            } else {
+                JOptionPane.showMessageDialog(null, "Connection Error!");
             }
         }
 

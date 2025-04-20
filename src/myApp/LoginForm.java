@@ -1,6 +1,5 @@
 package myApp;
 
-
 import Admin.AdminDashboard;
 import User.UserDashboard;
 import config.Session;
@@ -14,7 +13,6 @@ import javax.swing.JOptionPane;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author PC15
@@ -27,34 +25,52 @@ public class LoginForm extends javax.swing.JFrame {
     public LoginForm() {
         initComponents();
     }
-    
+
+    public static String hashPassword(String password) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static String status;
     static String type;
-    
-    public static boolean loginAcc(String username, String password){
+
+    public static boolean loginAcc(String username, String password) {
         dbConnector connector = new dbConnector();
-        try{
-            String query = "SELECT * FROM tbl_users  WHERE u_username = '" + username + "' AND u_password = '" + password + "'";
+        try {
+            String hashedPass = hashPassword(password); // 🔒 Hash it before checking
+            String query = "SELECT * FROM tbl_users WHERE u_username = '" + username + "' AND u_password = '" + hashedPass + "'";
             ResultSet resultSet = connector.getData(query);
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 status = resultSet.getString("u_status");
                 type = resultSet.getString("u_type");
+
+                // Set user session
                 Session sess = Session.getInstance();
-                  sess.setU_id(resultSet.getInt("u_id"));
-                  sess.setU_fname(resultSet.getString("u_fname"));
-                  sess.setU_lname(resultSet.getString("u_lname"));
-                  sess.setU_email(resultSet.getString("u_email"));
-                  sess.setU_username(resultSet.getString("u_username"));
-                  sess.setU_contact(resultSet.getString("u_contact"));
-                  sess.setU_gender(resultSet.getString("u_gender"));
-                  sess.setU_type(resultSet.getString("u_type"));
-                  sess.setU_status(resultSet.getString("u_status"));
+                sess.setU_id(resultSet.getInt("u_id"));
+                sess.setU_fname(resultSet.getString("u_fname"));
+                sess.setU_lname(resultSet.getString("u_lname"));
+                sess.setU_email(resultSet.getString("u_email"));
+                sess.setU_username(resultSet.getString("u_username"));
+                sess.setU_contact(resultSet.getString("u_contact"));
+                sess.setU_gender(resultSet.getString("u_gender"));
+                sess.setU_type(resultSet.getString("u_type"));
+                sess.setU_status(resultSet.getString("u_status"));
+
                 return true;
-            }else{
+            } else {
                 return false;
             }
-            
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
+            System.out.println("Login error: " + ex.getMessage());
             return false;
         }
     }
@@ -163,30 +179,29 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_userActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        if(loginAcc(user.getText(),pass.getText())){
-            if(!status.equals("Active")){
-            JOptionPane.showMessageDialog(null,"In-Active Account, Contact Admin!!");
-            }else{  
-            
-            if(type.equals("ADMIN")){
-                JOptionPane.showMessageDialog(null,"Welcome Back ADMIN!!!");
-                AdminDashboard ads = new AdminDashboard();
-                ads.setVisible(true);
-                this.dispose();
+        if (loginAcc(user.getText(), pass.getText())) {
+            if (!status.equals("Active")) {
+                JOptionPane.showMessageDialog(null, "In-Active Account, Contact Admin!!");
+            } else {
 
-            }else if(type.equals("USER")){
-                JOptionPane.showMessageDialog(null,"Welcome Back User!!!");
-                UserDashboard udb = new UserDashboard();
-                udb.setVisible(true);
-                this.dispose();
-            }else{
-                JOptionPane.showMessageDialog(null,"No Account Type Found");
+                if (type.equals("ADMIN")) {
+                    JOptionPane.showMessageDialog(null, "Welcome Back ADMIN!!!");
+                    AdminDashboard ads = new AdminDashboard();
+                    ads.setVisible(true);
+                    this.dispose();
+
+                } else if (type.equals("USER")) {
+                    JOptionPane.showMessageDialog(null, "Welcome Back User!!!");
+                    UserDashboard udb = new UserDashboard();
+                    udb.setVisible(true);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "No Account Type Found");
+                }
+
             }
-            
-            
-            }
-        }else{
-            JOptionPane.showMessageDialog(null,"Invalid Account");
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid Account");
         }
     }//GEN-LAST:event_loginActionPerformed
 
