@@ -2,6 +2,8 @@ package myApp;
 
 
 import config.dbConnector;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -54,6 +56,25 @@ public class RegForm extends javax.swing.JFrame {
           System.out.println(""+ex);
           return false;
       }
+    }
+    
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private boolean isValidEmail(String email) {
+        return email.endsWith("@gmail.com") || email.endsWith("@yahoo.com") || email.endsWith("@hotmail.com");
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -263,30 +284,32 @@ public class RegForm extends javax.swing.JFrame {
 
     private void regbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regbuttonActionPerformed
         
-        if(fname.getText().isEmpty()||lname.getText().isEmpty()||email.getText().isEmpty()||contact.getText().isEmpty()||user.getText().isEmpty()||pass.getText().isEmpty()){
-            JOptionPane.showMessageDialog(null,"All Fields Required!");
-        }else if(pass.getText().length()<8){
-            JOptionPane.showMessageDialog(null,"The pass should be 8 above Required!");
+         if (fname.getText().isEmpty() || lname.getText().isEmpty() || email.getText().isEmpty() ||
+            contact.getText().isEmpty() || user.getText().isEmpty() || pass.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "All Fields Required!");
+        } else if (!isValidEmail(email.getText())) {
+            JOptionPane.showMessageDialog(null, "Email must end with @gmail.com, @yahoo.com, or @hotmail.com");
+            email.setText("");
+        } else if (pass.getText().length() < 8) {
+            JOptionPane.showMessageDialog(null, "The password must be at least 8 characters!");
             pass.setText("");
-            
-        }else if(duplicateCheck()){
-            System.out.println("Duplicate Exist");  
-        }else{
-        
-        dbConnector dbc = new dbConnector();
-        if(dbc.insertData("INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
-                + "VALUES('"+fname.getText()+"','"+lname.getText()+"','"+email.getText()+"','"+contact.getText()+"','"+gender.getSelectedItem()+"','"+user.getText()+"','"+pass.getText()+"',"
-                        + "'"+type.getSelectedItem()+"','Pending')"))
-        {
-            JOptionPane.showMessageDialog(null,"REGISTRATION SUCCESSFULLY!");
-            LoginForm lf = new LoginForm();
-            lf.setVisible(true);
-            this.dispose();
-        }else{
-           JOptionPane.showMessageDialog(null,"Connection Error!"); 
-        }             
+        } else if (duplicateCheck()) {
+            System.out.println("Duplicate Exists");
+        } else {
+            dbConnector dbc = new dbConnector();
+            String hashedPassword = hashPassword(pass.getText());
+
+            if (dbc.insertData("INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
+                    + "VALUES('" + fname.getText() + "','" + lname.getText() + "','" + email.getText() + "','" + contact.getText() + "','" + gender.getSelectedItem() + "','" + user.getText() + "','" + hashedPassword + "',"
+                    + "'" + type.getSelectedItem() + "','Pending')")) {
+                JOptionPane.showMessageDialog(null, "REGISTRATION SUCCESSFUL!");
+                LoginForm lf = new LoginForm();
+                lf.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Connection Error!");
+            }
         }
-        
     }//GEN-LAST:event_regbuttonActionPerformed
 
     private void RegshortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RegshortMouseClicked

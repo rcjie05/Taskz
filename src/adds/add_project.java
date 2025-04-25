@@ -37,7 +37,7 @@ public class add_project extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         date = new javax.swing.JTextField();
         due = new javax.swing.JTextField();
-        pname = new javax.swing.JTextField();
+        user_id = new javax.swing.JTextField();
         uname = new javax.swing.JTextField();
         status = new javax.swing.JComboBox<>();
         save = new javax.swing.JButton();
@@ -48,6 +48,8 @@ public class add_project extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         Regshort = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        pname = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -85,7 +87,7 @@ public class add_project extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Project Name:");
+        jLabel5.setText("User_id");
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -102,6 +104,10 @@ public class add_project extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Project Name:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -113,28 +119,35 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(63, 63, 63)
-                        .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(due, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(uname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Regshort, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(63, 63, 63)
+                            .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(due, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(uname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Regshort, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(user_id, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(27, 27, 27)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(uname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -157,7 +170,7 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(Regshort, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(87, 87, 87))
+                .addGap(48, 48, 48))
         );
 
         jPanel1.add(jPanel2);
@@ -196,23 +209,36 @@ public class add_project extends javax.swing.JFrame {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
 
-        if(pname.getText().isEmpty()||uname.getText().isEmpty()||date.getText().isEmpty()||due.getText().isEmpty()){
-            JOptionPane.showMessageDialog(null,"All Fields Required!");
-        }else{
+        if (user_id.getText().isEmpty() || pname.getText().isEmpty() || uname.getText().isEmpty()
+            || date.getText().isEmpty() || due.getText().isEmpty() || status.getSelectedItem().equals("SELECT")) {
 
-            dbConnector dbc = new dbConnector();
-            if(dbc.insertData("INSERT INTO tbl_project(p_name, u_fname, p_date, p_due, u_status) "
-                + "VALUES('"+pname.getText()+"','"+uname.getText()+"','"+date.getText()+"','"+due.getText()+"','"+status.getSelectedItem()+"'"))
-        {
-            JOptionPane.showMessageDialog(null,"Inserted Successfully!");
+        JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
+    } else {
+        // Create an instance of your DB connector class
+        dbConnector dbc = new dbConnector();
+
+        // Build the SQL insert statement
+        String sql = "INSERT INTO tbl_project (u_id, p_name, u_fname, p_date, p_due, u_status) VALUES ('"
+                + user_id.getText() + "', '"
+                + pname.getText() + "', '"
+                + uname.getText() + "', '"
+                + date.getText() + "', '"
+                + due.getText() + "', '"
+                + status.getSelectedItem().toString() + "')";
+
+        // Execute the query and handle the result
+        boolean success = dbc.insertData(sql);
+
+        if (success) {
+            JOptionPane.showMessageDialog(null, "Project Added Successfully!");
+            // Redirect to user page or clear form
             Userpage up = new Userpage();
             up.setVisible(true);
-            this.dispose();
-        }else{
-            JOptionPane.showMessageDialog(null,"Connection Error!");
-        } 
+            this.dispose(); // close current form
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to insert project. Please check database connection or data.");
         }
-
+    }
     }//GEN-LAST:event_saveActionPerformed
 
     private void RegshortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RegshortMouseClicked
@@ -267,6 +293,7 @@ public class add_project extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
@@ -275,5 +302,6 @@ public class add_project extends javax.swing.JFrame {
     private javax.swing.JButton save;
     private javax.swing.JComboBox<String> status;
     private javax.swing.JTextField uname;
+    private javax.swing.JTextField user_id;
     // End of variables declaration//GEN-END:variables
 }

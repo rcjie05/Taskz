@@ -28,7 +28,7 @@ public class Userpage extends javax.swing.JInternalFrame {
      */
     public Userpage() {
         initComponents();
-
+        
         displayData();
 
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -62,11 +62,12 @@ public class Userpage extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        searchBar = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
         editbutton = new javax.swing.JButton();
         deletebutton = new javax.swing.JButton();
-        searchBar = new javax.swing.JTextField();
+        refresh = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
@@ -74,33 +75,7 @@ public class Userpage extends javax.swing.JInternalFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        searchButton.setText("SEARCH");
-        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, -1, -1));
-
-        addButton.setText("ADD");
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
-            }
-        });
-        jPanel1.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
-
-        editbutton.setText("EDIT");
-        editbutton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editbuttonActionPerformed(evt);
-            }
-        });
-        jPanel1.add(editbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
-
-        deletebutton.setText("DELETE");
-        deletebutton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deletebuttonActionPerformed(evt);
-            }
-        });
-        jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
-
+        searchBar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
         searchBar.setPreferredSize(new java.awt.Dimension(8, 20));
         searchBar.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +83,42 @@ public class Userpage extends javax.swing.JInternalFrame {
                 searchBarActionPerformed(evt);
             }
         });
-        jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 80, 240, 23));
+        jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 50, 240, 23));
+
+        searchButton.setText("SEARCH");
+        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 50, -1, -1));
+
+        addButton.setText("ADD");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 70, -1));
+
+        editbutton.setText("EDIT");
+        editbutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editbuttonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(editbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 80, 60, -1));
+
+        deletebutton.setText("DEL");
+        deletebutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletebuttonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 60, -1));
+
+        refresh.setText("REF");
+        refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshActionPerformed(evt);
+            }
+        });
+        jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 60, -1));
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -150,7 +160,8 @@ public class Userpage extends javax.swing.JInternalFrame {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         add_users up = new add_users();
         up.setVisible(true);
-        this.dispose();
+        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    parent.dispose();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void editbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbuttonActionPerformed
@@ -175,10 +186,12 @@ public class Userpage extends javax.swing.JInternalFrame {
                     au.pass.setText("" + rs.getString("u_password"));
                     au.type.setSelectedItem("" + rs.getString("u_type"));
                     au.status.setSelectedItem("" + rs.getString("u_status"));
+                    au.user.setEnabled(false);
+                    au.add.setEnabled(false);
+                    au.update.setEnabled(true);
                     au.setVisible(true);
-                    // this.dispose();
-
-                    // Close parent JFrame (AdminDashboard)
+                    
+                    
                     JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
                     parent.dispose();
                 }
@@ -219,6 +232,10 @@ public class Userpage extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_deletebuttonActionPerformed
 
+    private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
+        displayData();
+    }//GEN-LAST:event_refreshActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -228,6 +245,7 @@ public class Userpage extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton refresh;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
     private javax.swing.JTable userTable;

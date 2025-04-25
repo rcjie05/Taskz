@@ -73,20 +73,24 @@
                           <Component id="jLabel5" alignment="1" max="32767" attributes="0"/>
                           <Component id="jLabel3" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel8" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jLabel6" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jButton2" min="-2" pref="76" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                              <Component id="save" min="-2" pref="81" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jButton2" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                  <Component id="save" min="-2" pref="81" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="status" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="due" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="date" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="uname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="Regshort" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
+                              <Component id="pname" alignment="1" min="-2" pref="220" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="status" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                          <Component id="due" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                          <Component id="date" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                          <Component id="pname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                          <Component id="uname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                          <Component id="Regshort" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
+                          <Component id="user_id" alignment="1" min="-2" pref="220" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -95,10 +99,15 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="user_id" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="jLabel5" min="-2" pref="26" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="pname" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="jLabel5" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                          <Component id="jLabel6" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -127,7 +136,7 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="Regshort" min="-2" pref="16" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -140,7 +149,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dueActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="pname">
+            <Component class="javax.swing.JTextField" name="user_id">
             </Component>
             <Component class="javax.swing.JTextField" name="uname">
             </Component>
@@ -196,7 +205,7 @@
                   <Font name="Century Gothic" size="12" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="Project Name:"/>
+                <Property name="text" type="java.lang.String" value="User_id"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel7">
@@ -227,6 +236,17 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel6">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Century Gothic" size="12" style="1"/>
+                </Property>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="text" type="java.lang.String" value="Project Name:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="pname">
             </Component>
           </SubComponents>
         </Container>

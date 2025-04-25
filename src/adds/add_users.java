@@ -25,6 +25,7 @@ public class add_users extends javax.swing.JFrame {
      */
     public add_users() {
         initComponents();
+
     }
 
     public static String aemail, ausername;
@@ -56,6 +57,23 @@ public class add_users extends javax.swing.JFrame {
             System.out.println("" + ex);
             return false;
         }
+    }
+    public String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));  // Convert byte to hex
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
+    private boolean isValidEmail(String email) {
+    return email.endsWith("@gmail.com") || email.endsWith("@yahoo.com") || email.endsWith("@hotmail.com");
     }
 
     /**
@@ -89,29 +107,38 @@ public class add_users extends javax.swing.JFrame {
         pass = new javax.swing.JPasswordField();
         status = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
-        delete = new javax.swing.JButton();
         clear = new javax.swing.JButton();
         cancel = new javax.swing.JButton();
-        refresh = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
         fname = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        setSize(new java.awt.Dimension(675, 450));
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel1.setLayout(null);
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel2.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 121, 220, 30));
 
         contact.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 contactActionPerformed(evt);
             }
         });
+        jPanel2.add(contact, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 157, 220, 30));
+
+        user_id.setEnabled(false);
+        jPanel2.add(user_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 13, 220, 30));
+        jPanel2.add(user, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 229, 220, 30));
+        jPanel2.add(lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 85, 220, 30));
 
         gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Male", "Female" }));
+        jPanel2.add(gender, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 193, 220, 30));
 
         add.setText("Add");
         add.addActionListener(new java.awt.event.ActionListener() {
@@ -119,45 +146,56 @@ public class add_users extends javax.swing.JFrame {
                 addActionPerformed(evt);
             }
         });
+        jPanel2.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(72, 374, 76, 28));
 
         update.setText("Update");
+        update.setEnabled(false);
         update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 updateActionPerformed(evt);
             }
         });
+        jPanel2.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(154, 374, 76, 28));
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Email:");
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 122, 63, 26));
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Contact:");
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 158, 63, 26));
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("First Name:");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 50, -1, 26));
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Username:");
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 230, 63, 26));
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Gender:");
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 194, 63, 26));
 
         jLabel8.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Last Name:");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 86, -1, 26));
 
         jLabel9.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("User Type:");
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 298, 63, 27));
 
         jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Password:");
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 265, 63, 26));
 
         type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "ADMIN", "USER" }));
         type.addActionListener(new java.awt.event.ActionListener() {
@@ -165,21 +203,24 @@ public class add_users extends javax.swing.JFrame {
                 typeActionPerformed(evt);
             }
         });
+        jPanel2.add(type, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 297, 220, 30));
+        jPanel2.add(pass, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 265, 220, 26));
 
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Active", "Pending" }));
+        jPanel2.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 333, 220, 30));
 
         jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Status:");
-
-        delete.setText("Delete");
-        delete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteActionPerformed(evt);
-            }
-        });
+        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 334, 63, 27));
 
         clear.setText("Clear");
+        clear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearActionPerformed(evt);
+            }
+        });
+        jPanel2.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(236, 374, 76, 28));
 
         cancel.setText("Cancel");
         cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -187,135 +228,23 @@ public class add_users extends javax.swing.JFrame {
                 cancelActionPerformed(evt);
             }
         });
-
-        refresh.setText("Refresh");
-        refresh.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshActionPerformed(evt);
-            }
-        });
+        jPanel2.add(cancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(153, 408, 77, 28));
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("User_Id:");
+        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 17, 63, 26));
+        jPanel2.add(fname, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 49, 220, 30));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(user)
-                            .addComponent(gender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(contact)
-                            .addComponent(email)
-                            .addComponent(user_id)
-                            .addComponent(lname)
-                            .addComponent(type, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pass)
-                            .addComponent(fname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(11, 11, 11)
-                                .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(delete, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(refresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(31, 31, 31))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(contact, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(gender, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pass, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(delete, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(clear, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29))
-        );
-
-        jPanel1.add(jPanel2);
-        jPanel2.setBounds(340, 0, 340, 450);
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 0, 350, 450));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("ADD User FORM");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(20, 30, 190, 30);
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 190, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(0, 0, 680, 450);
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 680, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -325,9 +254,7 @@ public class add_users extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -338,59 +265,51 @@ public class add_users extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_contactActionPerformed
 
-    public String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashedBytes = md.digest(password.getBytes());
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+    
+        if (fname.getText().isEmpty() || lname.getText().isEmpty() || email.getText().isEmpty()
+            || contact.getText().isEmpty() || user.getText().isEmpty() || pass.getText().isEmpty()) {
 
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashedBytes) {
-                sb.append(String.format("%02x", b));  // Convert byte to hex
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing password", e);
+        JOptionPane.showMessageDialog(null, "All Fields Required!");
+
+    } else if (!isValidEmail(email.getText())) {
+
+        JOptionPane.showMessageDialog(null, "Email must end with @gmail.com, @yahoo.com, or @hotmail.com");
+        email.setText("");
+
+    } else if (pass.getText().length() < 8) {
+
+        JOptionPane.showMessageDialog(null, "The password should be 8 characters or more!");
+        pass.setText("");
+
+    } else if (duplicateCheck()) {
+
+        System.out.println("Duplicate Exist");
+
+    } else {
+
+        dbConnector dbc = new dbConnector();
+
+        // 👉 Hash the password before storing
+        String hashedPass = hashPassword(pass.getText());
+
+        String query = "INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
+                + "VALUES('" + fname.getText() + "','" + lname.getText() + "','" + email.getText() + "','" + contact.getText() + "','"
+                + gender.getSelectedItem() + "','" + user.getText() + "','" + hashedPass + "','" + type.getSelectedItem() + "','"
+                + status.getSelectedItem() + "')";
+
+        if (dbc.insertData(query)) {
+            JOptionPane.showMessageDialog(null, "Inserted SUCCESSFULLY!");
+            AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+            Userpage up = new Userpage();
+            up.setVisible(true);
+            ads.mainDesktop.add(up);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Connection Error!");
         }
     }
-
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-
-        if (user_id.getText().isEmpty() || lname.getText().isEmpty() || email.getText().isEmpty()
-                || contact.getText().isEmpty() || user.getText().isEmpty() || pass.getText().isEmpty()) {
-
-            JOptionPane.showMessageDialog(null, "All Fields Required!");
-
-        } else if (pass.getText().length() < 8) {
-
-            JOptionPane.showMessageDialog(null, "The password should be 8 characters or more!");
-            pass.setText("");
-
-        } else if (duplicateCheck()) {
-
-            System.out.println("Duplicate Exist");
-
-        } else {
-
-            dbConnector dbc = new dbConnector();
-
-            // 👉 Hash the password before storing
-            String hashedPass = hashPassword(pass.getText());
-
-            String query = "INSERT INTO tbl_users(u_fname, u_lname, u_email, u_contact, u_gender, u_username, u_password, u_type, u_status) "
-                    + "VALUES('" + user_id.getText() + "','" + lname.getText() + "','" + email.getText() + "','" + contact.getText() + "','"
-                    + gender.getSelectedItem() + "','" + user.getText() + "','" + hashedPass + "','" + type.getSelectedItem() + "','"
-                    + status.getSelectedItem() + "')";
-
-            if (dbc.insertData(query)) {
-                JOptionPane.showMessageDialog(null, "Inserted SUCCESSFULLY!");
-                AdminDashboard ads = new AdminDashboard();
-                ads.setVisible(true);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(null, "Connection Error!");
-            }
-        }
-
     }//GEN-LAST:event_addActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
@@ -417,52 +336,42 @@ public class add_users extends javax.swing.JFrame {
                     + "u_status = '" + status.getSelectedItem() + "' "
                     + "WHERE u_id = '" + user_id.getText() + "'";
 
-            dbc.updateData(query); // No return value, handles its own messaging
-
-            // Optional: still navigate to AdminDashboard after update
+            dbc.updateData(query);
             AdminDashboard ads = new AdminDashboard();
             ads.setVisible(true);
+            Userpage up = new Userpage();
+            up.setVisible(true);
+            ads.mainDesktop.add(up);
             this.dispose();
         }
     }//GEN-LAST:event_updateActionPerformed
 
-    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
-        // TODO add your handling code here:
-
-        if (user_id.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No user selected to delete.");
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to delete this user?",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            dbConnector dbc = new dbConnector();
-            String query = "DELETE FROM tbl_users WHERE u_id = '" + user_id.getText() + "'";
-
-            dbc.deleteData(query);  // ✅ just call it, no "if"
-
-            // Go back to admin dashboard after deletion
+    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
             AdminDashboard ads = new AdminDashboard();
             ads.setVisible(true);
+            Userpage up = new Userpage();
+            up.setVisible(true);
+            ads.mainDesktop.add(up);
             this.dispose();
-        }
-    }//GEN-LAST:event_deleteActionPerformed
-
-    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_cancelActionPerformed
-
-    private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_refreshActionPerformed
 
     private void typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_typeActionPerformed
+
+    private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
+        fname.setText("");
+        lname.setText("");
+        email.setText("");
+        contact.setText("");
+        user.setText("");
+        pass.setText("");
+        gender.setSelectedIndex(0);
+        type.setSelectedIndex(0);
+        status.setSelectedIndex(0);
+
+        JOptionPane.showMessageDialog(null, "Fields have been cleared.");
+    }//GEN-LAST:event_clearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -504,7 +413,6 @@ public class add_users extends javax.swing.JFrame {
     public javax.swing.JButton cancel;
     public javax.swing.JButton clear;
     public javax.swing.JTextField contact;
-    public javax.swing.JButton delete;
     public javax.swing.JTextField email;
     public javax.swing.JTextField fname;
     public javax.swing.JComboBox<String> gender;
@@ -524,7 +432,6 @@ public class add_users extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel2;
     public javax.swing.JTextField lname;
     public javax.swing.JPasswordField pass;
-    public javax.swing.JButton refresh;
     public javax.swing.JComboBox<String> status;
     public javax.swing.JComboBox<String> type;
     public javax.swing.JButton update;

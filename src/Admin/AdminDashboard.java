@@ -7,7 +7,9 @@ package Admin;
 
 import config.Session;
 import java.awt.Color;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import myApp.LoginForm;
 
 /**
@@ -40,7 +42,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         mainDesktop = new javax.swing.JDesktopPane();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        account = new javax.swing.JButton();
         userPage = new javax.swing.JButton();
         projectPage = new javax.swing.JButton();
         taskPage = new javax.swing.JButton();
@@ -86,8 +88,13 @@ public class AdminDashboard extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("Acoount");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
+        account.setText("Account");
+        account.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accountActionPerformed(evt);
+            }
+        });
+        jPanel2.add(account, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
 
         userPage.setText("User Page");
         userPage.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -246,6 +253,13 @@ public class AdminDashboard extends javax.swing.JFrame {
         mainDesktop.add(h).setVisible(true);
     }//GEN-LAST:event_homeActionPerformed
 
+    private void accountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountActionPerformed
+ 
+        LoginForm lf = new LoginForm();
+        lf.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_accountActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -282,12 +296,12 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton account;
     public javax.swing.JLabel contact;
     public javax.swing.JLabel email;
     public javax.swing.JLabel fname;
     public javax.swing.JLabel gender;
     public javax.swing.JButton home;
-    public javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
