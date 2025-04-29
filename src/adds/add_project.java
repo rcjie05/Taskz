@@ -5,8 +5,11 @@
  */
 package adds;
 
+import Admin.AdminDashboard;
+import Admin.Projectpage;
 import config.dbConnector;
 import Admin.Userpage;
+import config.Session;
 import javax.swing.JOptionPane;
 import myApp.LoginForm;
 
@@ -35,36 +38,38 @@ public class add_project extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        date = new javax.swing.JTextField();
-        due = new javax.swing.JTextField();
         user_id = new javax.swing.JTextField();
         uname = new javax.swing.JTextField();
         status = new javax.swing.JComboBox<>();
         save = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        cancel = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        Regshort = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         pname = new javax.swing.JTextField();
+        date = new com.toedter.calendar.JDateChooser();
+        due = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(null);
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
 
-        due.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dueActionPerformed(evt);
-            }
-        });
+        user_id.setEnabled(false);
+
+        uname.setEnabled(false);
 
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Active", "Not Active", "Completed" }));
 
@@ -75,7 +80,12 @@ public class add_project extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Cancel");
+        cancel.setText("Cancel");
+        cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -97,13 +107,6 @@ public class add_project extends javax.swing.JFrame {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Maker Name:");
 
-        Regshort.setText("Already have account? Click here>>");
-        Regshort.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RegshortMouseClicked(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Project Name:");
@@ -123,18 +126,17 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(63, 63, 63)
                             .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(due, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(uname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(Regshort, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(pname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(user_id, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(uname)
+                        .addComponent(pname)
+                        .addComponent(user_id)
+                        .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(due, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -153,13 +155,13 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(uname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(due, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(due, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -167,10 +169,8 @@ public class add_project extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(Regshort, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48))
+                    .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(82, 82, 82))
         );
 
         jPanel1.add(jPanel2);
@@ -203,49 +203,63 @@ public class add_project extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void dueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dueActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dueActionPerformed
-
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
 
         if (user_id.getText().isEmpty() || pname.getText().isEmpty() || uname.getText().isEmpty()
-            || date.getText().isEmpty() || due.getText().isEmpty() || status.getSelectedItem().equals("SELECT")) {
+        || date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
 
         JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
     } else {
-        // Create an instance of your DB connector class
         dbConnector dbc = new dbConnector();
 
-        // Build the SQL insert statement
-        String sql = "INSERT INTO tbl_project (u_id, p_name, u_fname, p_date, p_due, u_status) VALUES ('"
+        // Convert dates to yyyy-MM-dd
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date.getDate());
+        String formattedDueDate = sdf.format(due.getDate());
+
+        String sql = "INSERT INTO tbl_project (u_id, p_name, u_fname, p_date, p_duedate, p_status) VALUES ('"
                 + user_id.getText() + "', '"
                 + pname.getText() + "', '"
                 + uname.getText() + "', '"
-                + date.getText() + "', '"
-                + due.getText() + "', '"
+                + formattedDate + "', '"
+                + formattedDueDate + "', '"
                 + status.getSelectedItem().toString() + "')";
 
-        // Execute the query and handle the result
         boolean success = dbc.insertData(sql);
 
         if (success) {
             JOptionPane.showMessageDialog(null, "Project Added Successfully!");
-            // Redirect to user page or clear form
             Userpage up = new Userpage();
             up.setVisible(true);
-            this.dispose(); // close current form
+            this.dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Failed to insert project. Please check database connection or data.");
         }
     }
     }//GEN-LAST:event_saveActionPerformed
 
-    private void RegshortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RegshortMouseClicked
-        LoginForm lf = new LoginForm();
-        lf.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_RegshortMouseClicked
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+         Session sess = Session.getInstance();
+      
+      if(sess.getU_id()==0){
+          JOptionPane.showMessageDialog(null,"No Account. Login First!");
+          LoginForm lf = new LoginForm();
+          lf.setVisible(true);
+          this.dispose();
+      }else{
+          user_id.setText(""+sess.getU_id());
+          uname.setText(""+sess.getU_fname());
+      }
+    }//GEN-LAST:event_formWindowActivated
+
+    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
+        AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+            Projectpage pp = new Projectpage();
+            pp.setVisible(true);
+            ads.mainDesktop.add(pp);
+            this.dispose();
+    }//GEN-LAST:event_cancelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -284,10 +298,9 @@ public class add_project extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JLabel Regshort;
-    private javax.swing.JTextField date;
-    private javax.swing.JTextField due;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton cancel;
+    public com.toedter.calendar.JDateChooser date;
+    public com.toedter.calendar.JDateChooser due;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -298,10 +311,10 @@ public class add_project extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField pname;
+    public javax.swing.JTextField pname;
     private javax.swing.JButton save;
-    private javax.swing.JComboBox<String> status;
-    private javax.swing.JTextField uname;
-    private javax.swing.JTextField user_id;
+    public javax.swing.JComboBox<String> status;
+    public javax.swing.JTextField uname;
+    public javax.swing.JTextField user_id;
     // End of variables declaration//GEN-END:variables
 }

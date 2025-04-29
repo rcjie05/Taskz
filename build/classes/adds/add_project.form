@@ -8,6 +8,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowActivated"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -77,20 +80,19 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jButton2" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="cancel" min="-2" pref="76" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                                   <Component id="save" min="-2" pref="81" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="status" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="due" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="date" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="uname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                              <Component id="Regshort" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
-                              <Component id="pname" alignment="1" min="-2" pref="220" max="-2" attributes="0"/>
+                              <Component id="status" alignment="0" max="32767" attributes="0"/>
+                              <Component id="uname" alignment="0" max="32767" attributes="0"/>
+                              <Component id="pname" alignment="0" max="32767" attributes="0"/>
+                              <Component id="user_id" alignment="0" max="32767" attributes="0"/>
+                              <Component id="date" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="user_id" alignment="1" min="-2" pref="220" max="-2" attributes="0"/>
+                          <Component id="due" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -115,14 +117,14 @@
                           <Component id="jLabel8" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="date" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jLabel3" pref="26" max="32767" attributes="0"/>
+                          <Component id="date" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="due" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="jLabel4" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel4" min="-2" pref="26" max="-2" attributes="0"/>
+                          <Component id="due" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -132,26 +134,29 @@
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="save" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                          <Component id="jButton2" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                          <Component id="cancel" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="Regshort" min="-2" pref="16" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JTextField" name="date">
-            </Component>
-            <Component class="javax.swing.JTextField" name="due">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dueActionPerformed"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JTextField" name="user_id">
+              <Properties>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JTextField" name="uname">
+              <Properties>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JComboBox" name="status">
               <Properties>
@@ -166,6 +171,7 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="save">
@@ -176,10 +182,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton2">
+            <Component class="javax.swing.JButton" name="cancel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cancel"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">
               <Properties>
@@ -226,17 +235,6 @@
                 <Property name="text" type="java.lang.String" value="Maker Name:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="Regshort">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Already have account? Click here&gt;&gt;"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="RegshortMouseClicked"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
-              </AuxValues>
-            </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -247,6 +245,19 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="pname">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="date">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="due">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

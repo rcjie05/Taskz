@@ -6,6 +6,7 @@
 package Admin;
 
 import adds.add_project;
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
@@ -24,7 +25,7 @@ import net.proteanit.sql.DbUtils;
 public class Projectpage extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form Userpage
+     * Creates new form 
      */
     public Projectpage() {
         initComponents();
@@ -42,7 +43,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT p_id, p_name, u_fname, p_date, p_due, p_status FROM tbl_project");
+            ResultSet rs = dbc.getData("SELECT p_id, p_name, u_fname, p_date, p_duedate, p_status FROM tbl_project");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
             
         }catch(SQLException ex){
@@ -64,8 +65,8 @@ public class Projectpage extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         searchButton = new javax.swing.JButton();
-        addButton = new javax.swing.JButton();
-        editbutton = new javax.swing.JButton();
+        add = new javax.swing.JButton();
+        edit = new javax.swing.JButton();
         deletebutton = new javax.swing.JButton();
         searchBar = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -78,16 +79,21 @@ public class Projectpage extends javax.swing.JInternalFrame {
         searchButton.setText("SEARCH");
         jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, -1, -1));
 
-        addButton.setText("ADD");
-        addButton.addActionListener(new java.awt.event.ActionListener() {
+        add.setText("ADD");
+        add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
+                addActionPerformed(evt);
             }
         });
-        jPanel1.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
+        jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
-        editbutton.setText("EDIT");
-        jPanel1.add(editbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
+        edit.setText("EDIT");
+        edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editActionPerformed(evt);
+            }
+        });
+        jPanel1.add(edit, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
 
         deletebutton.setText("DELETE");
         jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
@@ -138,17 +144,47 @@ public class Projectpage extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_searchBarActionPerformed
 
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         add_project ap = new add_project();
         ap.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_addButtonActionPerformed
+        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+                        parent.dispose();
+    }//GEN-LAST:event_addActionPerformed
+
+    private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
+        int rowIndex = userTable.getSelectedRow();
+
+    if (rowIndex < 0) {
+        JOptionPane.showMessageDialog(null, "Please select a project to edit.");
+    } else {
+        TableModel model = userTable.getModel();
+
+        // Retrieve selected row values
+        String p_id = model.getValueAt(rowIndex, 0).toString(); // assuming first column is p_id
+        String p_name = model.getValueAt(rowIndex, 1).toString();
+        String u_fname = model.getValueAt(rowIndex, 2).toString();
+        String p_date = model.getValueAt(rowIndex, 3).toString();
+        String p_duedate = model.getValueAt(rowIndex, 4).toString();
+        String p_status = model.getValueAt(rowIndex, 5).toString();
+
+        
+        add_project ap = new add_project();
+
+         
+
+        ap.setVisible(true);
+
+        // Close current Projectpage
+        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+        parent.dispose();
+    }
+    }//GEN-LAST:event_editActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addButton;
+    private javax.swing.JButton add;
     private javax.swing.JButton deletebutton;
-    private javax.swing.JButton editbutton;
+    private javax.swing.JButton edit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
