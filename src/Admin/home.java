@@ -5,16 +5,11 @@
  */
 package Admin;
 
-import adds.add_users;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -73,6 +68,11 @@ public class home extends javax.swing.JInternalFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         searchButton.setText("SEARCH");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
         jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 80, -1, -1));
 
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
@@ -120,6 +120,28 @@ public class home extends javax.swing.JInternalFrame {
     private void searchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchBarActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        String keyword = searchBar.getText().trim();
+    
+    if (keyword.isEmpty()) {
+        // If search bar is empty, reload all data
+        displayData();
+        return;
+    }
+
+    try {
+        dbConnector dbc = new dbConnector();
+        String query = "SELECT u_id, u_fname, u_lname, u_email FROM tbl_users " +
+                       "WHERE u_fname LIKE '%" + keyword + "%' " +
+                       "OR u_lname LIKE '%" + keyword + "%' " +
+                       "OR u_email LIKE '%" + keyword + "%'";
+        ResultSet rs = dbc.getData(query);
+        userTable.setModel(DbUtils.resultSetToTableModel(rs));
+    } catch (SQLException ex) {
+        System.out.println("Error during search: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_searchButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

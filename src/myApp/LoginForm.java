@@ -87,6 +87,7 @@ public class LoginForm extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        showpassword = new javax.swing.JCheckBox();
         user = new javax.swing.JTextField();
         pass = new javax.swing.JPasswordField();
         login = new javax.swing.JButton();
@@ -110,6 +111,17 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel3.setText("TASK MANAGEMENT SYSTEM");
         jPanel1.add(jLabel3);
         jLabel3.setBounds(140, 10, 420, 28);
+
+        showpassword.setBackground(new java.awt.Color(204, 204, 204));
+        showpassword.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        showpassword.setText("show password");
+        showpassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showpasswordActionPerformed(evt);
+            }
+        });
+        jPanel1.add(showpassword);
+        showpassword.setBounds(250, 240, 110, 20);
 
         user.setBackground(new java.awt.Color(204, 204, 204));
         user.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Username", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 11))); // NOI18N
@@ -145,7 +157,7 @@ public class LoginForm extends javax.swing.JFrame {
         loginShort.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         loginShort.setForeground(new java.awt.Color(255, 255, 255));
         loginShort.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        loginShort.setText("New User? Click Here To Register>>");
+        loginShort.setText("Click Here To Register>>");
         loginShort.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 2));
         loginShort.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -153,7 +165,7 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
         jPanel1.add(loginShort);
-        loginShort.setBounds(250, 260, 220, 20);
+        loginShort.setBounds(250, 270, 170, 20);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
         jPanel1.add(jLabel2);
@@ -215,6 +227,14 @@ public class LoginForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_passActionPerformed
 
+    private void showpasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showpasswordActionPerformed
+        if (showpassword.isSelected()) {
+        pass.setEchoChar((char) 0);
+    } else {
+        pass.setEchoChar('\u2022');
+    }
+    }//GEN-LAST:event_showpasswordActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -259,6 +279,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JButton login;
     public javax.swing.JLabel loginShort;
     private javax.swing.JPasswordField pass;
+    private javax.swing.JCheckBox showpassword;
     private javax.swing.JTextField user;
     // End of variables declaration//GEN-END:variables
 }

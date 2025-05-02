@@ -23,7 +23,10 @@ public class AdminDashboard extends javax.swing.JFrame {
      */
     public AdminDashboard() {
         initComponents();
+            
     }
+    
+    home h = new home();
     
     Color navcolor = new Color(51,255,153);
     Color headcolor = new Color(153,204,255);
@@ -88,6 +91,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        account.setBackground(new java.awt.Color(204, 255, 102));
         account.setText("Account");
         account.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -96,6 +100,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         jPanel2.add(account, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
 
+        userPage.setBackground(new java.awt.Color(204, 255, 102));
         userPage.setText("User Page");
         userPage.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -112,7 +117,16 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 120, 40));
 
+        projectPage.setBackground(new java.awt.Color(204, 255, 102));
         projectPage.setText("Project Page");
+        projectPage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                projectPageMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                projectPageMouseExited(evt);
+            }
+        });
         projectPage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 projectPageActionPerformed(evt);
@@ -120,7 +134,16 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         jPanel2.add(projectPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 120, 40));
 
+        taskPage.setBackground(new java.awt.Color(204, 255, 102));
         taskPage.setText("Task Page");
+        taskPage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                taskPageMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                taskPageMouseExited(evt);
+            }
+        });
         taskPage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 taskPageActionPerformed(evt);
@@ -163,6 +186,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         username.setText("username:");
         jPanel2.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 80, -1));
 
+        home.setBackground(new java.awt.Color(204, 255, 102));
         home.setText("Home");
         home.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -205,15 +229,19 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_userPageActionPerformed
 
     private void userPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseEntered
-        userPage.setBackground(bodycolor);
+        
     }//GEN-LAST:event_userPageMouseEntered
 
     private void userPageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseExited
-        userPage.setBackground(navcolor);
+        
     }//GEN-LAST:event_userPageMouseExited
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-      Session sess = Session.getInstance();
+        home h = new home();
+        h.setVisible(true);
+        mainDesktop.add(h);
+        
+        Session sess = Session.getInstance();
       
       if(sess.getU_id()==0){
           JOptionPane.showMessageDialog(null,"No Account. Login First!");
@@ -241,11 +269,11 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_taskPageActionPerformed
 
     private void homeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeMouseEntered
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_homeMouseEntered
 
     private void homeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeMouseExited
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_homeMouseExited
 
     private void homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeActionPerformed
@@ -259,6 +287,22 @@ public class AdminDashboard extends javax.swing.JFrame {
         lf.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_accountActionPerformed
+
+    private void projectPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_projectPageMouseEntered
+        
+    }//GEN-LAST:event_projectPageMouseEntered
+
+    private void projectPageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_projectPageMouseExited
+        
+    }//GEN-LAST:event_projectPageMouseExited
+
+    private void taskPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskPageMouseEntered
+        
+    }//GEN-LAST:event_taskPageMouseEntered
+
+    private void taskPageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskPageMouseExited
+        
+    }//GEN-LAST:event_taskPageMouseExited
 
     /**
      * @param args the command line arguments

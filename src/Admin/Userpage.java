@@ -86,6 +86,11 @@ public class Userpage extends javax.swing.JInternalFrame {
         jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 50, 240, 23));
 
         searchButton.setText("SEARCH");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
         jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 50, -1, -1));
 
         addButton.setText("ADD");
@@ -235,6 +240,34 @@ public class Userpage extends javax.swing.JInternalFrame {
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
         displayData();
     }//GEN-LAST:event_refreshActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        String keyword = searchBar.getText().trim();
+
+    try {
+        dbConnector dbc = new dbConnector();
+        String query = "SELECT u_id, u_fname, u_lname, u_email FROM tbl_users " +
+                       "WHERE u_id LIKE '%" + keyword + "%' " +
+                       "OR u_fname LIKE '%" + keyword + "%' " +
+                       "OR u_lname LIKE '%" + keyword + "%' " +
+                       "OR u_email LIKE '%" + keyword + "%'";
+        ResultSet rs = dbc.getData(query);
+
+        if (!rs.isBeforeFirst()) {
+            // No data found — show message in table
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+            model.setColumnIdentifiers(new String[]{"Message"});
+            model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
+            userTable.setModel(model);
+        } else {
+            // Show search results
+            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+        }
+
+    } catch (SQLException ex) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_searchButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

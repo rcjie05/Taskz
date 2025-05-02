@@ -8,6 +8,7 @@ package adds;
 import Admin.AdminDashboard;
 import Admin.Projectpage;
 import config.dbConnector;
+import Admin.Userpage;
 import config.Session;
 import javax.swing.JOptionPane;
 import myApp.LoginForm;
@@ -17,12 +18,12 @@ import myApp.LoginForm;
  *
  * @author PC15
  */
-public class add_project extends javax.swing.JFrame {
+public class add_task extends javax.swing.JFrame {
 
     /**
      * Creates new form add_users
      */
-    public add_project() {
+    public add_task() {
         initComponents();
     }
 
@@ -38,9 +39,9 @@ public class add_project extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         user_id = new javax.swing.JTextField();
-        uname = new javax.swing.JTextField();
+        tname = new javax.swing.JTextField();
         status = new javax.swing.JComboBox<>();
-        add = new javax.swing.JButton();
+        save = new javax.swing.JButton();
         cancel = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -51,8 +52,6 @@ public class add_project extends javax.swing.JFrame {
         pname = new javax.swing.JTextField();
         date = new com.toedter.calendar.JDateChooser();
         due = new com.toedter.calendar.JDateChooser();
-        update = new javax.swing.JButton();
-        cancel1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -70,14 +69,14 @@ public class add_project extends javax.swing.JFrame {
 
         user_id.setEnabled(false);
 
-        uname.setEnabled(false);
+        tname.setEnabled(false);
 
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Active", "Not Active", "Completed" }));
 
-        add.setText("Add");
-        add.addActionListener(new java.awt.event.ActionListener() {
+        save.setText("Save");
+        save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addActionPerformed(evt);
+                saveActionPerformed(evt);
             }
         });
 
@@ -106,25 +105,11 @@ public class add_project extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Maker Name:");
+        jLabel8.setText("Task Name:");
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Project Name:");
-
-        update.setText("Update");
-        update.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateActionPerformed(evt);
-            }
-        });
-
-        cancel1.setText("Cancel");
-        cancel1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancel1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -140,23 +125,18 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(63, 63, 63)
+                            .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uname)
+                        .addComponent(tname)
                         .addComponent(pname)
                         .addComponent(user_id)
-                        .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
-                    .addComponent(due, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(59, 59, 59)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(update)
-                            .addComponent(cancel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(due, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -172,7 +152,7 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(uname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -187,14 +167,10 @@ public class add_project extends javax.swing.JFrame {
                     .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48))
+                .addGap(82, 82, 82))
         );
 
         jPanel1.add(jPanel2);
@@ -227,9 +203,9 @@ public class add_project extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
 
-        if (user_id.getText().isEmpty() || pname.getText().isEmpty() || uname.getText().isEmpty()
+        if (user_id.getText().isEmpty() || pname.getText().isEmpty() || tname.getText().isEmpty()
         || date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
 
         JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
@@ -244,7 +220,7 @@ public class add_project extends javax.swing.JFrame {
         String sql = "INSERT INTO tbl_project (u_id, p_name, u_fname, p_date, p_duedate, p_status) VALUES ('"
                 + user_id.getText() + "', '"
                 + pname.getText() + "', '"
-                + uname.getText() + "', '"
+                + tname.getText() + "', '"
                 + formattedDate + "', '"
                 + formattedDueDate + "', '"
                 + status.getSelectedItem().toString() + "')";
@@ -253,17 +229,14 @@ public class add_project extends javax.swing.JFrame {
 
         if (success) {
             JOptionPane.showMessageDialog(null, "Project Added Successfully!");
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);
-            Projectpage pp = new Projectpage();
-            pp.setVisible(true);
-            ads.mainDesktop.add(pp);
+            Userpage up = new Userpage();
+            up.setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Failed to insert project. Please check database connection or data.");
         }
     }
-    }//GEN-LAST:event_addActionPerformed
+    }//GEN-LAST:event_saveActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
          Session sess = Session.getInstance();
@@ -274,7 +247,8 @@ public class add_project extends javax.swing.JFrame {
           lf.setVisible(true);
           this.dispose();
       }else{
-          uname.setText(""+sess.getU_fname());
+          user_id.setText(""+sess.getU_id());
+          tname.setText(""+sess.getU_fname());
       }
     }//GEN-LAST:event_formWindowActivated
 
@@ -286,42 +260,6 @@ public class add_project extends javax.swing.JFrame {
             ads.mainDesktop.add(pp);
             this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
-
-    private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-               if (user_id.getText().isEmpty() || pname.getText().isEmpty() || uname.getText().isEmpty()
-        || date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
-
-        JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
-    } else {
-        dbConnector dbc = new dbConnector();
-
-        // Convert dates to yyyy-MM-dd
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = sdf.format(date.getDate());
-        String formattedDueDate = sdf.format(due.getDate());
-
-         dbc.updateData("UPDATE tbl_project SET "
-                   + "p_name = '" + pname.getText() + "', "
-                   + "u_fname = '" + uname.getText() + "', "
-                   + "p_date = '" + formattedDate + "', "
-                   + "p_duedate = '" + formattedDueDate + "', "
-                   + "p_status = '" + status.getSelectedItem().toString() + "' "
-                   + " WHERE p_id = '" + user_id.getText() + "'");       
-           
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);
-            Projectpage pp = new Projectpage();
-            pp.setVisible(true);
-            ads.mainDesktop.add(pp);
-            this.dispose();
-       
-    }
-           
-    }//GEN-LAST:event_updateActionPerformed
-
-    private void cancel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cancel1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -340,29 +278,29 @@ public class add_project extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(add_project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(add_task.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(add_project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(add_task.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(add_project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(add_task.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(add_project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(add_task.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new add_project().setVisible(true);
+                new add_task().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton add;
     private javax.swing.JButton cancel;
-    private javax.swing.JButton cancel1;
     public com.toedter.calendar.JDateChooser date;
     public com.toedter.calendar.JDateChooser due;
     private javax.swing.JLabel jLabel1;
@@ -376,9 +314,9 @@ public class add_project extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JTextField pname;
+    private javax.swing.JButton save;
     public javax.swing.JComboBox<String> status;
-    public javax.swing.JTextField uname;
-    private javax.swing.JButton update;
+    public javax.swing.JTextField tname;
     public javax.swing.JTextField user_id;
     // End of variables declaration//GEN-END:variables
 }

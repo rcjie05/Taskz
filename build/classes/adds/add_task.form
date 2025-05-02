@@ -79,27 +79,20 @@
                           <Component id="jLabel6" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="cancel" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                  <Component id="save" min="-2" pref="81" max="-2" attributes="0"/>
+                              </Group>
                               <Component id="status" alignment="0" max="32767" attributes="0"/>
-                              <Component id="uname" alignment="0" max="32767" attributes="0"/>
+                              <Component id="tname" alignment="0" max="32767" attributes="0"/>
                               <Component id="pname" alignment="0" max="32767" attributes="0"/>
                               <Component id="user_id" alignment="0" max="32767" attributes="0"/>
-                              <Component id="date" pref="220" max="32767" attributes="0"/>
+                              <Component id="date" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="due" alignment="1" pref="220" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="cancel" min="-2" pref="67" max="-2" attributes="0"/>
-                                  <Component id="add" min="-2" pref="70" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="update" min="-2" max="-2" attributes="0"/>
-                                  <Component id="cancel1" min="-2" pref="67" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="due" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -120,7 +113,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="uname" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="tname" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                           <Component id="jLabel8" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -139,16 +132,11 @@
                           <Component id="jLabel7" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="add" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                          <Component id="update" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="save" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                          <Component id="cancel" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cancel1" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                          <Component id="cancel" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -162,7 +150,7 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JTextField" name="uname">
+            <Component class="javax.swing.JTextField" name="tname">
               <Properties>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -186,12 +174,12 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="add">
+            <Component class="javax.swing.JButton" name="save">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Add"/>
+                <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="cancel">
@@ -244,7 +232,7 @@
                   <Font name="Century Gothic" size="12" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="Maker Name:"/>
+                <Property name="text" type="java.lang.String" value="Task Name:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
@@ -270,22 +258,6 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
-            </Component>
-            <Component class="javax.swing.JButton" name="update">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Update"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="cancel1">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Cancel"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancel1ActionPerformed"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>

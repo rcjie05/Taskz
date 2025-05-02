@@ -313,37 +313,38 @@ public class add_users extends javax.swing.JFrame {
     }//GEN-LAST:event_addActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-        // TODO add your handling code here:
         if (user_id.getText().isEmpty() || fname.getText().isEmpty() || lname.getText().isEmpty()
-                || email.getText().isEmpty() || contact.getText().isEmpty() || user.getText().isEmpty()
-                || pass.getPassword().length == 0) {
-            JOptionPane.showMessageDialog(null, "All Fields are required!");
-        } else if (pass.getPassword().length < 3) {
-            JOptionPane.showMessageDialog(null, "Password must be at least 3 characters!");
-            pass.setText("");
-        } else {
-            dbConnector dbc = new dbConnector();
+            || email.getText().isEmpty() || contact.getText().isEmpty() || user.getText().isEmpty()
+            || pass.getPassword().length == 0) {
+        JOptionPane.showMessageDialog(null, "All Fields are required!");
+    } else if (pass.getPassword().length < 3) {
+        JOptionPane.showMessageDialog(null, "Password must be at least 3 characters!");
+        pass.setText("");
+    } else {
+        dbConnector dbc = new dbConnector();
 
-            String query = "UPDATE tbl_users SET "
-                    + "u_fname = '" + fname.getText() + "', "
-                    + "u_lname = '" + lname.getText() + "', "
-                    + "u_email = '" + email.getText() + "', "
-                    + "u_contact = '" + contact.getText() + "', "
-                    + "u_gender = '" + gender.getSelectedItem() + "', "
-                    + "u_username = '" + user.getText() + "', "
-                    + "u_password = '" + new String(pass.getPassword()) + "', "
-                    + "u_type = '" + type.getSelectedItem() + "', "
-                    + "u_status = '" + status.getSelectedItem() + "' "
-                    + "WHERE u_id = '" + user_id.getText() + "'";
+        String hashedPass = hashPassword(new String(pass.getPassword()));
 
-            dbc.updateData(query);
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);
-            Userpage up = new Userpage();
-            up.setVisible(true);
-            ads.mainDesktop.add(up);
-            this.dispose();
-        }
+        String query = "UPDATE tbl_users SET "
+                + "u_fname = '" + fname.getText() + "', "
+                + "u_lname = '" + lname.getText() + "', "
+                + "u_email = '" + email.getText() + "', "
+                + "u_contact = '" + contact.getText() + "', "
+                + "u_gender = '" + gender.getSelectedItem() + "', "
+                + "u_username = '" + user.getText() + "', "
+                + "u_password = '" + hashedPass + "', "
+                + "u_type = '" + type.getSelectedItem() + "', "
+                + "u_status = '" + status.getSelectedItem() + "' "
+                + "WHERE u_id = '" + user_id.getText() + "'";
+
+        dbc.updateData(query);
+        AdminDashboard ads = new AdminDashboard();
+        ads.setVisible(true);
+        Userpage up = new Userpage();
+        up.setVisible(true);
+        ads.mainDesktop.add(up);
+        this.dispose();
+    }
     }//GEN-LAST:event_updateActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed

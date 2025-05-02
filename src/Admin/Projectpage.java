@@ -6,12 +6,13 @@
 package Admin;
 
 import adds.add_project;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -77,6 +78,11 @@ public class Projectpage extends javax.swing.JInternalFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         searchButton.setText("SEARCH");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
         jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, -1, -1));
 
         add.setText("ADD");
@@ -147,6 +153,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         add_project ap = new add_project();
         ap.setVisible(true);
+        
         JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
                         parent.dispose();
     }//GEN-LAST:event_addActionPerformed
@@ -157,28 +164,64 @@ public class Projectpage extends javax.swing.JInternalFrame {
     if (rowIndex < 0) {
         JOptionPane.showMessageDialog(null, "Please select a project to edit.");
     } else {
+            try {
+        dbConnector dbc = new dbConnector();
         TableModel model = userTable.getModel();
-
-        // Retrieve selected row values
-        String p_id = model.getValueAt(rowIndex, 0).toString(); // assuming first column is p_id
-        String p_name = model.getValueAt(rowIndex, 1).toString();
-        String u_fname = model.getValueAt(rowIndex, 2).toString();
-        String p_date = model.getValueAt(rowIndex, 3).toString();
-        String p_duedate = model.getValueAt(rowIndex, 4).toString();
-        String p_status = model.getValueAt(rowIndex, 5).toString();
+        add_project ap = new add_project();
+        ResultSet rs = dbc.getData("SELECT * FROM tbl_project WHERE p_id = '"+ model.getValueAt(rowIndex, 0) + "'");
+                if(rs.next()){
+                ap.user_id.setText(""+rs.getInt("p_id"));
+                ap.pname.setText(""+rs.getString("p_name"));
+                ap.uname.setText(""+rs.getString("u_fname"));
+                ap.date.setToolTipText(""+rs.getString("p_date"));
+                ap.due.setToolTipText(""+rs.getString("p_duedate"));
+                ap.status.setSelectedItem(""+rs.getString("p_status"));
+                
+                ap.setVisible(true);
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Projectpage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
 
         
-        add_project ap = new add_project();
+        
 
          
 
-        ap.setVisible(true);
+        
 
-        // Close current Projectpage
         JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
         parent.dispose();
     }
     }//GEN-LAST:event_editActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        String keyword = searchBar.getText().trim();
+
+    try {
+        dbConnector dbc = new dbConnector();
+        String query = "SELECT u_id, p_id, u_fname, p_name FROM tbl_project " +
+                       "WHERE u_fname LIKE '%" + keyword + "%' " +
+                       "OR p_name LIKE '%" + keyword + "%' " +
+                       "OR p_id LIKE '%" + keyword + "%'";
+        ResultSet rs = dbc.getData(query);
+
+        if (!rs.isBeforeFirst()) {
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+            model.setColumnIdentifiers(new String[]{"Message"});
+            model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
+            userTable.setModel(model);
+        } else {
+            // Show search results
+            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+        }
+
+    } catch (SQLException ex) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_searchButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
