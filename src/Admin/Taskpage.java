@@ -5,6 +5,7 @@
  */
 package Admin;
 
+import adds.add_tasks;
 import adds.add_users;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -42,7 +43,7 @@ public class Taskpage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email FROM tbl_users");
+            ResultSet rs = dbc.getData("SELECT t_id, p_name, u_fname, t_status FROM tbl_task");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
             
         }catch(SQLException ex){
@@ -144,8 +145,8 @@ public class Taskpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        add_users up = new add_users();
-        up.setVisible(true);
+        add_tasks at = new add_tasks();
+        at.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addButtonActionPerformed
 

@@ -12,6 +12,8 @@ package config;
 public class Session {
     
     private static Session instance;
+    private int t_id;
+    private int p_id;
     private int u_id;
     private String u_fname;
     private String u_lname;
@@ -36,8 +38,24 @@ public class Session {
     public static boolean isInstanceEmpty() {
         return instance == null;
     }
+    public int getT_id() {
+        return t_id;
+    }
+    public void setT_id(int t_id) {
+        this.t_id = t_id;
+    }
+     public int getP_id() {
+        return p_id;
+    }
+    public void setP_id(int p_id) {
+        this.p_id = p_id;
+    }
         public int getU_id() {
         return u_id;
+    }
+
+    public static void setInstance(Session instance) {
+        Session.instance = instance;
     }
     public void setU_id(int u_id) {
         this.u_id = u_id;

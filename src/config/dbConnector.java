@@ -11,16 +11,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.*;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author PC15
- */
 public class dbConnector {
 
-    private Connection connect;
+    public Connection connect;
 
     public dbConnector() {
         try {
@@ -30,14 +25,14 @@ public class dbConnector {
         }
     }
 
-    //Function to retrieve data
+    // Function to retrieve data
     public ResultSet getData(String sql) throws SQLException {
         Statement stmt = connect.createStatement();
         ResultSet rst = stmt.executeQuery(sql);
         return rst;
     }
 
-    //Function to save data
+    // Function to save data
     public boolean insertData(String sql) {
         try {
             PreparedStatement pst = connect.prepareStatement(sql);
@@ -51,7 +46,7 @@ public class dbConnector {
         }
     }
 
-    //Function to update data
+    // Function to update data
     public void updateData(String sql) {
         try {
             PreparedStatement pst = connect.prepareStatement(sql);
@@ -65,7 +60,6 @@ public class dbConnector {
         } catch (SQLException ex) {
             System.out.println("Connection Error: " + ex);
         }
-
     }
 
     public void deleteData(String query) {
@@ -83,7 +77,8 @@ public class dbConnector {
         }
     }
 
-    public Object getConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // Corrected getConnection() method
+    public Connection getConnection() {
+        return connect;
     }
 }

@@ -6,6 +6,7 @@
 package Admin;
 
 import adds.add_project;
+import config.Session;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
@@ -65,6 +66,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        refresh = new javax.swing.JButton();
         searchButton = new javax.swing.JButton();
         add = new javax.swing.JButton();
         edit = new javax.swing.JButton();
@@ -77,13 +79,21 @@ public class Projectpage extends javax.swing.JInternalFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        refresh.setText("REFRESH");
+        refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshActionPerformed(evt);
+            }
+        });
+        jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 80, -1, -1));
+
         searchButton.setText("SEARCH");
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, -1, -1));
+        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 50, -1, -1));
 
         add.setText("ADD");
         add.addActionListener(new java.awt.event.ActionListener() {
@@ -99,11 +109,17 @@ public class Projectpage extends javax.swing.JInternalFrame {
                 editActionPerformed(evt);
             }
         });
-        jPanel1.add(edit, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
+        jPanel1.add(edit, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, 70, -1));
 
         deletebutton.setText("DELETE");
-        jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
+        deletebutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletebuttonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, -1, -1));
 
+        searchBar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
         searchBar.setPreferredSize(new java.awt.Dimension(8, 20));
         searchBar.addActionListener(new java.awt.event.ActionListener() {
@@ -111,7 +127,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
                 searchBarActionPerformed(evt);
             }
         });
-        jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 80, 240, 23));
+        jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, 220, 23));
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -161,40 +177,41 @@ public class Projectpage extends javax.swing.JInternalFrame {
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
         int rowIndex = userTable.getSelectedRow();
 
-    if (rowIndex < 0) {
-        JOptionPane.showMessageDialog(null, "Please select a project to edit.");
-    } else {
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a project to edit.");
+        } else {
             try {
-        dbConnector dbc = new dbConnector();
-        TableModel model = userTable.getModel();
-        add_project ap = new add_project();
-        ResultSet rs = dbc.getData("SELECT * FROM tbl_project WHERE p_id = '"+ model.getValueAt(rowIndex, 0) + "'");
-                if(rs.next()){
-                ap.user_id.setText(""+rs.getInt("p_id"));
-                ap.pname.setText(""+rs.getString("p_name"));
-                ap.uname.setText(""+rs.getString("u_fname"));
-                ap.date.setToolTipText(""+rs.getString("p_date"));
-                ap.due.setToolTipText(""+rs.getString("p_duedate"));
-                ap.status.setSelectedItem(""+rs.getString("p_status"));
-                
-                ap.setVisible(true);
+                dbConnector dbc = new dbConnector();
+                TableModel model = userTable.getModel();
+                int projectIdToEdit = (int) model.getValueAt(rowIndex, 0);
+                Session session = Session.getInstance();
+                session.setP_id(projectIdToEdit);
+
+                add_project ap = new add_project();
+                ResultSet rs = dbc.getData("SELECT * FROM tbl_project WHERE p_id = '" + projectIdToEdit + "'");
+                if (rs.next()) {
+                    ap.user_id.setText("" + rs.getInt("u_id"));
+                    ap.pname.setText("" + rs.getString("p_name"));
+                    ap.uname.setText("" + rs.getString("u_fname"));
+                    java.util.Date pDate = rs.getDate("p_date");
+                    java.util.Date pDueDate = rs.getDate("p_duedate");
+                    ap.date.setDate(pDate);
+                    ap.due.setDate(pDueDate);
+                    ap.status.setSelectedItem("" + rs.getString("p_status"));
+                    ap.add.setEnabled(false);
+                    ap.update.setEnabled(true);
+
+                    ap.setVisible(true);
+                    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    parent.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error: Project with ID " + projectIdToEdit + " not found.");
                 }
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(Projectpage.class.getName()).log(Level.SEVERE, null, ex);
             }
-        
-
-        
-        
-
-         
-
-        
-
-        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-        parent.dispose();
-    }
+        }
     }//GEN-LAST:event_editActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -223,6 +240,38 @@ public class Projectpage extends javax.swing.JInternalFrame {
     }
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
+        int rowIndex = userTable.getSelectedRow();
+
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a user to delete.");
+            return;
+        }
+
+        TableModel model = userTable.getModel();
+        String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
+
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete this project?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            dbConnector dbc = new dbConnector();
+            String query = "DELETE FROM tbl_project WHERE p_id = '" + userId + "'";
+            dbc.deleteData(query);
+
+            JOptionPane.showMessageDialog(null, "Project deleted successfully!");
+
+            // Refresh the table data after deletion
+            displayData();
+        }
+    }//GEN-LAST:event_deletebuttonActionPerformed
+
+    private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
+        displayData();
+    }//GEN-LAST:event_refreshActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
@@ -232,6 +281,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton refresh;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
     private javax.swing.JTable userTable;
