@@ -11,6 +11,7 @@ import Admin.Taskpage;
 import config.dbConnector;
 import Admin.Userpage;
 import config.Session;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,9 +63,9 @@ public class add_tasks extends javax.swing.JFrame {
         update = new javax.swing.JButton();
         clear = new javax.swing.JButton();
         pname = new javax.swing.JComboBox<>();
-        u_fname = new javax.swing.JComboBox<>();
+        ufname = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
-        t_id1 = new javax.swing.JTextField();
+        t_id = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -143,10 +144,10 @@ public class add_tasks extends javax.swing.JFrame {
             }
         });
 
-        u_fname.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User", "Item 2", "Item 3", "Item 4" }));
-        u_fname.addActionListener(new java.awt.event.ActionListener() {
+        ufname.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User", "Item 2", "Item 3", "Item 4" }));
+        ufname.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                u_fnameActionPerformed(evt);
+                ufnameActionPerformed(evt);
             }
         });
 
@@ -154,7 +155,7 @@ public class add_tasks extends javax.swing.JFrame {
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("task_id");
 
-        t_id1.setEnabled(false);
+        t_id.setEnabled(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -192,9 +193,9 @@ public class add_tasks extends javax.swing.JFrame {
                                         .addComponent(pname, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(u_fname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(ufname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(t_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(t_id, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
@@ -203,7 +204,7 @@ public class add_tasks extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -218,7 +219,7 @@ public class add_tasks extends javax.swing.JFrame {
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
-                        .addComponent(u_fname, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ufname, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -273,22 +274,122 @@ public class add_tasks extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-    
+        String p_name = (String) pname.getSelectedItem();
+    String u_fname = (String) ufname.getSelectedItem();
+    String t_status = (String) status.getSelectedItem();
+    java.util.Date t_date = date.getDate();
+    java.util.Date t_duedate = due.getDate();
+
+    if (p_name.equals("Select Project") || u_fname.equals("Select User") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
+        JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+        return;
+    }
+
+    java.sql.Date sqlt_date = new java.sql.Date(t_date.getTime());
+    java.sql.Date sqlt_duedate = new java.sql.Date(t_duedate.getTime());
+
+    Session session = Session.getInstance();
+    int creatorId = session.getU_id();  // The user who is logged in
+
+    dbConnector db = new dbConnector();
+
+    try {
+        // Step 1: Get p_id from project name
+        String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
+        int p_id = -1;
+
+        try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
+            pst.setString(1, p_name);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                p_id = rs.getInt("p_id");
+            } else {
+                JOptionPane.showMessageDialog(null, "Project not found.");
+                return;
+            }
+        }
+
+        // Step 2: Get user_id from user name
+        String getUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
+        int user_id = -1;
+
+        try (PreparedStatement pst = db.connect.prepareStatement(getUidQuery)) {
+            pst.setString(1, u_fname);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                user_id = rs.getInt("u_id");
+            } else {
+                JOptionPane.showMessageDialog(null, "User not found.");
+                return;
+            }
+        }
+
+        // Step 3: Insert into tbl_task
+        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, t_date, t_duedate, t_status) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pst = db.connect.prepareStatement(insertQuery)) {
+            pst.setInt(1, p_id);
+            pst.setInt(2, user_id);          // Assigned user
+            pst.setDate(3, sqlt_date);
+            pst.setDate(4, sqlt_duedate);
+            pst.setString(5, t_status);
+                    // Logged-in user
+
+            int rowsAffected = pst.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Task added successfully!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error adding task.");
+            }
+        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    }
     }//GEN-LAST:event_addActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
          Session sess = Session.getInstance();
-      
-      if(sess.getU_id()==0){
-          JOptionPane.showMessageDialog(null,"No Account. Login First!");
-          LoginForm lf = new LoginForm();
-          lf.setVisible(true);
-          this.dispose();
-      }else{
-          p_id.setText(""+sess.getT_id());
-          user_id.setText(""+sess.getU_id());
-          u_fname.setSelectedItem(""+sess.getU_fname());
-      }
+
+        if (sess.getU_id() == 0) {
+            JOptionPane.showMessageDialog(null, "No Account. Login First!");
+            LoginForm lf = new LoginForm();
+            lf.setVisible(true);
+            this.dispose();
+        } else {
+            user_id.setText("" + sess.getU_id());
+            ufname.setSelectedItem("" + sess.getU_fname());
+        }
+
+        populateComboBoxes();
+    }
+
+    private void populateComboBoxes() {
+        dbConnector db = new dbConnector();
+
+        try {
+
+            String sqlProjects = "SELECT p_name FROM tbl_project"; 
+            ResultSet rsProjects = db.getData(sqlProjects);
+            DefaultComboBoxModel<String> projectModel = new DefaultComboBoxModel<>();
+            projectModel.addElement("Select Project"); 
+            while (rsProjects.next()) {
+                projectModel.addElement(rsProjects.getString("p_name"));
+            }
+            pname.setModel(projectModel);
+
+            String sqlUsers = "SELECT u_fname FROM tbl_users";  
+            ResultSet rsUsers = db.getData(sqlUsers);
+            DefaultComboBoxModel<String> userModel = new DefaultComboBoxModel<>();
+            userModel.addElement("Select User"); 
+            while (rsUsers.next()) {
+                userModel.addElement(rsUsers.getString("u_fname"));
+            }
+            ufname.setModel(userModel);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
+        }
     }//GEN-LAST:event_formWindowActivated
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -312,9 +413,9 @@ public class add_tasks extends javax.swing.JFrame {
        
     }//GEN-LAST:event_pnameActionPerformed
 
-    private void u_fnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_u_fnameActionPerformed
+    private void ufnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ufnameActionPerformed
         
-    }//GEN-LAST:event_u_fnameActionPerformed
+    }//GEN-LAST:event_ufnameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -377,8 +478,8 @@ public class add_tasks extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel2;
     private javax.swing.JComboBox<String> pname;
     public javax.swing.JComboBox<String> status;
-    public javax.swing.JTextField t_id1;
-    private javax.swing.JComboBox<String> u_fname;
+    public javax.swing.JTextField t_id;
+    private javax.swing.JComboBox<String> ufname;
     private javax.swing.JButton update;
     public javax.swing.JTextField user_id;
     // End of variables declaration//GEN-END:variables
