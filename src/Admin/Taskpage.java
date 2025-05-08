@@ -5,9 +5,9 @@
  */
 package Admin;
 
-import adds.add_project;
-import adds.add_tasks;
-import adds.add_users;
+import CrudsAdmin.crud_project;
+import CrudsAdmin.crud_tasks;
+import CrudsAdmin.crud_users;
 import config.Session;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -47,8 +47,15 @@ public class Taskpage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT t_id, p_name, u_fname, t_status FROM tbl_task");
+            ResultSet rs = dbc.getData("SELECT t_id, p_name, u_fname, user_assign, t_date, t_duedate, t_status FROM tbl_task");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
+            userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+            userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
+            userTable.getColumnModel().getColumn(2).setHeaderValue("Maker Name");
+            userTable.getColumnModel().getColumn(3).setHeaderValue("Assign User");
+            userTable.getColumnModel().getColumn(4).setHeaderValue("Start Date");
+            userTable.getColumnModel().getColumn(5).setHeaderValue("Due Date");
+            userTable.getColumnModel().getColumn(6).setHeaderValue("Status");
             
         }catch(SQLException ex){
                     System.out.println("Errors:"+ex.getMessage());
@@ -159,9 +166,10 @@ public class Taskpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        add_tasks at = new add_tasks();
+        crud_tasks at = new crud_tasks();
         at.setVisible(true);
-        this.dispose();
+        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+        parent.dispose();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -169,10 +177,11 @@ public class Taskpage extends javax.swing.JInternalFrame {
 
     try {
         dbConnector dbc = new dbConnector();
-        String query = "SELECT u_id, p_id, t_id, u_fname, p_name FROM tbl_task " +
+        String query = "SELECT u_id, p_id, t_id, u_fname, p_name, user_assign FROM tbl_task " +
                        "WHERE u_fname LIKE '%" + keyword + "%' " +
                        "OR p_name LIKE '%" + keyword + "%' " +
                        "OR t_id LIKE '%" + keyword + "%' " +
+                        "OR user_assign LIKE '%" + keyword + "%' " +
                        "OR p_id LIKE '%" + keyword + "%'";
         ResultSet rs = dbc.getData(query);
 
@@ -204,12 +213,12 @@ public class Taskpage extends javax.swing.JInternalFrame {
                 Session session = Session.getInstance();
                 session.setT_id(taskIdToEdit);
 
-                add_tasks at = new add_tasks();
+                crud_tasks at = new crud_tasks();
                 ResultSet rs = dbc.getData("SELECT * FROM tbl_task WHERE t_id = '" + taskIdToEdit + "'");
                 if (rs.next()) {
-                    at.user_id.setText("" + rs.getInt("u_id"));
+                    at.assign_user.setText("" + rs.getInt("u_id"));
                     at.pname.setSelectedItem("" + rs.getString("p_name"));
-                    at.ufname.setSelectedItem("" + rs.getString("u_fname"));
+                    at.umaker.setText("" + rs.getString("u_fname"));
                     java.util.Date pDate = rs.getDate("t_date");
                     java.util.Date pDueDate = rs.getDate("t_duedate");
                     at.date.setDate(pDate);

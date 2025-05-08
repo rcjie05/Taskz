@@ -50,9 +50,8 @@ public class UserDashboard extends javax.swing.JFrame {
         username = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         accountSetting = new javax.swing.JButton();
-        userPage = new javax.swing.JButton();
-        projectPage = new javax.swing.JButton();
-        taskPage = new javax.swing.JButton();
+        accepted = new javax.swing.JButton();
+        pending = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -124,26 +123,26 @@ public class UserDashboard extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(153, 204, 255));
 
-        accountSetting.setText("Acoount");
-
-        userPage.setText("User Page");
-        userPage.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                userPageMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                userPageMouseExited(evt);
-            }
-        });
-        userPage.addActionListener(new java.awt.event.ActionListener() {
+        accountSetting.setText("Account");
+        accountSetting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userPageActionPerformed(evt);
+                accountSettingActionPerformed(evt);
             }
         });
 
-        projectPage.setText("Project Page");
+        accepted.setText("Accepted Task");
+        accepted.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptedActionPerformed(evt);
+            }
+        });
 
-        taskPage.setText("Task Page");
+        pending.setText("Pending Task");
+        pending.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pendingActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -151,25 +150,22 @@ public class UserDashboard extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(taskPage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(projectPage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userPage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(accountSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pending, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(accountSetting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(accepted, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(userPage, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(projectPage, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(taskPage, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addComponent(accountSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(accepted, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pending, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 200, 220));
@@ -194,19 +190,6 @@ public class UserDashboard extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userPageActionPerformed
-        Userpage ap = new Userpage();
-        mainDesktop.add(ap).setVisible(true);
-    }//GEN-LAST:event_userPageActionPerformed
-
-    private void userPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseEntered
-        userPage.setBackground(bodycolor);
-    }//GEN-LAST:event_userPageMouseEntered
-
-    private void userPageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userPageMouseExited
-        userPage.setBackground(navcolor);
-    }//GEN-LAST:event_userPageMouseExited
-
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
       Session sess = Session.getInstance();
       
@@ -224,6 +207,22 @@ public class UserDashboard extends javax.swing.JFrame {
           gender.setText(""+sess.getU_gender());
       }
     }//GEN-LAST:event_formWindowActivated
+
+    private void pendingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pendingActionPerformed
+        Pendingpage tp = new Pendingpage();
+        mainDesktop.add(tp).setVisible(true);
+    }//GEN-LAST:event_pendingActionPerformed
+
+    private void accountSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountSettingActionPerformed
+        setting t = new setting();
+        mainDesktop.add(t).setVisible(true);
+    }//GEN-LAST:event_accountSettingActionPerformed
+
+    private void acceptedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptedActionPerformed
+        Acceptedpage ap = new Acceptedpage();
+        mainDesktop.add(ap).setVisible(true);
+
+    }//GEN-LAST:event_acceptedActionPerformed
 
     /**
      * @param args the command line arguments
@@ -262,6 +261,7 @@ public class UserDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton accepted;
     public javax.swing.JButton accountSetting;
     public javax.swing.JLabel contact;
     public javax.swing.JLabel email;
@@ -275,9 +275,7 @@ public class UserDashboard extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel3;
     public javax.swing.JLabel lname;
     public javax.swing.JDesktopPane mainDesktop;
-    public javax.swing.JButton projectPage;
-    public javax.swing.JButton taskPage;
-    public javax.swing.JButton userPage;
+    public javax.swing.JButton pending;
     public javax.swing.JLabel username;
     // End of variables declaration//GEN-END:variables
 }

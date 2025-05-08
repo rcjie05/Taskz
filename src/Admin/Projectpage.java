@@ -5,7 +5,7 @@
  */
 package Admin;
 
-import adds.add_project;
+import CrudsAdmin.crud_project;
 import config.Session;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -46,7 +46,14 @@ public class Projectpage extends javax.swing.JInternalFrame {
         try{
             dbConnector dbc = new dbConnector();
             ResultSet rs = dbc.getData("SELECT p_id, p_name, u_fname, p_date, p_duedate, p_status FROM tbl_project");
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+            projectTable.setModel(DbUtils.resultSetToTableModel(rs));
+            
+            projectTable.getColumnModel().getColumn(0).setHeaderValue("Project ID");
+            projectTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
+            projectTable.getColumnModel().getColumn(2).setHeaderValue("Maker Name");
+            projectTable.getColumnModel().getColumn(3).setHeaderValue("Start Date");
+            projectTable.getColumnModel().getColumn(4).setHeaderValue("Due Date");
+            projectTable.getColumnModel().getColumn(5).setHeaderValue("Status");
             
         }catch(SQLException ex){
                     System.out.println("Errors:"+ex.getMessage());
@@ -73,7 +80,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
         deletebutton = new javax.swing.JButton();
         searchBar = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        userTable = new javax.swing.JTable();
+        projectTable = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -129,7 +136,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
         });
         jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, 220, 23));
 
-        userTable.setModel(new javax.swing.table.DefaultTableModel(
+        projectTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -137,7 +144,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(userTable);
+        jScrollPane1.setViewportView(projectTable);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
 
@@ -167,7 +174,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        add_project ap = new add_project();
+        crud_project ap = new crud_project();
         ap.setVisible(true);
         
         JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -175,19 +182,19 @@ public class Projectpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_addActionPerformed
 
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
-        int rowIndex = userTable.getSelectedRow();
+        int rowIndex = projectTable.getSelectedRow();
 
         if (rowIndex < 0) {
             JOptionPane.showMessageDialog(null, "Please select a project to edit.");
         } else {
             try {
                 dbConnector dbc = new dbConnector();
-                TableModel model = userTable.getModel();
+                TableModel model = projectTable.getModel();
                 int projectIdToEdit = (int) model.getValueAt(rowIndex, 0);
                 Session session = Session.getInstance();
                 session.setP_id(projectIdToEdit);
 
-                add_project ap = new add_project();
+                crud_project ap = new crud_project();
                 ResultSet rs = dbc.getData("SELECT * FROM tbl_project WHERE p_id = '" + projectIdToEdit + "'");
                 if (rs.next()) {
                     ap.user_id.setText("" + rs.getInt("u_id"));
@@ -229,10 +236,10 @@ public class Projectpage extends javax.swing.JInternalFrame {
             javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
             model.setColumnIdentifiers(new String[]{"Message"});
             model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
-            userTable.setModel(model);
+            projectTable.setModel(model);
         } else {
             // Show search results
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+            projectTable.setModel(DbUtils.resultSetToTableModel(rs));
         }
 
     } catch (SQLException ex) {
@@ -241,14 +248,14 @@ public class Projectpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
-        int rowIndex = userTable.getSelectedRow();
+        int rowIndex = projectTable.getSelectedRow();
 
         if (rowIndex < 0) {
             JOptionPane.showMessageDialog(null, "Please select a user to delete.");
             return;
         }
 
-        TableModel model = userTable.getModel();
+        TableModel model = projectTable.getModel();
         String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
 
         int confirm = JOptionPane.showConfirmDialog(null,
@@ -281,9 +288,9 @@ public class Projectpage extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    public javax.swing.JTable projectTable;
     private javax.swing.JButton refresh;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
-    public javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables
 }

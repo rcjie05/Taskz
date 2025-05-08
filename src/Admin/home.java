@@ -29,21 +29,53 @@ public class home extends javax.swing.JInternalFrame {
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
-        
+
         searchBar.setOpaque(false);
         searchBar.setBackground(new Color(0,0,0,0));
+
+        // Populate the comboBox for category selection
+        searchCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Users", "Projects", "Tasks" }));
+    
     }
     
     public void displayData(){
-        try{
-            dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email FROM tbl_users");
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
-            
-        }catch(SQLException ex){
-                    System.out.println("Errors:"+ex.getMessage());
-      
-        }
+    try {
+        dbConnector dbc = new dbConnector();
+        ResultSet rs = dbc.getData("SELECT u_fname, u_lname FROM tbl_users");
+        userTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+        // Update column names for the user table
+        userTable.getColumnModel().getColumn(0).setHeaderValue("First Name");
+        userTable.getColumnModel().getColumn(1).setHeaderValue("Last Name");
+
+    } catch(SQLException ex) {
+        System.out.println("Errors:" + ex.getMessage());
+    }
+
+    try {
+        dbConnector dbc = new dbConnector();
+        ResultSet rs = dbc.getData("SELECT p_name FROM tbl_project");
+        projectTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+        // Update column name for the project table
+        projectTable.getColumnModel().getColumn(0).setHeaderValue("Project Name");
+
+    } catch(SQLException ex) {
+        System.out.println("Errors:" + ex.getMessage());
+    }
+
+    try {
+        dbConnector dbc = new dbConnector();
+        ResultSet rs = dbc.getData("SELECT t_id, p_name FROM tbl_task");
+        taskTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+        // Update column names for the task table
+        taskTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+        taskTable.getColumnModel().getColumn(1).setHeaderValue("Task Name");
+
+    } catch(SQLException ex) {
+        System.out.println("Errors:" + ex.getMessage());
+    }
         
                 
     }
@@ -61,7 +93,12 @@ public class home extends javax.swing.JInternalFrame {
         searchButton = new javax.swing.JButton();
         searchBar = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
+        taskTable = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        projectTable = new javax.swing.JTable();
+        searchCategory = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -73,7 +110,7 @@ public class home extends javax.swing.JInternalFrame {
                 searchButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 80, -1, -1));
+        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, 20));
 
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
         searchBar.setPreferredSize(new java.awt.Dimension(8, 20));
@@ -82,7 +119,19 @@ public class home extends javax.swing.JInternalFrame {
                 searchBarActionPerformed(evt);
             }
         });
-        jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 80, 240, 23));
+        jPanel1.add(searchBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, 240, 23));
+
+        taskTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(taskTable);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 140, 180, 220));
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -92,9 +141,24 @@ public class home extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(userTable);
+        jScrollPane2.setViewportView(userTable);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 150, 220));
+
+        projectTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(projectTable);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 140, 130, 220));
+
+        searchCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(searchCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 100, 100, -1));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setText("HOME PAGE");
@@ -123,24 +187,42 @@ public class home extends javax.swing.JInternalFrame {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String keyword = searchBar.getText().trim();
-    
-    if (keyword.isEmpty()) {
-        // If search bar is empty, reload all data
-        displayData();
-        return;
-    }
+        String selectedCategory = (String) searchCategory.getSelectedItem();  // Get selected category
 
-    try {
-        dbConnector dbc = new dbConnector();
-        String query = "SELECT u_id, u_fname, u_lname, u_email FROM tbl_users " +
-                       "WHERE u_fname LIKE '%" + keyword + "%' " +
-                       "OR u_lname LIKE '%" + keyword + "%' " +
-                       "OR u_email LIKE '%" + keyword + "%'";
-        ResultSet rs = dbc.getData(query);
-        userTable.setModel(DbUtils.resultSetToTableModel(rs));
-    } catch (SQLException ex) {
-        System.out.println("Error during search: " + ex.getMessage());
-    }
+        if (keyword.isEmpty()) {
+            displayData();  // Reload all data if search is empty
+            return;
+        }
+
+        try {
+            dbConnector dbc = new dbConnector();
+            ResultSet rs = null;
+            
+            if ("Users".equals(selectedCategory)) {
+                String query = "SELECT u_fname, u_lname FROM tbl_users " +
+                               "WHERE u_fname LIKE '%" + keyword + "%' " +
+                               "OR u_lname LIKE '%" + keyword + "%'";
+                rs = dbc.getData(query);
+                userTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+            } else if ("Projects".equals(selectedCategory)) {
+                String query = "SELECT p_name FROM tbl_project " +
+                               "WHERE p_name LIKE '%" + keyword + "%'";
+                rs = dbc.getData(query);
+                projectTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+            } else if ("Tasks".equals(selectedCategory)) {
+                String query = "SELECT t_id, p_name FROM tbl_task " +
+                               "WHERE p_name LIKE '%" + keyword + "%' " +
+                               "OR t_id LIKE '%" + keyword + "%'";
+                rs = dbc.getData(query);
+                taskTable.setModel(DbUtils.resultSetToTableModel(rs));
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Error during search: " + ex.getMessage());
+        }
+    
     }//GEN-LAST:event_searchButtonActionPerformed
 
 
@@ -149,8 +231,13 @@ public class home extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable projectTable;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
+    private javax.swing.JComboBox<String> searchCategory;
+    private javax.swing.JTable taskTable;
     private javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables
 }

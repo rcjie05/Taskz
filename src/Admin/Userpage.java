@@ -5,7 +5,7 @@
  */
 package Admin;
 
-import adds.add_users;
+import CrudsAdmin.crud_users;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
@@ -42,8 +42,14 @@ public class Userpage extends javax.swing.JInternalFrame {
     public void displayData() {
         try {
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email FROM tbl_users");
+            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email, u_contact FROM tbl_users");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
+            
+            userTable.getColumnModel().getColumn(0).setHeaderValue("User ID");
+            userTable.getColumnModel().getColumn(1).setHeaderValue("First Name");
+            userTable.getColumnModel().getColumn(2).setHeaderValue("Last Name");
+            userTable.getColumnModel().getColumn(3).setHeaderValue("Email");
+            userTable.getColumnModel().getColumn(4).setHeaderValue("Contact");
 
         } catch (SQLException ex) {
             System.out.println("Errors:" + ex.getMessage());
@@ -163,7 +169,7 @@ public class Userpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        add_users up = new add_users();
+        crud_users up = new crud_users();
         up.setVisible(true);
         JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
                     parent.dispose();
@@ -180,7 +186,7 @@ public class Userpage extends javax.swing.JInternalFrame {
                 TableModel tbl = userTable.getModel();
                 ResultSet rs = dbc.getData("SELECT * FROM tbl_users WHERE u_id='" + tbl.getValueAt(rowIndex, 0) + "'");
                 if (rs.next()) {
-                    add_users au = new add_users();
+                    crud_users au = new crud_users();
                     au.user_id.setText("" + rs.getString("u_id"));
                     au.fname.setText("" + rs.getString("u_fname"));
                     au.lname.setText("" + rs.getString("u_lname"));
