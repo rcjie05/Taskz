@@ -281,6 +281,6 @@ public class Userpage extends javax.swing.JInternalFrame {
     private javax.swing.JButton refresh;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
-    private javax.swing.JTable userTable;
+    public javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables
 }

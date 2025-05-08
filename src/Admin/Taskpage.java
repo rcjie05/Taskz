@@ -5,13 +5,17 @@
  */
 package Admin;
 
+import adds.add_project;
 import adds.add_tasks;
 import adds.add_users;
+import config.Session;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -93,9 +97,19 @@ public class Taskpage extends javax.swing.JInternalFrame {
         jPanel1.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
         editbutton.setText("EDIT");
+        editbutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editbuttonActionPerformed(evt);
+            }
+        });
         jPanel1.add(editbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, -1, -1));
 
         deletebutton.setText("DELETE");
+        deletebutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletebuttonActionPerformed(evt);
+            }
+        });
         jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
 
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
@@ -151,8 +165,99 @@ public class Taskpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        // TODO add your handling code here:
+        String keyword = searchBar.getText().trim();
+
+    try {
+        dbConnector dbc = new dbConnector();
+        String query = "SELECT u_id, p_id, t_id, u_fname, p_name FROM tbl_task " +
+                       "WHERE u_fname LIKE '%" + keyword + "%' " +
+                       "OR p_name LIKE '%" + keyword + "%' " +
+                       "OR t_id LIKE '%" + keyword + "%' " +
+                       "OR p_id LIKE '%" + keyword + "%'";
+        ResultSet rs = dbc.getData(query);
+
+        if (!rs.isBeforeFirst()) {
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+            model.setColumnIdentifiers(new String[]{"Message"});
+            model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
+            userTable.setModel(model);
+        } else {
+            // Show search results
+            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+        }
+
+    } catch (SQLException ex) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void editbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbuttonActionPerformed
+        int rowIndex = userTable.getSelectedRow();
+
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a project to edit.");
+        } else {
+            try {
+                dbConnector dbc = new dbConnector();
+                TableModel model = userTable.getModel();
+                int taskIdToEdit = (int) model.getValueAt(rowIndex, 0);
+                Session session = Session.getInstance();
+                session.setT_id(taskIdToEdit);
+
+                add_tasks at = new add_tasks();
+                ResultSet rs = dbc.getData("SELECT * FROM tbl_task WHERE t_id = '" + taskIdToEdit + "'");
+                if (rs.next()) {
+                    at.user_id.setText("" + rs.getInt("u_id"));
+                    at.pname.setSelectedItem("" + rs.getString("p_name"));
+                    at.ufname.setSelectedItem("" + rs.getString("u_fname"));
+                    java.util.Date pDate = rs.getDate("t_date");
+                    java.util.Date pDueDate = rs.getDate("t_duedate");
+                    at.date.setDate(pDate);
+                    at.due.setDate(pDueDate);
+                    at.status.setSelectedItem("" + rs.getString("t_status"));
+                    at.add.setEnabled(false);
+                    at.update.setEnabled(true);
+
+                    at.setVisible(true);
+                    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    parent.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error: Project with ID " + taskIdToEdit + " not found.");
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Projectpage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_editbuttonActionPerformed
+
+    private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
+        int rowIndex = userTable.getSelectedRow();
+
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a user to delete.");
+            return;
+        }
+
+        TableModel model = userTable.getModel();
+        String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
+
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete this project?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            dbConnector dbc = new dbConnector();
+            String query = "DELETE FROM tbl_task WHERE t_id = '" + userId + "'";
+            dbc.deleteData(query);
+
+            JOptionPane.showMessageDialog(null, "Task deleted successfully!");
+
+            // Refresh the table data after deletion
+            displayData();
+        }
+    }//GEN-LAST:event_deletebuttonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -165,6 +270,6 @@ public class Taskpage extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
-    private javax.swing.JTable userTable;
+    public javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables
 }

@@ -185,18 +185,14 @@ public class add_tasks extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(due, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(pname, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(ufname, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(t_id, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pname, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ufname, 0, 220, Short.MAX_VALUE)
+                            .addComponent(user_id, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .addComponent(t_id, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .addComponent(due, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -324,16 +320,16 @@ public class add_tasks extends javax.swing.JFrame {
             }
         }
 
-        // Step 3: Insert into tbl_task
-        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, t_date, t_duedate, t_status) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, u_fname, t_date, t_duedate, t_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = db.connect.prepareStatement(insertQuery)) {
             pst.setInt(1, p_id);
-            pst.setInt(2, user_id);          // Assigned user
-            pst.setDate(3, sqlt_date);
-            pst.setDate(4, sqlt_duedate);
-            pst.setString(5, t_status);
-                    // Logged-in user
+            pst.setInt(2, user_id);
+            pst.setString(3, p_name);
+            pst.setString(4, u_fname);
+            pst.setDate(5, sqlt_date);
+            pst.setDate(6, sqlt_duedate);
+            pst.setString(7, t_status);
 
             int rowsAffected = pst.executeUpdate();
 
@@ -351,45 +347,95 @@ public class add_tasks extends javax.swing.JFrame {
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
          Session sess = Session.getInstance();
-
-        if (sess.getU_id() == 0) {
-            JOptionPane.showMessageDialog(null, "No Account. Login First!");
-            LoginForm lf = new LoginForm();
-            lf.setVisible(true);
-            this.dispose();
-        } else {
-            user_id.setText("" + sess.getU_id());
-            ufname.setSelectedItem("" + sess.getU_fname());
-        }
-
-        populateComboBoxes();
+    if (sess.getU_id() == 0) {
+        JOptionPane.showMessageDialog(null, "No Account. Login First!");
+        LoginForm lf = new LoginForm();
+        lf.setVisible(true);
+        this.dispose();
+        return;
     }
 
-    private void populateComboBoxes() {
-        dbConnector db = new dbConnector();
+    
+    populateComboBoxes();
 
-        try {
+    // Set ID fields
+    t_id.setText(String.valueOf(sess.getT_id()));
+    user_id.setText(String.valueOf(sess.getU_id()));
 
-            String sqlProjects = "SELECT p_name FROM tbl_project"; 
-            ResultSet rsProjects = db.getData(sqlProjects);
-            DefaultComboBoxModel<String> projectModel = new DefaultComboBoxModel<>();
-            projectModel.addElement("Select Project"); 
-            while (rsProjects.next()) {
-                projectModel.addElement(rsProjects.getString("p_name"));
+    // ====== Set selected project name (pname) ======
+    String sessionProjectName = sess.getP_name();
+    if (sessionProjectName != null && !sessionProjectName.trim().isEmpty()) {
+        boolean projectMatchFound = false;
+        for (int i = 0; i < pname.getItemCount(); i++) {
+            String item = pname.getItemAt(i).toString().trim();
+            if (item.equalsIgnoreCase(sessionProjectName.trim())) {
+                pname.setSelectedItem(item);
+                projectMatchFound = true;
+                break;
             }
-            pname.setModel(projectModel);
-
-            String sqlUsers = "SELECT u_fname FROM tbl_users";  
-            ResultSet rsUsers = db.getData(sqlUsers);
-            DefaultComboBoxModel<String> userModel = new DefaultComboBoxModel<>();
-            userModel.addElement("Select User"); 
-            while (rsUsers.next()) {
-                userModel.addElement(rsUsers.getString("u_fname"));
-            }
-            ufname.setModel(userModel);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
         }
+        if (!projectMatchFound) {
+            pname.addItem(sessionProjectName);
+            pname.setSelectedItem(sessionProjectName);
+        }
+    } else {
+        pname.setSelectedItem("Select Project");
+    }
+
+    String sessionUserFname = sess.getU_fname();
+    if (sessionUserFname != null && !sessionUserFname.trim().isEmpty()) {
+        boolean userMatchFound = false;
+        for (int i = 0; i < ufname.getItemCount(); i++) {
+            String item = ufname.getItemAt(i).toString().trim();
+            if (item.equalsIgnoreCase(sessionUserFname.trim())) {
+                ufname.setSelectedItem(item);
+                userMatchFound = true;
+                break;
+            }
+        }
+        if (!userMatchFound) {
+            ufname.addItem(sessionUserFname);
+            ufname.setSelectedItem(sessionUserFname);
+        }
+    } else {
+        ufname.setSelectedItem("Select User");
+    }
+
+    pname.repaint();
+    ufname.repaint();
+}
+    private void populateComboBoxes() {
+    dbConnector db = new dbConnector();
+
+    try {
+        // Populate project names
+        String sqlProjects = "SELECT p_name FROM tbl_project"; 
+        ResultSet rsProjects = db.getData(sqlProjects);
+        DefaultComboBoxModel<String> projectModel = new DefaultComboBoxModel<>();
+        projectModel.addElement("Select Project");
+
+        while (rsProjects.next()) {
+            String projectName = rsProjects.getString("p_name");
+            projectModel.addElement(projectName);
+            System.out.println("Project Name loaded: " + projectName);  // Debug log
+        }
+        pname.setModel(projectModel);
+
+        // Populate user names
+        String sqlUsers = "SELECT u_fname FROM tbl_users";  
+        ResultSet rsUsers = db.getData(sqlUsers);
+        DefaultComboBoxModel<String> userModel = new DefaultComboBoxModel<>();
+        userModel.addElement("Select User");
+
+        while (rsUsers.next()) {
+            String userName = rsUsers.getString("u_fname");
+            userModel.addElement(userName);
+            System.out.println("User Name loaded: " + userName);  // Debug log
+        }
+        ufname.setModel(userModel);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
+    }
     }//GEN-LAST:event_formWindowActivated
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -402,7 +448,86 @@ public class add_tasks extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-        // TODO add your handling code here:
+    if (t_id.getText().isEmpty() || pname.getSelectedItem().equals("Select Project") || 
+        ufname.getSelectedItem().equals("Select User") || date.getDate() == null || 
+        due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
+        
+        JOptionPane.showMessageDialog(null, "All fields are required and status must be selected!");
+        return;
+    }
+
+    dbConnector db = new dbConnector();
+    
+    try {
+        // Format dates
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date.getDate());
+        String formattedDueDate = sdf.format(due.getDate());
+
+        String selectedProject = (String) pname.getSelectedItem();
+        String selectedUser = (String) ufname.getSelectedItem();
+        
+        int p_id = -1;
+        int u_id = -1;
+
+        // Get project ID from project name
+        String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
+        try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
+            pst.setString(1, selectedProject);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                p_id = rs.getInt("p_id");
+            } else {
+                JOptionPane.showMessageDialog(null, "Project not found.");
+                return;
+            }
+        }
+
+        // Get user ID from user first name
+        String getUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
+        try (PreparedStatement pst = db.connect.prepareStatement(getUidQuery)) {
+            pst.setString(1, selectedUser);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                u_id = rs.getInt("u_id");
+            } else {
+                JOptionPane.showMessageDialog(null, "User not found.");
+                return;
+            }
+        }
+
+        // Now that we have correct p_id and u_id, update the task
+        String sql = "UPDATE tbl_task SET p_id = ?, u_id = ?, p_name = ?, u_fname = ?, " +
+                     "t_date = ?, t_duedate = ?, t_status = ? WHERE t_id = ?";
+
+        try (PreparedStatement pst = db.connect.prepareStatement(sql)) {
+            pst.setInt(1, p_id);
+            pst.setInt(2, u_id);
+            pst.setString(3, selectedProject);
+            pst.setString(4, selectedUser);
+            pst.setString(5, formattedDate);
+            pst.setString(6, formattedDueDate);
+            pst.setString(7, status.getSelectedItem().toString());
+            pst.setInt(8, Integer.parseInt(t_id.getText()));  // Convert t_id to int
+
+            int rowsAffected = pst.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Task updated successfully!");
+                AdminDashboard ads = new AdminDashboard();
+                ads.setVisible(true);
+                Taskpage pp = new Taskpage();
+                pp.setVisible(true);
+                ads.mainDesktop.add(pp);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to update task.");
+            }
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+    }
     }//GEN-LAST:event_updateActionPerformed
 
     private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
@@ -460,7 +585,7 @@ public class add_tasks extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton add;
+    public javax.swing.JButton add;
     private javax.swing.JButton cancel;
     private javax.swing.JButton clear;
     public com.toedter.calendar.JDateChooser date;
@@ -476,11 +601,11 @@ public class add_tasks extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
-    private javax.swing.JComboBox<String> pname;
+    public javax.swing.JComboBox<String> pname;
     public javax.swing.JComboBox<String> status;
     public javax.swing.JTextField t_id;
-    private javax.swing.JComboBox<String> ufname;
-    private javax.swing.JButton update;
+    public javax.swing.JComboBox<String> ufname;
+    public javax.swing.JButton update;
     public javax.swing.JTextField user_id;
     // End of variables declaration//GEN-END:variables
 }

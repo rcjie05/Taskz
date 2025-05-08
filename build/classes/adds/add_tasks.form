@@ -97,21 +97,14 @@
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="due" alignment="1" max="32767" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="pname" max="32767" attributes="0"/>
-                                              <Component id="status" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="date" max="32767" attributes="0"/>
-                                              <Component id="ufname" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Component id="user_id" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                                          <Component id="t_id" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="pname" max="32767" attributes="0"/>
+                                  <Component id="status" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="date" max="32767" attributes="0"/>
+                                  <Component id="ufname" alignment="0" pref="220" max="32767" attributes="0"/>
+                                  <Component id="user_id" alignment="0" pref="220" max="32767" attributes="0"/>
+                                  <Component id="t_id" alignment="0" pref="220" max="32767" attributes="0"/>
+                                  <Component id="due" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -207,6 +200,9 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="cancel">
               <Properties>
@@ -287,6 +283,9 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="clear">
               <Properties>
@@ -312,6 +311,7 @@
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JComboBox" name="ufname">
@@ -330,6 +330,7 @@
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel10">

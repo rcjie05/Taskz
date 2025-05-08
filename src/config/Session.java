@@ -15,6 +15,7 @@ public class Session {
     private int t_id;
     private int p_id;
     private int u_id;
+    private String p_name;
     private String u_fname;
     private String u_lname;
     private String u_email;
@@ -59,6 +60,13 @@ public class Session {
     }
     public void setU_id(int u_id) {
         this.u_id = u_id;
+    }
+    public String getP_name() {
+        return p_name;
+    }
+
+    public void setP_name(String p_name) {
+        this.p_name = p_name;
     }
 
     public String getU_fname() {
