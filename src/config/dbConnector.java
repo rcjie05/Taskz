@@ -76,6 +76,21 @@ public class dbConnector {
             JOptionPane.showMessageDialog(null, "Error deleting user: " + ex.getMessage());
         }
     }
+    public boolean insertLog(int userId, String action) {
+        try {
+            String sql = "INSERT INTO tbl_logs (u_id, l_action, l_timestamp) VALUES (?, ?, NOW())";
+            PreparedStatement pst = connect.prepareStatement(sql);
+            pst.setInt(1, userId);
+            pst.setString(2, action);
+            pst.executeUpdate();
+            pst.close();
+            System.out.println("Log inserted successfully!");
+            return true;
+        } catch (SQLException ex) {
+            System.out.println("Error inserting log: " + ex.getMessage());
+            return false;
+        }
+    }
 
     // Corrected getConnection() method
     public Connection getConnection() {

@@ -4,9 +4,13 @@ import Admin.AdminDashboard;
 import User.UserDashboard;
 import config.Session;
 import config.dbConnector;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,14 +23,16 @@ import javax.swing.JOptionPane;
  */
 public class LoginForm extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Login
-     */
+    private static final Logger logger = Logger.getLogger(LoginForm.class.getName());
+    static String status;
+    static String type;
+     
     public LoginForm() {
         initComponents();
+        
     }
 
-    public static String hashPassword(String password) {
+    public static String hashPassword(String password) {        
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
             byte[] hashedBytes = md.digest(password.getBytes());
@@ -39,21 +45,35 @@ public class LoginForm extends javax.swing.JFrame {
             throw new RuntimeException(e);
         }
     }
-
-    static String status;
-    static String type;
-
+    
+    public static void logAction(int userId, String action) {
+        try {
+            dbConnector connector = new dbConnector();
+            Connection conn = connector.getConnection();
+            String query = "INSERT INTO tbl_logs (u_id, l_action) VALUES (?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, action);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Failed to insert log into tbl_logs", e);
+        }
+    }
+   
     public static boolean loginAcc(String username, String password) {
         dbConnector connector = new dbConnector();
-        try {
-            String hashedPass = hashPassword(password); // 🔒 Hash it before checking
-            String query = "SELECT * FROM tbl_users WHERE u_username = '" + username + "' AND u_password = '" + hashedPass + "'";
-            ResultSet resultSet = connector.getData(query);
+        try (Connection conn = connector.getConnection()) {
+            String hashedPass = hashPassword(password);
+            String query = "SELECT * FROM tbl_users WHERE u_username = ? AND u_password = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setString(2, hashedPass);
+            ResultSet resultSet = stmt.executeQuery();
+
             if (resultSet.next()) {
                 status = resultSet.getString("u_status");
                 type = resultSet.getString("u_type");
 
-                // Set user session
                 Session sess = Session.getInstance();
                 sess.setU_id(resultSet.getInt("u_id"));
                 sess.setU_fname(resultSet.getString("u_fname"));
@@ -65,12 +85,24 @@ public class LoginForm extends javax.swing.JFrame {
                 sess.setU_type(resultSet.getString("u_type"));
                 sess.setU_status(resultSet.getString("u_status"));
 
+                logAction(sess.getU_id(), "Login");
+                logger.info("Login successful for user: " + username);
                 return true;
             } else {
+                // Try to get the user ID for failed attempt logging
+                String checkUserQuery = "SELECT u_id FROM tbl_users WHERE u_username = ?";
+                PreparedStatement checkStmt = conn.prepareStatement(checkUserQuery);
+                checkStmt.setString(1, username);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    int uid = rs.getInt("u_id");
+                    logAction(uid, "Login failed");
+                }
+                logger.warning("Login failed for user: " + username);
                 return false;
             }
         } catch (SQLException ex) {
-            System.out.println("Login error: " + ex.getMessage());
+            logger.log(Level.SEVERE, "SQL error during login", ex);
             return false;
         }
     }
@@ -91,6 +123,7 @@ public class LoginForm extends javax.swing.JFrame {
         user = new javax.swing.JTextField();
         pass = new javax.swing.JPasswordField();
         login = new javax.swing.JButton();
+        forgot = new javax.swing.JLabel();
         loginShort = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -121,7 +154,7 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
         jPanel1.add(showpassword);
-        showpassword.setBounds(250, 240, 110, 20);
+        showpassword.setBounds(390, 240, 100, 20);
 
         user.setBackground(new java.awt.Color(204, 204, 204));
         user.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Username", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 11))); // NOI18N
@@ -151,7 +184,21 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
         jPanel1.add(login);
-        login.setBounds(430, 310, 70, 30);
+        login.setBounds(420, 270, 70, 23);
+
+        forgot.setBackground(new java.awt.Color(51, 51, 51));
+        forgot.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        forgot.setForeground(new java.awt.Color(255, 255, 255));
+        forgot.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        forgot.setText("Forgot Password ?");
+        forgot.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 2));
+        forgot.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                forgotMouseClicked(evt);
+            }
+        });
+        jPanel1.add(forgot);
+        forgot.setBounds(250, 240, 140, 20);
 
         loginShort.setBackground(new java.awt.Color(51, 51, 51));
         loginShort.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
@@ -165,7 +212,7 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
         jPanel1.add(loginShort);
-        loginShort.setBounds(250, 270, 170, 20);
+        loginShort.setBounds(250, 270, 160, 20);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
         jPanel1.add(jLabel2);
@@ -191,30 +238,32 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_userActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        if (loginAcc(user.getText(), pass.getText())) {
+       String username = user.getText();
+        String password = new String(pass.getPassword());
+
+        if (loginAcc(username, password)) {
             if (!status.equals("Active")) {
                 JOptionPane.showMessageDialog(null, "In-Active Account, Contact Admin!!");
+                logger.warning("Inactive account tried to login: " + username);
             } else {
-
                 if (type.equals("ADMIN")) {
+                    logger.info("Admin logged in: " + username);
                     JOptionPane.showMessageDialog(null, "Welcome Back ADMIN!!!");
-                    AdminDashboard ads = new AdminDashboard();
-                    ads.setVisible(true);
+                    new AdminDashboard().setVisible(true);
                     this.dispose();
-
                 } else if (type.equals("USER")) {
+                    logger.info("User logged in: " + username);
                     JOptionPane.showMessageDialog(null, "Welcome Back User!!!");
-                    UserDashboard udb = new UserDashboard();
-                    udb.setVisible(true);
+                    new UserDashboard().setVisible(true);
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "No Account Type Found");
+                    logger.warning("Unknown type login: " + username);
                 }
-
             }
         } else {
             JOptionPane.showMessageDialog(null, "Invalid Account");
-        }
+        }   
     }//GEN-LAST:event_loginActionPerformed
 
     private void loginShortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginShortMouseClicked
@@ -234,6 +283,12 @@ public class LoginForm extends javax.swing.JFrame {
         pass.setEchoChar('\u2022');
     }
     }//GEN-LAST:event_showpasswordActionPerformed
+
+    private void forgotMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgotMouseClicked
+        forgot f = new forgot();
+        f.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_forgotMouseClicked
 
     /**
      * @param args the command line arguments
@@ -272,6 +327,7 @@ public class LoginForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel forgot;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -5,6 +5,7 @@
  */
 package Admin;
 
+import Logs.Logs;
 import config.Session;
 import java.awt.Color;
 import javax.swing.JFrame;
@@ -45,7 +46,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         mainDesktop = new javax.swing.JDesktopPane();
         jPanel2 = new javax.swing.JPanel();
-        account = new javax.swing.JButton();
+        report = new javax.swing.JButton();
         userPage = new javax.swing.JButton();
         projectPage = new javax.swing.JButton();
         taskPage = new javax.swing.JButton();
@@ -91,14 +92,14 @@ public class AdminDashboard extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        account.setBackground(new java.awt.Color(204, 255, 102));
-        account.setText("Account");
-        account.addActionListener(new java.awt.event.ActionListener() {
+        report.setBackground(new java.awt.Color(204, 255, 102));
+        report.setText("Reports");
+        report.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                accountActionPerformed(evt);
+                reportActionPerformed(evt);
             }
         });
-        jPanel2.add(account, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
+        jPanel2.add(report, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
 
         userPage.setBackground(new java.awt.Color(204, 255, 102));
         userPage.setText("User Page");
@@ -281,12 +282,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         mainDesktop.add(h).setVisible(true);
     }//GEN-LAST:event_homeActionPerformed
 
-    private void accountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountActionPerformed
- 
-        LoginForm lf = new LoginForm();
-        lf.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_accountActionPerformed
+    private void reportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportActionPerformed
+         Logs l = new Logs();
+        mainDesktop.add(l).setVisible(true);        
+    }//GEN-LAST:event_reportActionPerformed
 
     private void projectPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_projectPageMouseEntered
         
@@ -340,7 +339,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton account;
     public javax.swing.JLabel contact;
     public javax.swing.JLabel email;
     public javax.swing.JLabel fname;
@@ -354,6 +352,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     public javax.swing.JLabel lname;
     public javax.swing.JDesktopPane mainDesktop;
     public javax.swing.JButton projectPage;
+    public javax.swing.JButton report;
     public javax.swing.JButton taskPage;
     public javax.swing.JButton userPage;
     public javax.swing.JLabel username;

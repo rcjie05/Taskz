@@ -219,7 +219,7 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
             if (dbc.connect != null && !dbc.connect.isClosed()) {
                 dbc.connect.close();
             }
-        } catch (SQLException e) {
+        } catch (SQLException e) { 
             System.out.println("Error closing connection: " + e.getMessage());
         }
     }
@@ -230,15 +230,15 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
 
     try {
         dbConnector dbc = new dbConnector();
-        String query = "SELECT u_id, u_fname, u_lname, u_email FROM tbl_users " +
-                       "WHERE u_id LIKE '%" + keyword + "%' " +
-                       "OR u_fname LIKE '%" + keyword + "%' " +
-                       "OR u_lname LIKE '%" + keyword + "%' " +
-                       "OR u_email LIKE '%" + keyword + "%'";
+        String query = "SELECT u_id, p_id, t_id, u_fname, p_name, user_assign FROM tbl_task " +
+                       "WHERE u_fname LIKE '%" + keyword + "%' " +
+                       "OR p_name LIKE '%" + keyword + "%' " +
+                       "OR t_id LIKE '%" + keyword + "%' " +
+                        "OR user_assign LIKE '%" + keyword + "%' " +
+                       "OR p_id LIKE '%" + keyword + "%'";
         ResultSet rs = dbc.getData(query);
 
         if (!rs.isBeforeFirst()) {
-            // No data found — show message in table
             javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
             model.setColumnIdentifiers(new String[]{"Message"});
             model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
