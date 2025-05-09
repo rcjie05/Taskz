@@ -190,7 +190,7 @@ public class LoginForm extends javax.swing.JFrame {
         forgot.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         forgot.setForeground(new java.awt.Color(255, 255, 255));
         forgot.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        forgot.setText("Forgot Password ?");
+        forgot.setText("Forgot Password ?>>");
         forgot.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 2));
         forgot.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

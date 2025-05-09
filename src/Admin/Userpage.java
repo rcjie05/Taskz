@@ -42,7 +42,7 @@ public class Userpage extends javax.swing.JInternalFrame {
     public void displayData() {
         try {
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email, u_contact FROM tbl_users");
+            ResultSet rs = dbc.getData("SELECT u_id, u_fname, u_lname, u_email, u_contact, u_status FROM tbl_users");
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
             
             userTable.getColumnModel().getColumn(0).setHeaderValue("User ID");
@@ -50,6 +50,7 @@ public class Userpage extends javax.swing.JInternalFrame {
             userTable.getColumnModel().getColumn(2).setHeaderValue("Last Name");
             userTable.getColumnModel().getColumn(3).setHeaderValue("Email");
             userTable.getColumnModel().getColumn(4).setHeaderValue("Contact");
+            userTable.getColumnModel().getColumn(4).setHeaderValue("Status");
 
         } catch (SQLException ex) {
             System.out.println("Errors:" + ex.getMessage());

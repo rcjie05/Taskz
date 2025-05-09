@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package User;
+package Admin;
 
-import Admin.*;
 import User.*;
 import config.Session;
 import javax.swing.JFrame;
@@ -18,12 +17,12 @@ import myApp.LoginForm;
  *
  * @author SCC-COLLEGE
  */
-public class setting extends javax.swing.JInternalFrame {
+public class settings extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Userpage
      */
-    public setting() {
+    public settings() {
         initComponents();
         
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));

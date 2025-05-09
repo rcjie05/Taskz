@@ -42,6 +42,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         mainDesktop = new javax.swing.JDesktopPane();
@@ -58,7 +59,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         gender = new javax.swing.JLabel();
         username = new javax.swing.JLabel();
         home = new javax.swing.JButton();
+        setting = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-gear-100.png"))); // NOI18N
+        jLabel4.setText("  ");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -204,6 +209,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         jPanel2.add(home, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 70, 40));
 
+        setting.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        setting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-setting-50.png"))); // NOI18N
+        setting.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                settingMouseClicked(evt);
+            }
+        });
+        jPanel2.add(setting, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 50, 50));
+
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 450));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
@@ -303,6 +317,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         
     }//GEN-LAST:event_taskPageMouseExited
 
+    private void settingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingMouseClicked
+        settings s = new settings();
+        mainDesktop.add(s).setVisible(true);
+    }//GEN-LAST:event_settingMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -347,12 +366,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
+    public javax.swing.JLabel jLabel4;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JLabel lname;
     public javax.swing.JDesktopPane mainDesktop;
     public javax.swing.JButton projectPage;
     public javax.swing.JButton report;
+    public javax.swing.JLabel setting;
     public javax.swing.JButton taskPage;
     public javax.swing.JButton userPage;
     public javax.swing.JLabel username;

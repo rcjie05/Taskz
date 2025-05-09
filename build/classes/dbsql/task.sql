@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2025 at 12:44 PM
+-- Generation Time: May 09, 2025 at 08:50 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,18 +24,48 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_logs`
+--
+
+CREATE TABLE `tbl_logs` (
+  `l_id` int(11) NOT NULL,
+  `u_id` int(11) NOT NULL,
+  `l_action` varchar(255) NOT NULL,
+  `l_timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_logs`
+--
+
+INSERT INTO `tbl_logs` (`l_id`, `u_id`, `l_action`, `l_timestamp`) VALUES
+(1, 1, 'Login', '2025-05-09 06:41:37'),
+(2, 1, 'Login', '2025-05-09 06:48:57');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_project`
 --
 
 CREATE TABLE `tbl_project` (
-  `u_id` int(10) DEFAULT NULL,
-  `p_id` int(10) NOT NULL,
+  `u_id` int(11) NOT NULL,
+  `p_id` int(11) NOT NULL,
   `p_name` varchar(255) NOT NULL,
   `u_fname` varchar(255) NOT NULL,
   `p_date` date NOT NULL,
   `p_duedate` date NOT NULL,
   `p_status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_project`
+--
+
+INSERT INTO `tbl_project` (`u_id`, `p_id`, `p_name`, `u_fname`, `p_date`, `p_duedate`, `p_status`) VALUES
+(1, 1, 'Project 1', 'Rcjie', '2025-05-09', '2025-05-10', 'Active'),
+(1, 2, 'Project 2', 'Rcjie', '2025-05-09', '2025-05-17', 'Active'),
+(1, 3, 'Project 3', 'Rcjie', '2025-05-09', '2025-05-17', 'Active');
 
 -- --------------------------------------------------------
 
@@ -44,17 +74,26 @@ CREATE TABLE `tbl_project` (
 --
 
 CREATE TABLE `tbl_task` (
+  `u_id` int(11) DEFAULT NULL,
+  `p_id` int(11) DEFAULT NULL,
   `t_id` int(11) NOT NULL,
-  `p_id` int(11) NOT NULL,
-  `u_id` int(11) NOT NULL,
-  `p_name` varchar(255) NOT NULL,
-  `u_fname` varchar(255) NOT NULL,
+  `p_name` varchar(255) DEFAULT NULL,
+  `u_fname` varchar(255) DEFAULT NULL,
   `user_assign` varchar(255) NOT NULL,
   `t_date` date NOT NULL,
   `t_duedate` date NOT NULL,
   `t_status` varchar(255) NOT NULL,
   `accept` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_task`
+--
+
+INSERT INTO `tbl_task` (`u_id`, `p_id`, `t_id`, `p_name`, `u_fname`, `user_assign`, `t_date`, `t_duedate`, `t_status`, `accept`) VALUES
+(1, 1, 1, 'Project 1', 'Rcjie', '', '2025-05-09', '2025-05-17', 'Active', NULL),
+(1, 2, 2, 'Project 2', 'Rcjie', '', '2025-05-09', '2025-05-31', 'Active', NULL),
+(1, 3, 3, 'Project 3', 'Rcjie', '', '2025-05-09', '2025-05-24', 'Active', NULL);
 
 -- --------------------------------------------------------
 
@@ -76,8 +115,23 @@ CREATE TABLE `tbl_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `tbl_users`
+--
+
+INSERT INTO `tbl_users` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_contact`, `u_gender`, `u_username`, `u_password`, `u_type`, `u_status`) VALUES
+(1, 'Rcjie', 'Villena', 'weakpointz05@gmail.com', '09123456789', 'Male', 'admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', 'Active'),
+(2, 'Dave', 'Tupas', 'dave@gmail.com', '09987654321', 'Male', 'dave', '0644a2e329ec3e997a352bea6d045223b6626f8a026e569675991162a32f9be6', 'USER', 'Active');
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `tbl_logs`
+--
+ALTER TABLE `tbl_logs`
+  ADD PRIMARY KEY (`l_id`),
+  ADD KEY `user` (`u_id`);
 
 --
 -- Indexes for table `tbl_project`
@@ -91,7 +145,7 @@ ALTER TABLE `tbl_project`
 --
 ALTER TABLE `tbl_task`
   ADD PRIMARY KEY (`t_id`),
-  ADD KEY `project_id` (`p_id`),
+  ADD KEY `projectid` (`p_id`),
   ADD KEY `userid` (`u_id`);
 
 --
@@ -105,26 +159,38 @@ ALTER TABLE `tbl_users`
 --
 
 --
+-- AUTO_INCREMENT for table `tbl_logs`
+--
+ALTER TABLE `tbl_logs`
+  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `tbl_project`
 --
 ALTER TABLE `tbl_project`
-  MODIFY `p_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_task`
 --
 ALTER TABLE `tbl_task`
-  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `tbl_logs`
+--
+ALTER TABLE `tbl_logs`
+  ADD CONSTRAINT `user` FOREIGN KEY (`u_id`) REFERENCES `tbl_users` (`u_id`);
 
 --
 -- Constraints for table `tbl_project`
@@ -136,8 +202,8 @@ ALTER TABLE `tbl_project`
 -- Constraints for table `tbl_task`
 --
 ALTER TABLE `tbl_task`
-  ADD CONSTRAINT `project_id` FOREIGN KEY (`p_id`) REFERENCES `tbl_project` (`p_id`),
-  ADD CONSTRAINT `userid` FOREIGN KEY (`u_id`) REFERENCES `tbl_users` (`u_id`);
+  ADD CONSTRAINT `projectid` FOREIGN KEY (`p_id`) REFERENCES `tbl_project` (`p_id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  ADD CONSTRAINT `userid` FOREIGN KEY (`u_id`) REFERENCES `tbl_users` (`u_id`) ON DELETE SET NULL ON UPDATE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
