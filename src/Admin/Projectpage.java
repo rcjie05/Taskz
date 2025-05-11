@@ -45,15 +45,15 @@ public class Projectpage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT p_id, p_name, u_fname, p_date, p_duedate, p_status FROM tbl_project");
+            ResultSet rs = dbc.getData("SELECT p_id, p_name,p_description, u_fname, p_date, p_duedate, p_status FROM tbl_project");
             projectTable.setModel(DbUtils.resultSetToTableModel(rs));
-            
-            projectTable.getColumnModel().getColumn(0).setHeaderValue("Project ID");
+            projectTable.getColumnModel().getColumn(0).setHeaderValue("P ID");
             projectTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-            projectTable.getColumnModel().getColumn(2).setHeaderValue("Maker Name");
-            projectTable.getColumnModel().getColumn(3).setHeaderValue("Start Date");
-            projectTable.getColumnModel().getColumn(4).setHeaderValue("Due Date");
-            projectTable.getColumnModel().getColumn(5).setHeaderValue("Status");
+            projectTable.getColumnModel().getColumn(2).setHeaderValue("Description");
+            projectTable.getColumnModel().getColumn(3).setHeaderValue("Maker Name");
+            projectTable.getColumnModel().getColumn(4).setHeaderValue("Start Date");
+            projectTable.getColumnModel().getColumn(5).setHeaderValue("Due Date");
+            projectTable.getColumnModel().getColumn(6).setHeaderValue("Status");
             
         }catch(SQLException ex){
                     System.out.println("Errors:"+ex.getMessage());

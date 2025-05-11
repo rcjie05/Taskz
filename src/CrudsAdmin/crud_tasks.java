@@ -24,41 +24,38 @@ import myApp.LoginForm;
  *
  * @author PC15
  */
-public class crud_tasks extends javax.swing.JFrame {
-
-    /**
-     * Creates new form add_users
-     */
+public class crud_tasks extends javax.swing.JFrame {   
     public crud_tasks() {
-        initComponents(); 
+        initComponents();
     }
     private void populateComboBoxes() {
     dbConnector db = new dbConnector();
-
     try {
-        // Populate project names (no change here)
         String sqlProjects = "SELECT p_name FROM tbl_project"; 
         ResultSet rsProjects = db.getData(sqlProjects);
         DefaultComboBoxModel<String> projectModel = new DefaultComboBoxModel<>();
         projectModel.addElement("Select Project");
-
         while (rsProjects.next()) {
             String projectName = rsProjects.getString("p_name");
             projectModel.addElement(projectName);
             System.out.println("Project Name loaded: " + projectName);  // Debug log
         }
         pname.setModel(projectModel);
-
-        // No need to populate user names as ufname is now a JTextField
+        String sqlUsers = "SELECT u_fname FROM tbl_users"; 
+        ResultSet rsUsers = db.getData(sqlUsers);
+        DefaultComboBoxModel<String> userModel = new DefaultComboBoxModel<>();
+        userModel.addElement("Select User");
+        while (rsUsers.next()) {
+            String userName = rsUsers.getString("u_fname");
+            userModel.addElement(userName);
+            System.out.println("User Name loaded: " + userName);  // Debug log
+        }
+        assignuser.setModel(userModel);
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
     }
 }
-
-    
-    
-    
-    
+       
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -72,7 +69,6 @@ public class crud_tasks extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        assign_user = new javax.swing.JTextField();
         status = new javax.swing.JComboBox<>();
         add = new javax.swing.JButton();
         cancel = new javax.swing.JButton();
@@ -92,6 +88,7 @@ public class crud_tasks extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         user_id = new javax.swing.JTextField();
         umaker = new javax.swing.JTextField();
+        assignuser = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -108,8 +105,6 @@ public class crud_tasks extends javax.swing.JFrame {
         jPanel1.setLayout(null);
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
-
-        assign_user.setEnabled(false);
 
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Active", "Not Active", "Completed" }));
 
@@ -187,6 +182,13 @@ public class crud_tasks extends javax.swing.JFrame {
 
         umaker.setEnabled(false);
 
+        assignuser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User", "Item 2", "Item 3", "Item 4" }));
+        assignuser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                assignuserActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -198,7 +200,7 @@ public class crud_tasks extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(clear, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(update, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -220,11 +222,11 @@ public class crud_tasks extends javax.swing.JFrame {
                             .addComponent(pname, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(assign_user)
                             .addComponent(t_id)
                             .addComponent(due, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(user_id, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                            .addComponent(umaker))))
+                            .addComponent(umaker)
+                            .addComponent(assignuser, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -234,7 +236,7 @@ public class crud_tasks extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(t_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -252,7 +254,7 @@ public class crud_tasks extends javax.swing.JFrame {
                         .addComponent(assign_name, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(1, 1, 1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(assign_user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(assignuser, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -307,34 +309,50 @@ public class crud_tasks extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-     String p_name = (String) pname.getSelectedItem();
+    String p_name = (String) pname.getSelectedItem();
     String t_status = (String) status.getSelectedItem();
     java.util.Date t_date = date.getDate();
     java.util.Date t_duedate = due.getDate();
 
-    // Validate required fields
-    if (p_name.equals("Select Project") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
+    // Check if any required field is empty
+     if (p_name.equals("Select Project") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
         JOptionPane.showMessageDialog(null, "Please fill in all required fields.");
         return;
     }
 
-    // Convert java.util.Date to java.sql.Date
+    // Get current date and time
+    java.util.Date currentDate = new java.util.Date(); // Current date and time
+
+    // Check if the task start date or due date is before the current date and time
+    if (t_date.before(currentDate)) {
+        JOptionPane.showMessageDialog(null, "Start date cannot be earlier than the current date.");
+        return;
+    }
+
+    // Check if the due date is earlier than the current date and time
+    if (t_duedate.before(t_date)) {
+        JOptionPane.showMessageDialog(null, "Due date cannot be earlier than the start date.");
+        return;
+    }
+
+    // Check if the start date is after the due date
+    if (t_date.after(t_duedate)) {
+        JOptionPane.showMessageDialog(null, "Start date cannot be after the due date.");
+        return;
+    }
+
     java.sql.Date sqlt_date = new java.sql.Date(t_date.getTime());
     java.sql.Date sqlt_duedate = new java.sql.Date(t_duedate.getTime());
-
-    // Get logged-in user details from the session
     Session session = Session.getInstance();
-    int creatorId = session.getU_id(); // Logged-in user ID
-    String creatorName = session.getU_fname(); // Logged-in user's first name
-    String u_fname = creatorName != null ? creatorName : "Unknown"; // Fallback if name missing
-
+    int creatorId = session.getU_id();
+    String creatorName = session.getU_fname();
+    String u_fname = creatorName != null ? creatorName : "Unknown";
     dbConnector db = new dbConnector();
 
     try {
-        // Step 1: Get project ID
+        // Get Project ID based on project name
         String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         int p_id = -1;
-
         try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
             pst.setString(1, p_name);
             ResultSet rs = pst.executeQuery();
@@ -346,37 +364,59 @@ public class crud_tasks extends javax.swing.JFrame {
             }
         }
 
-        // Step 2: Insert new task, leaving user_assign blank
-        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, u_fname, user_assign, t_date, t_duedate, t_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        // Get the assigned user
+        String assignUser = (String) assignuser.getSelectedItem();
+        String userAssign = (assignUser != null && !assignUser.trim().isEmpty() && !assignUser.equals("Select User")) ? assignUser : "";
 
-        try (PreparedStatement pst = db.connect.prepareStatement(insertQuery)) {
-            pst.setInt(1, p_id);
-            pst.setInt(2, creatorId); // Task creator
-            pst.setString(3, p_name);
-            pst.setString(4, u_fname); // u_maker = creator name
-            pst.setString(5, ""); // Leave user_assign blank
-            pst.setDate(6, sqlt_date);
-            pst.setDate(7, sqlt_duedate);
-            pst.setString(8, t_status);
+        if (!userAssign.isEmpty()) {
+            // Check if the assigned user exists in the tbl_users table
+            String checkUserQuery = "SELECT COUNT(*) FROM tbl_users WHERE u_fname = ?";
+            try (PreparedStatement pst = db.connect.prepareStatement(checkUserQuery)) {
+                pst.setString(1, userAssign);
+                ResultSet rs = pst.executeQuery();
+                if (!rs.next() || rs.getInt(1) == 0) {
+                    JOptionPane.showMessageDialog(null, "Assigned user does not exist.");
+                    return;
+                }
+            }
+        }
 
-            int rowsAffected = pst.executeUpdate();
+        // Insert the new task into tbl_task
+        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, u_fname, user_assign, t_date, t_duedate, t_status, accept) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstInsert = db.connect.prepareStatement(insertQuery)) {
+            pstInsert.setInt(1, p_id);
+            pstInsert.setInt(2, creatorId);
+            pstInsert.setString(3, p_name);
+            pstInsert.setString(4, u_fname);
+            pstInsert.setString(5, userAssign);
+            pstInsert.setDate(6, sqlt_date);
+            pstInsert.setDate(7, sqlt_duedate);
+            pstInsert.setString(8, t_status);
 
+            if (!userAssign.isEmpty()) {
+                pstInsert.setString(9, "Accepted");
+            } else {
+                pstInsert.setNull(9, java.sql.Types.VARCHAR);
+            }
+
+            int rowsAffected = pstInsert.executeUpdate();
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Task added successfully!");
-
-                AdminDashboard ads = new AdminDashboard();
-                ads.setVisible(true);
-                Taskpage pp = new Taskpage();
-                pp.setVisible(true);
-                ads.mainDesktop.add(pp);
-                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Error adding task.");
             }
         }
-
     } catch (SQLException e) {
-        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (db.connect != null && !db.connect.isClosed()) {
+                db.connect.close();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage());
+        }
     }
     }//GEN-LAST:event_addActionPerformed
 
@@ -389,13 +429,11 @@ public class crud_tasks extends javax.swing.JFrame {
         this.dispose();
         return;
     }
-
     populateComboBoxes();
-    
+    pname.setSelectedItem(String.valueOf(sess.getP_name()));
     user_id.setText(String.valueOf(sess.getU_id()));
     t_id.setText(String.valueOf(sess.getT_id()));
-    assign_user.setText("");
-
+    assignuser.setSelectedItem("");
     String sessionProjectName = sess.getP_name();
     if (sessionProjectName != null && !sessionProjectName.trim().isEmpty()) {
         boolean projectMatchFound = false;
@@ -414,20 +452,14 @@ public class crud_tasks extends javax.swing.JFrame {
     } else {
         pname.setSelectedItem("Select Project");
     }
-
-    // ====== Set the user name (ufname) in JTextField ======
     String sessionUserFname = sess.getU_fname();
     if (sessionUserFname != null && !sessionUserFname.trim().isEmpty()) {
         umaker.setText(sessionUserFname);
     } else {
-        umaker.setText("");  // Default text or placeholder
+        umaker.setText("");
     }
-
     pname.repaint();
     umaker.repaint();
-    
-    
-
     }//GEN-LAST:event_formWindowActivated
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -441,7 +473,7 @@ public class crud_tasks extends javax.swing.JFrame {
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
                                       
-     if (t_id.getText().isEmpty() || pname.getSelectedItem().equals("Select Project") ||
+    if (t_id.getText().isEmpty() || pname.getSelectedItem().equals("Select Project") ||
         umaker.getText().isEmpty() || date.getDate() == null ||
         due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
 
@@ -452,18 +484,14 @@ public class crud_tasks extends javax.swing.JFrame {
     dbConnector db = new dbConnector();
 
     try {
-        // Format dates
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(date.getDate());
         String formattedDueDate = sdf.format(due.getDate());
-
         String selectedProject = (String) pname.getSelectedItem();
-        String selectedUser = umaker.getText().trim();
-
+        String currentuser = umaker.getText().trim();
+        String selectedUser = (String) assignuser.getSelectedItem();
         int p_id = -1;
         int u_id = -1;
-
-        // Get project ID
         String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
             pst.setString(1, selectedProject);
@@ -475,11 +503,9 @@ public class crud_tasks extends javax.swing.JFrame {
                 return;
             }
         }
-
-        // Get user ID from u_maker
         String getUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(getUidQuery)) {
-            pst.setString(1, selectedUser);
+            pst.setString(1, currentuser);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 u_id = rs.getInt("u_id");
@@ -488,27 +514,22 @@ public class crud_tasks extends javax.swing.JFrame {
                 return;
             }
         }
-
-        // Perform task update
-        String sql = "UPDATE tbl_task SET p_id = ?, u_id = ?, p_name = ?, u_fname = ?, " +
-                     "t_date = ?, t_duedate = ?, t_status = ? WHERE t_id = ?";
-
+        String sql = "UPDATE tbl_task SET p_id = ?, u_id = ?, p_name = ?, u_fname = ?, user_assign = ?, " +
+                     "t_date = ?, t_duedate = ?, t_status = ?, accept = CASE WHEN user_assign IS NOT NULL THEN 'Accepted' ELSE 'Pending' END " +
+                     "WHERE t_id = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(sql)) {
             pst.setInt(1, p_id);
-            pst.setInt(2, u_id);
-            pst.setString(3, selectedProject);
-            pst.setString(4, selectedUser);
-            pst.setString(5, formattedDate);
-            pst.setString(6, formattedDueDate);
-            pst.setString(7, status.getSelectedItem().toString());
-            pst.setInt(8, Integer.parseInt(t_id.getText()));
-
+            pst.setInt(2, u_id); 
+            pst.setString(3, selectedProject); 
+            pst.setString(4, currentuser); 
+            pst.setString(5, selectedUser); 
+            pst.setString(6, formattedDate);
+            pst.setString(7, formattedDueDate);
+            pst.setString(8, status.getSelectedItem().toString());
+            pst.setInt(9, Integer.parseInt(t_id.getText()));
             int rowsAffected = pst.executeUpdate();
-
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Task updated successfully!");
-
-                // Open the Taskpage inside AdminDashboard
                 AdminDashboard ads = new AdminDashboard();
                 ads.setVisible(true);
                 Taskpage pp = new Taskpage();
@@ -519,9 +540,17 @@ public class crud_tasks extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Failed to update task.");
             }
         }
-
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
+        ex.printStackTrace();
+    } finally {
+        try {
+            if (db.connect != null && !db.connect.isClosed()) {
+                db.connect.close(); 
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage());
+        }
     }
     }//GEN-LAST:event_updateActionPerformed
 
@@ -532,6 +561,10 @@ public class crud_tasks extends javax.swing.JFrame {
     private void pnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pnameActionPerformed
        
     }//GEN-LAST:event_pnameActionPerformed
+
+    private void assignuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignuserActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_assignuserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -572,7 +605,7 @@ public class crud_tasks extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton add;
     private javax.swing.JLabel assign_name;
-    public javax.swing.JTextField assign_user;
+    public javax.swing.JComboBox<String> assignuser;
     private javax.swing.JButton cancel;
     private javax.swing.JButton clear;
     public com.toedter.calendar.JDateChooser date;

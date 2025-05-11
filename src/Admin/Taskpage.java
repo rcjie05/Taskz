@@ -45,26 +45,26 @@ public class Taskpage extends javax.swing.JInternalFrame {
     }
     
     public void displayData(){
-        try{
-            dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT t_id, p_name, u_fname, user_assign, t_date, t_duedate, t_status FROM tbl_task");
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
-            userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
-            userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-            userTable.getColumnModel().getColumn(2).setHeaderValue("Maker Name");
-            userTable.getColumnModel().getColumn(3).setHeaderValue("Assign User");
-            userTable.getColumnModel().getColumn(4).setHeaderValue("Start Date");
-            userTable.getColumnModel().getColumn(5).setHeaderValue("Due Date");
-            userTable.getColumnModel().getColumn(6).setHeaderValue("Status");
-            
-        }catch(SQLException ex){
-                    System.out.println("Errors:"+ex.getMessage());
-      
-        }
-        
-                
+    try{
+        dbConnector dbc = new dbConnector();
+        String sql = "SELECT t.t_id, p.p_name, p.p_description, u.u_fname, t.user_assign, t.t_date, t.t_duedate, t.t_status " +
+                     "FROM tbl_task t " +
+                     "JOIN tbl_project p ON t.p_id = p.p_id " +
+                     "JOIN tbl_users u ON t.u_id = u.u_id";
+        ResultSet rs = dbc.getData(sql);
+        userTable.setModel(DbUtils.resultSetToTableModel(rs));
+        userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+        userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
+        userTable.getColumnModel().getColumn(2).setHeaderValue("Description");
+        userTable.getColumnModel().getColumn(3).setHeaderValue("Maker Name");
+        userTable.getColumnModel().getColumn(4).setHeaderValue("Assign User");
+        userTable.getColumnModel().getColumn(5).setHeaderValue("Start Date");
+        userTable.getColumnModel().getColumn(6).setHeaderValue("Due Date");
+        userTable.getColumnModel().getColumn(7).setHeaderValue("Status");       
+    } catch(SQLException ex){
+        System.out.println("Errors: " + ex.getMessage());
     }
-
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -174,7 +174,6 @@ public class Taskpage extends javax.swing.JInternalFrame {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String keyword = searchBar.getText().trim();
-
     try {
         dbConnector dbc = new dbConnector();
         String query = "SELECT u_id, p_id, t_id, u_fname, p_name, user_assign FROM tbl_task " +
@@ -184,17 +183,14 @@ public class Taskpage extends javax.swing.JInternalFrame {
                         "OR user_assign LIKE '%" + keyword + "%' " +
                        "OR p_id LIKE '%" + keyword + "%'";
         ResultSet rs = dbc.getData(query);
-
         if (!rs.isBeforeFirst()) {
             javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
             model.setColumnIdentifiers(new String[]{"Message"});
             model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
             userTable.setModel(model);
         } else {
-            // Show search results
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
         }
-
     } catch (SQLException ex) {
         javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
     }
@@ -212,11 +208,10 @@ public class Taskpage extends javax.swing.JInternalFrame {
                 int taskIdToEdit = (int) model.getValueAt(rowIndex, 0);
                 Session session = Session.getInstance();
                 session.setT_id(taskIdToEdit);
-
                 crud_tasks at = new crud_tasks();
                 ResultSet rs = dbc.getData("SELECT * FROM tbl_task WHERE t_id = '" + taskIdToEdit + "'");
                 if (rs.next()) {
-                    at.assign_user.setText("" + rs.getInt("u_id"));
+                    at.assignuser.setSelectedItem("" + rs.getInt("u_id"));
                     at.pname.setSelectedItem("" + rs.getString("p_name"));
                     at.umaker.setText("" + rs.getString("u_fname"));
                     java.util.Date pDate = rs.getDate("t_date");
@@ -226,14 +221,12 @@ public class Taskpage extends javax.swing.JInternalFrame {
                     at.status.setSelectedItem("" + rs.getString("t_status"));
                     at.add.setEnabled(false);
                     at.update.setEnabled(true);
-
                     at.setVisible(true);
                     JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
                     parent.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Error: Project with ID " + taskIdToEdit + " not found.");
                 }
-
             } catch (SQLException ex) {
                 Logger.getLogger(Projectpage.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -242,28 +235,21 @@ public class Taskpage extends javax.swing.JInternalFrame {
 
     private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
         int rowIndex = userTable.getSelectedRow();
-
         if (rowIndex < 0) {
             JOptionPane.showMessageDialog(null, "Please select a user to delete.");
             return;
         }
-
         TableModel model = userTable.getModel();
         String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
-
         int confirm = JOptionPane.showConfirmDialog(null,
                 "Are you sure you want to delete this project?",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
-
         if (confirm == JOptionPane.YES_OPTION) {
             dbConnector dbc = new dbConnector();
             String query = "DELETE FROM tbl_task WHERE t_id = '" + userId + "'";
             dbc.deleteData(query);
-
             JOptionPane.showMessageDialog(null, "Task deleted successfully!");
-
-            // Refresh the table data after deletion
             displayData();
         }
     }//GEN-LAST:event_deletebuttonActionPerformed
