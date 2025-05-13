@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2025 at 08:50 AM
+-- Generation Time: May 13, 2025 at 11:50 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,20 @@ CREATE TABLE `tbl_logs` (
 
 INSERT INTO `tbl_logs` (`l_id`, `u_id`, `l_action`, `l_timestamp`) VALUES
 (1, 1, 'Login', '2025-05-09 06:41:37'),
-(2, 1, 'Login', '2025-05-09 06:48:57');
+(2, 1, 'Login', '2025-05-09 06:48:57'),
+(3, 1, 'Login', '2025-05-13 09:07:18'),
+(4, 1, 'Login', '2025-05-13 09:09:15'),
+(5, 2, 'Login', '2025-05-13 09:09:38'),
+(6, 1, 'Login', '2025-05-13 09:10:37'),
+(7, 3, 'Login', '2025-05-13 09:11:44'),
+(8, 2, 'Login', '2025-05-13 09:12:04'),
+(9, 1, 'Login', '2025-05-13 09:14:31'),
+(10, 2, 'Login', '2025-05-13 09:16:25'),
+(11, 1, 'Login', '2025-05-13 09:17:33'),
+(12, 1, 'Login', '2025-05-13 09:19:41'),
+(13, 3, 'Login', '2025-05-13 09:21:46'),
+(14, 3, 'Login', '2025-05-13 09:24:54'),
+(15, 2, 'Login', '2025-05-13 09:26:58');
 
 -- --------------------------------------------------------
 
@@ -52,6 +65,7 @@ CREATE TABLE `tbl_project` (
   `u_id` int(11) NOT NULL,
   `p_id` int(11) NOT NULL,
   `p_name` varchar(255) NOT NULL,
+  `p_description` varchar(255) NOT NULL,
   `u_fname` varchar(255) NOT NULL,
   `p_date` date NOT NULL,
   `p_duedate` date NOT NULL,
@@ -62,10 +76,11 @@ CREATE TABLE `tbl_project` (
 -- Dumping data for table `tbl_project`
 --
 
-INSERT INTO `tbl_project` (`u_id`, `p_id`, `p_name`, `u_fname`, `p_date`, `p_duedate`, `p_status`) VALUES
-(1, 1, 'Project 1', 'Rcjie', '2025-05-09', '2025-05-10', 'Active'),
-(1, 2, 'Project 2', 'Rcjie', '2025-05-09', '2025-05-17', 'Active'),
-(1, 3, 'Project 3', 'Rcjie', '2025-05-09', '2025-05-17', 'Active');
+INSERT INTO `tbl_project` (`u_id`, `p_id`, `p_name`, `p_description`, `u_fname`, `p_date`, `p_duedate`, `p_status`) VALUES
+(1, 1, 'Project 1', '', 'Rcjie', '2025-05-09', '2025-05-10', 'Active'),
+(1, 2, 'Project 2', '', 'Rcjie', '2025-05-09', '2025-05-17', 'Active'),
+(1, 3, 'Project 3', '', 'Rcjie', '2025-05-09', '2025-05-17', 'Active'),
+(1, 4, 'Trial', 'pagbuhat ug unsa', 'Rcjie', '2025-05-07', '2025-05-24', 'Active');
 
 -- --------------------------------------------------------
 
@@ -91,9 +106,11 @@ CREATE TABLE `tbl_task` (
 --
 
 INSERT INTO `tbl_task` (`u_id`, `p_id`, `t_id`, `p_name`, `u_fname`, `user_assign`, `t_date`, `t_duedate`, `t_status`, `accept`) VALUES
-(1, 1, 1, 'Project 1', 'Rcjie', '', '2025-05-09', '2025-05-17', 'Active', NULL),
-(1, 2, 2, 'Project 2', 'Rcjie', '', '2025-05-09', '2025-05-31', 'Active', NULL),
-(1, 3, 3, 'Project 3', 'Rcjie', '', '2025-05-09', '2025-05-24', 'Active', NULL);
+(1, 1, 1, 'Project 1', 'Rcjie', 'Dave', '2025-05-09', '2025-05-17', 'Active', 'Accepted'),
+(1, 2, 2, 'Project 2', 'Rcjie', 'Dave', '2025-05-09', '2025-05-31', 'Active', 'Accepted'),
+(1, 3, 3, 'Project 3', 'Rcjie', '', '2025-05-09', '2025-05-24', 'Active', NULL),
+(1, 1, 4, 'Project 1', 'Rcjie', 'Anthony', '2025-05-14', '2025-05-30', 'Active', 'Accepted'),
+(1, 4, 5, 'Trial', 'Rcjie', 'Anthony', '2025-05-14', '2025-05-24', 'Active', 'Accepted');
 
 -- --------------------------------------------------------
 
@@ -120,7 +137,8 @@ CREATE TABLE `tbl_users` (
 
 INSERT INTO `tbl_users` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_contact`, `u_gender`, `u_username`, `u_password`, `u_type`, `u_status`) VALUES
 (1, 'Rcjie', 'Villena', 'weakpointz05@gmail.com', '09123456789', 'Male', 'admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', 'Active'),
-(2, 'Dave', 'Tupas', 'dave@gmail.com', '09987654321', 'Male', 'dave', '0644a2e329ec3e997a352bea6d045223b6626f8a026e569675991162a32f9be6', 'USER', 'Active');
+(2, 'Dave', 'Tupas', 'dave@gmail.com', '09987654321', 'Male', 'dave', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'USER', 'Active'),
+(3, 'Anthony', 'Teves', 'teves@gmail.com', '09123456789', 'Male', 'teves', '0755ba9f152a6620a080afe71d32cd8e4b743438f06df94cc58c5a156340f744', 'USER', 'Active');
 
 --
 -- Indexes for dumped tables
@@ -162,25 +180,25 @@ ALTER TABLE `tbl_users`
 -- AUTO_INCREMENT for table `tbl_logs`
 --
 ALTER TABLE `tbl_logs`
-  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `tbl_project`
 --
 ALTER TABLE `tbl_project`
-  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_task`
 --
 ALTER TABLE `tbl_task`
-  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

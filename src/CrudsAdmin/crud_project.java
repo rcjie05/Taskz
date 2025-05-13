@@ -102,7 +102,7 @@ public class crud_project extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("User_id");
+        jLabel5.setText("Maker ID");
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

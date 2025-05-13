@@ -50,7 +50,7 @@ public class Userpage extends javax.swing.JInternalFrame {
             userTable.getColumnModel().getColumn(2).setHeaderValue("Last Name");
             userTable.getColumnModel().getColumn(3).setHeaderValue("Email");
             userTable.getColumnModel().getColumn(4).setHeaderValue("Contact");
-            userTable.getColumnModel().getColumn(4).setHeaderValue("Status");
+            userTable.getColumnModel().getColumn(5).setHeaderValue("Status");
 
         } catch (SQLException ex) {
             System.out.println("Errors:" + ex.getMessage());

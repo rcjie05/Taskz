@@ -47,7 +47,7 @@ public class UserDashboard extends javax.swing.JFrame {
         email = new javax.swing.JLabel();
         contact = new javax.swing.JLabel();
         gender = new javax.swing.JLabel();
-        username = new javax.swing.JLabel();
+        usertype = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         accountSetting = new javax.swing.JButton();
         accepted = new javax.swing.JButton();
@@ -116,10 +116,10 @@ public class UserDashboard extends javax.swing.JFrame {
         gender.setText("gender:");
         jPanel2.add(gender, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, -1));
 
-        username.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        username.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        username.setText("username:");
-        jPanel2.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 80, -1));
+        usertype.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        usertype.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        usertype.setText("user_type");
+        jPanel2.add(usertype, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 80, -1));
 
         jPanel3.setBackground(new java.awt.Color(153, 204, 255));
 
@@ -199,7 +199,7 @@ public class UserDashboard extends javax.swing.JFrame {
           lf.setVisible(true);
           this.dispose();
       }else{
-          username.setText(""+sess.getU_username());
+          usertype.setText(""+sess.getU_type());
           fname.setText(""+sess.getU_fname());
           lname.setText(""+sess.getU_lname());
           email.setText(""+sess.getU_email());
@@ -276,6 +276,6 @@ public class UserDashboard extends javax.swing.JFrame {
     public javax.swing.JLabel lname;
     public javax.swing.JDesktopPane mainDesktop;
     public javax.swing.JButton pending;
-    public javax.swing.JLabel username;
+    public javax.swing.JLabel usertype;
     // End of variables declaration//GEN-END:variables
 }
