@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import myApp.LoginForm;
+import java.util.logging.Logger;
+import static myApp.LoginForm.logAction;
 
 /**
  *
@@ -30,6 +32,7 @@ public class settings extends javax.swing.JInternalFrame {
         bi.setNorthPane(null);
        
     } 
+    private static final Logger logger = Logger.getLogger(settings.class.getName());
                      
     /**
      * This method is called from within the constructor to initialize the form.
@@ -244,10 +247,14 @@ if (sess.getU_id() == 0) {
     }//GEN-LAST:event_formInternalFrameActivated
 
     private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
-        LoginForm lf = new LoginForm();
-        lf.setVisible(true);
-        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-        parent.dispose();
+    Session sess = Session.getInstance();
+    if (sess.getU_id() != 0) {
+        logAction(sess.getU_id(), "Logout");
+    }
+    LoginForm lf = new LoginForm();
+    lf.setVisible(true);   
+    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+    parent.dispose();   
     }//GEN-LAST:event_logoutMouseClicked
 
 

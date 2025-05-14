@@ -86,10 +86,8 @@ public class LoginForm extends javax.swing.JFrame {
                 sess.setU_status(resultSet.getString("u_status"));
 
                 logAction(sess.getU_id(), "Login");
-                logger.info("Login successful for user: " + username);
                 return true;
             } else {
-                // Try to get the user ID for failed attempt logging
                 String checkUserQuery = "SELECT u_id FROM tbl_users WHERE u_username = ?";
                 PreparedStatement checkStmt = conn.prepareStatement(checkUserQuery);
                 checkStmt.setString(1, username);
@@ -247,12 +245,10 @@ public class LoginForm extends javax.swing.JFrame {
                 logger.warning("Inactive account tried to login: " + username);
             } else {
                 if (type.equals("ADMIN")) {
-                    logger.info("Admin logged in: " + username);
                     JOptionPane.showMessageDialog(null, "Welcome Back ADMIN!!!");
                     new AdminDashboard().setVisible(true);
                     this.dispose();
                 } else if (type.equals("USER")) {
-                    logger.info("User logged in: " + username);
                     JOptionPane.showMessageDialog(null, "Welcome Back User!!!");
                     new UserDashboard().setVisible(true);
                     this.dispose();

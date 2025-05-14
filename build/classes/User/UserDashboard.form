@@ -221,8 +221,9 @@
                               <Component id="pending" alignment="0" max="32767" attributes="0"/>
                               <Component id="accountSetting" alignment="0" max="32767" attributes="0"/>
                               <Component id="accepted" alignment="0" max="32767" attributes="0"/>
+                              <Component id="decline" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="29" max="32767" attributes="0"/>
+                          <EmptySpace pref="61" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -234,8 +235,10 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="accepted" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="decline" min="-2" pref="40" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="pending" min="-2" pref="40" max="-2" attributes="0"/>
-                          <EmptySpace pref="66" max="32767" attributes="0"/>
+                          <EmptySpace pref="31" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -263,6 +266,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pendingActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="decline">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Decline Task"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="declineActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

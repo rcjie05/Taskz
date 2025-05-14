@@ -22,10 +22,9 @@ public class Logs extends javax.swing.JInternalFrame {
      * Creates new form Userpage
      */
     public Logs() {
-        initComponents();
+        initComponents();  
+        displayLogsByAction("All");
         
-        displayData();
-
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         BasicInternalFrameUI bi = (BasicInternalFrameUI) this.getUI();
         bi.setNorthPane(null);
@@ -34,17 +33,33 @@ public class Logs extends javax.swing.JInternalFrame {
         searchBar.setBackground(new Color(0, 0, 0, 0));
     }
 
-    public void displayData() {
-        try {
+    public void displayLogsByAction(String action) {
+    try {
         dbConnector dbc = new dbConnector();
         
-        // Modified SQL to join tbl_logs with tbl_users and retrieve the user name
-        String query = "SELECT l.l_id, u.u_fname, u.u_type, l.l_action, l.l_timestamp " +
-               "FROM tbl_logs l " +
-               "JOIN tbl_users u ON l.u_id = u.u_id " +
-               "ORDER BY l.l_timestamp DESC";
+        // Modify the SQL query to handle both Login/Logout or All actions
+        String query = "";
         
-        ResultSet rs = dbc.getData(query);
+        if (action.equals("All")) {
+            query = "SELECT l.l_id, u.u_fname, u.u_type, l.l_action, l.l_timestamp " +
+                    "FROM tbl_logs l " +
+                    "JOIN tbl_users u ON l.u_id = u.u_id " +
+                    "ORDER BY l.l_timestamp DESC";  // Show all logs
+        } else {
+            query = "SELECT l.l_id, u.u_fname, u.u_type, l.l_action, l.l_timestamp " +
+                    "FROM tbl_logs l " +
+                    "JOIN tbl_users u ON l.u_id = u.u_id " +
+                    "WHERE l.l_action = ? " +  // Filter based on action type
+                    "ORDER BY l.l_timestamp DESC";
+        }
+        
+        java.sql.PreparedStatement pst = dbc.getConnection().prepareStatement(query);
+        
+        if (!action.equals("All")) {
+            pst.setString(1, action);  // Pass Login or Logout for filtering
+        }
+        
+        ResultSet rs = pst.executeQuery();
         userTable.setModel(DbUtils.resultSetToTableModel(rs));
         
         // Set table column headers
@@ -57,8 +72,7 @@ public class Logs extends javax.swing.JInternalFrame {
         System.out.println("SQLException occurred: " + ex.getMessage());
         ex.printStackTrace();
     }
-
-    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -72,6 +86,9 @@ public class Logs extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         searchBar = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
+        login = new javax.swing.JButton();
+        logout = new javax.swing.JButton();
+        loginFailed = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
         title = new javax.swing.JLabel();
@@ -96,6 +113,30 @@ public class Logs extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 50, -1, -1));
+
+        login.setText("Login");
+        login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginActionPerformed(evt);
+            }
+        });
+        jPanel1.add(login, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
+
+        logout.setText("Logout");
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+        jPanel1.add(logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, -1, -1));
+
+        loginFailed.setText("Login Failed");
+        loginFailed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginFailedActionPerformed(evt);
+            }
+        });
+        jPanel1.add(loginFailed, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, -1, -1));
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -168,11 +209,26 @@ public class Logs extends javax.swing.JInternalFrame {
     }
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+        displayLogsByAction("Login");
+    }//GEN-LAST:event_loginActionPerformed
+
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        displayLogsByAction("Logout");
+    }//GEN-LAST:event_logoutActionPerformed
+
+    private void loginFailedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginFailedActionPerformed
+        displayLogsByAction("Login failed");
+    }//GEN-LAST:event_loginFailedActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton login;
+    private javax.swing.JButton loginFailed;
+    private javax.swing.JButton logout;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
     private javax.swing.JLabel title;

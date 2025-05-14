@@ -8,11 +8,13 @@ package User;
 import Admin.*;
 import User.*;
 import config.Session;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import myApp.LoginForm;
+import static myApp.LoginForm.logAction;
 
 /**
  *
@@ -30,7 +32,8 @@ public class setting extends javax.swing.JInternalFrame {
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
        
-    } 
+    }
+    private static final Logger logger = Logger.getLogger(setting.class.getName());
                      
     /**
      * This method is called from within the constructor to initialize the form.
@@ -53,6 +56,8 @@ public class setting extends javax.swing.JInternalFrame {
         logout = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        settings = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -131,17 +136,34 @@ public class setting extends javax.swing.JInternalFrame {
                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel7.setBackground(new java.awt.Color(51, 255, 153));
         jPanel7.setPreferredSize(new java.awt.Dimension(100, 140));
+
+        jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Settings");
+
+        settings.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        settings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-gear-100.png"))); // NOI18N
+        settings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                settingsMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addComponent(settings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 148, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addComponent(settings, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel8.setPreferredSize(new java.awt.Dimension(100, 140));
@@ -245,11 +267,24 @@ if (sess.getU_id() == 0) {
     }//GEN-LAST:event_formInternalFrameActivated
 
     private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
-        LoginForm lf = new LoginForm();
-        lf.setVisible(true);
-        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-        parent.dispose();
+        Session sess = Session.getInstance();
+    if (sess.getU_id() != 0) {
+        logAction(sess.getU_id(), "Logout");
+    }
+    LoginForm lf = new LoginForm();
+    lf.setVisible(true);   
+    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+    parent.dispose();      
     }//GEN-LAST:event_logoutMouseClicked
+
+    private void settingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsMouseClicked
+        UserDashboard ads = new UserDashboard();
+            ads.setVisible(true);
+            change_pass tp = new change_pass();
+            tp.setVisible(true);
+            ads.mainDesktop.add(tp);
+            this.dispose();
+    }//GEN-LAST:event_settingsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -261,6 +296,7 @@ if (sess.getU_id() == 0) {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -269,6 +305,7 @@ if (sess.getU_id() == 0) {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JLabel lname;
     private javax.swing.JLabel logout;
+    private javax.swing.JLabel settings;
     private javax.swing.JLabel u_type;
     // End of variables declaration//GEN-END:variables
 }
