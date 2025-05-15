@@ -89,7 +89,7 @@
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
                                               <Component id="save" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <Component id="confirm" pref="147" max="32767" attributes="0"/>
+                                          <Component id="confirm" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>

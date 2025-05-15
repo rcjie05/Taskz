@@ -3,14 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/CrudsAdmin/crud_tasks.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/Admin/Userpage.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/CrudsAdmin/crud_users.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/Admin/Taskpage.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/User/UserDashboard.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/CrudsAdmin/crud_project.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/Admin/Projectpage.java</file>
-            <file>file:/C:/Users/SCC-COLLEGE/Desktop/Taskz/src/Admin/AdminDashboard.java</file>
+            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/CrudsAdmin/crud_project.java</file>
+            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/User/change_pass.java</file>
+            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/Logs/Logs.java</file>
+            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/config/dbConnector.java</file>
+            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/Admin/AdminDashboard.java</file>
+            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/User/Acceptedpage.java</file>
         </group>
     </open-files>
 </project-private>

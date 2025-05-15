@@ -5,15 +5,14 @@
  */
 package User;
 
-import Admin.AdminDashboard;
-import Admin.Taskpage;
 import config.Session;
+import config.dbConnector;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import myApp.LoginForm;
 
@@ -32,6 +31,21 @@ public class change_pass extends javax.swing.JInternalFrame {
         bi.setNorthPane(null);
        
     }
+    
+     public static String hashPassword(String password) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     
                      
     /**
@@ -255,14 +269,14 @@ public class change_pass extends javax.swing.JInternalFrame {
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
        Session sess = Session.getInstance();
 
-if (sess.getU_id() == 0) {
-    JOptionPane.showMessageDialog(null, "No Account. Login First!");
-    LoginForm lf = new LoginForm();
-    lf.setVisible(true);
-    this.dispose();
-} else {
-    fname.setText(sess.getU_fname());    
-}
+        if (sess.getU_id() == 0) {
+            JOptionPane.showMessageDialog(null, "No Account. Login First!");
+            LoginForm lf = new LoginForm();
+            lf.setVisible(true);
+            this.dispose();
+        } else {
+            fname.setText(sess.getU_fname());
+        }
 
     }//GEN-LAST:event_formInternalFrameActivated
 
@@ -279,6 +293,7 @@ if (sess.getU_id() == 0) {
     }//GEN-LAST:event_showActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+         
         String currentPassword = new String(current.getPassword());
         String newPassword = new String(newpass.getPassword());
         String confirmPassword = new String(confirm.getPassword());
@@ -293,14 +308,21 @@ if (sess.getU_id() == 0) {
             return;
         }
 
-        if (!isPasswordStrong(newPassword)) {
-            JOptionPane.showMessageDialog(this, "New password does not meet the strength requirements.");
+        if (newPassword.length() < 8) {
+            JOptionPane.showMessageDialog(this, "New password must be at least 8 characters long.");
             return;
         }
 
         if (verifyCurrentPassword(currentPassword)) {
             if (updatePasswordInDatabase(newPassword)) {
                 JOptionPane.showMessageDialog(this, "Password changed successfully.");
+                UserDashboard ads = new UserDashboard();
+            ads.setVisible(true);
+            setting tp = new setting();
+            tp.setVisible(true);
+            ads.mainDesktop.add(tp);
+            this.dispose();
+
             } else {
                 JOptionPane.showMessageDialog(this, "Error changing password.");
             }
@@ -309,41 +331,44 @@ if (sess.getU_id() == 0) {
         }
     }
 
-    private boolean isPasswordStrong(String password) {
-        String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-        return password.matches(regex);
-    }
-
     private boolean verifyCurrentPassword(String currentPassword) {
-        Session sess = Session.getInstance();
-        String sql = "SELECT password FROM tbl_users WHERE u_id = ?";
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "username", "password");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, sess.getU_id());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getString("password").equals(currentPassword);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    Session sess = Session.getInstance();
+    String sql = "SELECT u_password FROM tbl_users WHERE u_id = ?";
+    dbConnector db = new dbConnector();  // create instance here
+    try (Connection conn = db.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, sess.getU_id());
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            String storedHashedPassword = rs.getString("u_password");
+            String inputHashedPassword = hashPassword(currentPassword);
+            return storedHashedPassword.equals(inputHashedPassword);
         }
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+private boolean updatePasswordInDatabase(String newPassword) {
+    Session sess = Session.getInstance();
+    String hashedPassword = hashPassword(newPassword);
+    String sql = "UPDATE tbl_users SET u_password = ? WHERE u_id = ?";
+    dbConnector db = new dbConnector();  // create instance here
+    try (Connection conn = db.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, hashedPassword);
+        ps.setInt(2, sess.getU_id());
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
     }
 
-    private boolean updatePasswordInDatabase(String newPassword) {
-        Session sess = Session.getInstance();
-        String sql = "UPDATE tbl_users SET u_password = ? WHERE u_id = ?";
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "username", "password");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, newPassword);
-            ps.setInt(2, sess.getU_id());
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(change_pass::new);
     }//GEN-LAST:event_saveActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
