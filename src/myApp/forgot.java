@@ -1,17 +1,16 @@
 package myApp;
 
-import Admin.AdminDashboard;
-import User.UserDashboard;
-import config.Session;
 import config.dbConnector;
-import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Random;
 import javax.swing.JOptionPane;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,19 +28,8 @@ public class forgot extends javax.swing.JFrame {
         
     }
 
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashed = md.digest(password.getBytes("UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashed) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Error hashing password", e);
-    }  
-}
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,8 +45,10 @@ public class forgot extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         showpassword = new javax.swing.JCheckBox();
         email = new javax.swing.JTextField();
+        otpfield = new javax.swing.JTextField();
         comfirmPassword = new javax.swing.JPasswordField();
         newPassword = new javax.swing.JPasswordField();
+        otpbutton = new javax.swing.JButton();
         login = new javax.swing.JButton();
         reset = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -73,7 +63,7 @@ public class forgot extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("FORGOT FORM");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(110, 80, 140, 40);
+        jLabel1.setBounds(60, 60, 140, 40);
 
         jLabel3.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -90,7 +80,7 @@ public class forgot extends javax.swing.JFrame {
             }
         });
         jPanel1.add(showpassword);
-        showpassword.setBounds(360, 280, 100, 20);
+        showpassword.setBounds(380, 300, 100, 20);
 
         email.setBackground(new java.awt.Color(204, 204, 204));
         email.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Email", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 11))); // NOI18N
@@ -100,7 +90,17 @@ public class forgot extends javax.swing.JFrame {
             }
         });
         jPanel1.add(email);
-        email.setBounds(220, 140, 240, 40);
+        email.setBounds(200, 110, 280, 40);
+
+        otpfield.setBackground(new java.awt.Color(204, 204, 204));
+        otpfield.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "OTP", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 11))); // NOI18N
+        otpfield.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                otpfieldActionPerformed(evt);
+            }
+        });
+        jPanel1.add(otpfield);
+        otpfield.setBounds(200, 160, 190, 40);
 
         comfirmPassword.setBackground(new java.awt.Color(204, 204, 204));
         comfirmPassword.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
@@ -111,7 +111,7 @@ public class forgot extends javax.swing.JFrame {
             }
         });
         jPanel1.add(comfirmPassword);
-        comfirmPassword.setBounds(220, 240, 240, 40);
+        comfirmPassword.setBounds(200, 260, 280, 40);
 
         newPassword.setBackground(new java.awt.Color(204, 204, 204));
         newPassword.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
@@ -122,7 +122,16 @@ public class forgot extends javax.swing.JFrame {
             }
         });
         jPanel1.add(newPassword);
-        newPassword.setBounds(220, 190, 240, 40);
+        newPassword.setBounds(200, 210, 280, 40);
+
+        otpbutton.setText("Send OTP");
+        otpbutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                otpbuttonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(otpbutton);
+        otpbutton.setBounds(400, 160, 79, 40);
 
         login.setText("LOGIN");
         login.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +140,7 @@ public class forgot extends javax.swing.JFrame {
             }
         });
         jPanel1.add(login);
-        login.setBounds(220, 310, 70, 30);
+        login.setBounds(200, 340, 70, 30);
 
         reset.setText("Reset Password");
         reset.addActionListener(new java.awt.event.ActionListener() {
@@ -140,7 +149,7 @@ public class forgot extends javax.swing.JFrame {
             }
         });
         jPanel1.add(reset);
-        reset.setBounds(340, 310, 120, 30);
+        reset.setBounds(360, 340, 120, 30);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
         jPanel1.add(jLabel2);
@@ -162,50 +171,61 @@ public class forgot extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_emailActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
-          String emailText = email.getText().trim();
-        String newPass = new String(newPassword.getPassword());
-        String confirmPass = new String(comfirmPassword.getPassword());
+           String userEmail = email.getText().trim();
+    String inputOtp = otpfield.getText().trim();
+    String newPass = new String(newPassword.getPassword());
+    String confirmPass = new String(comfirmPassword.getPassword());
 
-        if (emailText.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
+    if (userEmail.isEmpty() || inputOtp.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "All fields are required.");
+        return;
+    }
+
+    if (!newPass.equals(confirmPass)) {
+        JOptionPane.showMessageDialog(this, "Passwords do not match.");
+        return;
+    }
+
+    try {
+        dbConnector dbc = new dbConnector();
+        Connection conn = dbc.getConnection();
+
+        String checkOtp = "SELECT * FROM otp_requests WHERE user_email=? AND otp_code=? AND is_used=0 AND expiry_time > NOW()";
+        PreparedStatement pst = conn.prepareStatement(checkOtp);
+        pst.setString(1, userEmail);
+        pst.setString(2, inputOtp);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            // OTP valid — update password
+            String updatePassword = "UPDATE tbl_users SET u_password=? WHERE u_email=?";
+            pst = conn.prepareStatement(updatePassword);
+            pst.setString(1, newPass); // Consider hashing
+            pst.setString(2, userEmail);
+            pst.executeUpdate();
+
+            // Mark OTP as used
+            String markOtpUsed = "UPDATE otp_requests SET is_used=1 WHERE user_email=? AND otp_code=?";
+            pst = conn.prepareStatement(markOtpUsed);
+            pst.setString(1, userEmail);
+            pst.setString(2, inputOtp);
+            pst.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Password reset successful.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid or expired OTP.");
         }
 
-        if (!newPass.equals(confirmPass)) {
-            JOptionPane.showMessageDialog(this, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            dbConnector dbc = new dbConnector();
-            String checkQuery = "SELECT * FROM tbl_users WHERE u_email = '" + emailText + "'";
-            ResultSet rs = dbc.getData(checkQuery);
-
-            if (rs.next()) {
-                // Hash the new password
-                String hashedPass = hashPassword(newPass);
-
-                // Update password in database
-                String updateQuery = "UPDATE tbl_users SET u_password = '" + hashedPass + "' WHERE u_email = '" + emailText + "'";
-                dbc.updateData(updateQuery);
-
-                JOptionPane.showMessageDialog(this, "Password reset successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                // Clear fields
-                email.setText("");
-                newPassword.setText("");
-                comfirmPassword.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, "Email not found.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        rs.close();
+        pst.close();
+        conn.close();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error resetting password: " + e.getMessage());
+    }
     }//GEN-LAST:event_resetActionPerformed
 
     private void comfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comfirmPasswordActionPerformed
@@ -213,13 +233,7 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_comfirmPasswordActionPerformed
 
     private void showpasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showpasswordActionPerformed
-        if (showpassword.isSelected()) {
-        newPassword.setEchoChar((char) 0);
-        comfirmPassword.setEchoChar((char) 0);
-    } else {
-        comfirmPassword.setEchoChar('\u2022');
-        newPassword.setEchoChar('\u2022');
-    }
+     
     }//GEN-LAST:event_showpasswordActionPerformed
 
     private void newPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPasswordActionPerformed
@@ -227,10 +241,46 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_newPasswordActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        LoginForm lf = new LoginForm();
-        lf.setVisible(true);
-        this.dispose();
+       
     }//GEN-LAST:event_loginActionPerformed
+
+    private void otpfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otpfieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_otpfieldActionPerformed
+
+    private void otpbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otpbuttonActionPerformed
+       String userEmail = email.getText().trim(); // Get user-entered email
+
+    if (userEmail.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please enter your email first.");
+        return;
+    }
+
+    // Generate a 6-digit OTP
+    String otp = String.format("%06d", new Random().nextInt(999999));
+
+    // Send OTP to the entered email
+    boolean sent = EmailSender.sendOtpEmail(userEmail, otp);
+
+    if (sent) {
+        try {
+            // Save OTP to the database
+            dbConnector dbc = new dbConnector();
+            String sql = "INSERT INTO otp_requests (user_email, otp_code, expiry_time, is_used) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE), 0)";
+            PreparedStatement pst = dbc.getConnection().prepareStatement(sql);
+            pst.setString(1, userEmail);
+            pst.setString(2, otp);
+            pst.executeUpdate();
+            pst.close();
+
+            JOptionPane.showMessageDialog(this, "OTP sent successfully to your email.");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Failed to save OTP: " + e.getMessage());
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Failed to send OTP email.");
+    }
+    }//GEN-LAST:event_otpbuttonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -279,6 +329,8 @@ public class forgot extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton login;
     private javax.swing.JPasswordField newPassword;
+    private javax.swing.JButton otpbutton;
+    private javax.swing.JTextField otpfield;
     private javax.swing.JButton reset;
     private javax.swing.JCheckBox showpassword;
     // End of variables declaration//GEN-END:variables

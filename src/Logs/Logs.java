@@ -179,14 +179,15 @@ public class Logs extends javax.swing.JInternalFrame {
         String keyword = searchBar.getText().trim();
     try {
         dbConnector dbc = new dbConnector();
-        String query = "SELECT l.l_id, l.u_id, u.u_fname, l.l_action, l.l_timestamp " +
-                       "FROM tbl_logs l " +
-                       "JOIN tbl_users u ON l.u_id = u.u_id " +
-                       "WHERE l.l_id LIKE '%" + keyword + "%' " +
-                       "OR l.u_id LIKE '%" + keyword + "%' " +
-                       "OR u.u_fname LIKE '%" + keyword + "%' " +
-                       "OR l.l_action LIKE '%" + keyword + "%' " +
-                       "OR l.l_timestamp LIKE '%" + keyword + "%'";
+        String query = "SELECT l.l_id, u.u_fname, u.u_type, l.l_action, l.l_timestamp " +
+               "FROM tbl_logs l " +
+               "JOIN tbl_users u ON l.u_id = u.u_id " +
+               "WHERE l.l_id LIKE '%" + keyword + "%' " +
+               "OR u.u_fname LIKE '%" + keyword + "%' " +
+               "OR u.u_type LIKE '%" + keyword + "%' " +
+               "OR l.l_action LIKE '%" + keyword + "%' " +
+               "OR l.l_timestamp LIKE '%" + keyword + "%'";
+
         ResultSet rs = dbc.getData(query);
         
         if (!rs.isBeforeFirst()) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2025 at 11:50 AM
+-- Generation Time: May 16, 2025 at 09:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,21 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `otp_requests`
+--
+
+CREATE TABLE `otp_requests` (
+  `id` int(11) NOT NULL,
+  `user_email` varchar(255) NOT NULL,
+  `otp_code` varchar(10) NOT NULL,
+  `expiry_time` datetime NOT NULL,
+  `is_used` tinyint(1) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_logs`
 --
 
@@ -33,27 +48,6 @@ CREATE TABLE `tbl_logs` (
   `l_action` varchar(255) NOT NULL,
   `l_timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbl_logs`
---
-
-INSERT INTO `tbl_logs` (`l_id`, `u_id`, `l_action`, `l_timestamp`) VALUES
-(1, 1, 'Login', '2025-05-09 06:41:37'),
-(2, 1, 'Login', '2025-05-09 06:48:57'),
-(3, 1, 'Login', '2025-05-13 09:07:18'),
-(4, 1, 'Login', '2025-05-13 09:09:15'),
-(5, 2, 'Login', '2025-05-13 09:09:38'),
-(6, 1, 'Login', '2025-05-13 09:10:37'),
-(7, 3, 'Login', '2025-05-13 09:11:44'),
-(8, 2, 'Login', '2025-05-13 09:12:04'),
-(9, 1, 'Login', '2025-05-13 09:14:31'),
-(10, 2, 'Login', '2025-05-13 09:16:25'),
-(11, 1, 'Login', '2025-05-13 09:17:33'),
-(12, 1, 'Login', '2025-05-13 09:19:41'),
-(13, 3, 'Login', '2025-05-13 09:21:46'),
-(14, 3, 'Login', '2025-05-13 09:24:54'),
-(15, 2, 'Login', '2025-05-13 09:26:58');
 
 -- --------------------------------------------------------
 
@@ -136,13 +130,19 @@ CREATE TABLE `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_contact`, `u_gender`, `u_username`, `u_password`, `u_type`, `u_status`) VALUES
-(1, 'Rcjie', 'Villena', 'weakpointz05@gmail.com', '09123456789', 'Male', 'admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', 'Active'),
-(2, 'Dave', 'Tupas', 'dave@gmail.com', '09987654321', 'Male', 'dave', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'USER', 'Active'),
-(3, 'Anthony', 'Teves', 'teves@gmail.com', '09123456789', 'Male', 'teves', '0755ba9f152a6620a080afe71d32cd8e4b743438f06df94cc58c5a156340f744', 'USER', 'Active');
+(1, 'Rcjie', 'Villena', 'weakpointz05@gmail.com', '09123456789', 'Male', 'admin', 'rcjie123', 'ADMIN', 'Active'),
+(2, 'Dave', 'Tupas', 'godzdemonz05@gmail.com', '09987654321', 'Male', 'dave', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'USER', 'Active'),
+(3, 'Anthony', 'Teves', 'mike@stcecilia.edu.ph', '09123456789', 'Male', 'teves', '0755ba9f152a6620a080afe71d32cd8e4b743438f06df94cc58c5a156340f744', 'USER', 'Active');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `otp_requests`
+--
+ALTER TABLE `otp_requests`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tbl_logs`
@@ -177,10 +177,16 @@ ALTER TABLE `tbl_users`
 --
 
 --
+-- AUTO_INCREMENT for table `otp_requests`
+--
+ALTER TABLE `otp_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_logs`
 --
 ALTER TABLE `tbl_logs`
-  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_project`
