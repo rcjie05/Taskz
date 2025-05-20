@@ -1,6 +1,8 @@
 package myApp;
 
 import config.dbConnector;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Random;
 import javax.swing.JOptionPane;
+import myApp.EmailSender;
 
 
 
@@ -26,6 +29,44 @@ public class forgot extends javax.swing.JFrame {
     public forgot() {
         initComponents();
         
+    }
+    private String getUserFirstName(String email) {
+        String firstName = null;
+        try {
+            dbConnector dbc = new dbConnector();
+            Connection conn = dbc.getConnection();
+            String query = "SELECT u_fname FROM tbl_users WHERE u_email = ?";
+            PreparedStatement pst = conn.prepareStatement(query);
+            pst.setString(1, email);
+            ResultSet rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                firstName = rs.getString("u_fname");
+            }
+            
+            rs.close();
+            pst.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error fetching user name: " + e.getMessage());
+        }
+        return firstName;
+    }
+    
+        private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            
+            for (byte b : hashedBytes) {
+                hexString.append(String.format("%02x", b));
+            }
+            
+            return hexString.toString(); // Return hashed password as a hex string
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
     }
 
     
@@ -175,57 +216,80 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_emailActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
-           String userEmail = email.getText().trim();
-    String inputOtp = otpfield.getText().trim();
-    String newPass = new String(newPassword.getPassword());
-    String confirmPass = new String(comfirmPassword.getPassword());
+          String userEmail = email.getText().trim();
+        String inputOtp = otpfield.getText().trim();
+        String newPass = new String(newPassword.getPassword());
+        String confirmPass = new String(comfirmPassword.getPassword());
 
-    if (userEmail.isEmpty() || inputOtp.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "All fields are required.");
-        return;
-    }
-
-    if (!newPass.equals(confirmPass)) {
-        JOptionPane.showMessageDialog(this, "Passwords do not match.");
-        return;
-    }
-
-    try {
-        dbConnector dbc = new dbConnector();
-        Connection conn = dbc.getConnection();
-
-        String checkOtp = "SELECT * FROM otp_requests WHERE user_email=? AND otp_code=? AND is_used=0 AND expiry_time > NOW()";
-        PreparedStatement pst = conn.prepareStatement(checkOtp);
-        pst.setString(1, userEmail);
-        pst.setString(2, inputOtp);
-        ResultSet rs = pst.executeQuery();
-
-        if (rs.next()) {
-            // OTP valid — update password
-            String updatePassword = "UPDATE tbl_users SET u_password=? WHERE u_email=?";
-            pst = conn.prepareStatement(updatePassword);
-            pst.setString(1, newPass); // Consider hashing
-            pst.setString(2, userEmail);
-            pst.executeUpdate();
-
-            // Mark OTP as used
-            String markOtpUsed = "UPDATE otp_requests SET is_used=1 WHERE user_email=? AND otp_code=?";
-            pst = conn.prepareStatement(markOtpUsed);
-            pst.setString(1, userEmail);
-            pst.setString(2, inputOtp);
-            pst.executeUpdate();
-
-            JOptionPane.showMessageDialog(this, "Password reset successful.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid or expired OTP.");
+        if (userEmail.isEmpty() || inputOtp.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required.");
+            return;
         }
 
-        rs.close();
-        pst.close();
-        conn.close();
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error resetting password: " + e.getMessage());
-    }
+        if (!newPass.equals(confirmPass)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match.");
+            return;
+        }
+
+        // Hash the new password using SHA-256
+        String hashedPassword = hashPassword(newPass);
+
+        try {
+            dbConnector dbc = new dbConnector();
+            Connection conn = dbc.getConnection();
+
+            // Check if the OTP is valid and not expired
+            String checkOtp = "SELECT * FROM otp_requests WHERE user_email=? AND otp_code=? AND is_used=0 AND expiry_time > NOW()";
+            PreparedStatement pst = conn.prepareStatement(checkOtp);
+            pst.setString(1, userEmail);
+            pst.setString(2, inputOtp);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                // OTP valid — update password with hashed password
+                String updatePassword = "UPDATE tbl_users SET u_password=? WHERE u_email=?";
+                pst = conn.prepareStatement(updatePassword);
+                pst.setString(1, hashedPassword); // Store the hashed password
+                pst.setString(2, userEmail);
+                pst.executeUpdate();
+
+                // Mark OTP as used
+                String markOtpUsed = "UPDATE otp_requests SET is_used=1 WHERE user_email=? AND otp_code=?";
+                pst = conn.prepareStatement(markOtpUsed);
+                pst.setString(1, userEmail);
+                pst.setString(2, inputOtp);
+                pst.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Password reset successful.");
+
+                // Ask the user if they want to go to the login screen
+                int response = JOptionPane.showConfirmDialog(this, 
+                    "Do you want to go to the login page?", 
+                    "Go to Login", 
+                    JOptionPane.YES_NO_OPTION);
+
+                if (response == JOptionPane.YES_OPTION) {
+                    // Go to the login screen
+                    LoginForm l = new LoginForm();
+                    l.setVisible(true);
+                    this.dispose();
+                } else {
+                    // Stay on the current page (optional: clear fields, etc.)
+                    email.setText("");
+                    otpfield.setText("");
+                    newPassword.setText("");
+                    comfirmPassword.setText("");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid or expired OTP.");
+            }
+
+            rs.close();
+            pst.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error resetting password: " + e.getMessage());
+        }
     }//GEN-LAST:event_resetActionPerformed
 
     private void comfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comfirmPasswordActionPerformed
@@ -233,7 +297,13 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_comfirmPasswordActionPerformed
 
     private void showpasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showpasswordActionPerformed
-     
+        if (showpassword.isSelected()) {
+        newPassword.setEchoChar((char) 0);
+        comfirmPassword.setEchoChar((char) 0);
+        } else {
+        newPassword.setEchoChar('\u2022');
+        comfirmPassword.setEchoChar('\u2022');
+       }
     }//GEN-LAST:event_showpasswordActionPerformed
 
     private void newPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPasswordActionPerformed
@@ -241,7 +311,9 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_newPasswordActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-       
+       LoginForm l = new LoginForm();
+       l.setVisible(true);
+       this.dispose();
     }//GEN-LAST:event_loginActionPerformed
 
     private void otpfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otpfieldActionPerformed
@@ -249,37 +321,43 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_otpfieldActionPerformed
 
     private void otpbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otpbuttonActionPerformed
-       String userEmail = email.getText().trim(); // Get user-entered email
+        String userEmail = email.getText().trim(); // Get user-entered email
 
-    if (userEmail.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please enter your email first.");
-        return;
-    }
-
-    // Generate a 6-digit OTP
-    String otp = String.format("%06d", new Random().nextInt(999999));
-
-    // Send OTP to the entered email
-    boolean sent = EmailSender.sendOtpEmail(userEmail, otp);
-
-    if (sent) {
-        try {
-            // Save OTP to the database
-            dbConnector dbc = new dbConnector();
-            String sql = "INSERT INTO otp_requests (user_email, otp_code, expiry_time, is_used) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE), 0)";
-            PreparedStatement pst = dbc.getConnection().prepareStatement(sql);
-            pst.setString(1, userEmail);
-            pst.setString(2, otp);
-            pst.executeUpdate();
-            pst.close();
-
-            JOptionPane.showMessageDialog(this, "OTP sent successfully to your email.");
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Failed to save OTP: " + e.getMessage());
+        if (userEmail.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter your email first.");
+            return;
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Failed to send OTP email.");
-    }
+
+        // Fetch the user's first name
+        String userFirstName = getUserFirstName(userEmail);
+        if (userFirstName == null) {
+            JOptionPane.showMessageDialog(this, "User not found.");
+            return;
+        }
+
+        // Generate a 6-digit OTP
+        String otp = String.format("%06d", new Random().nextInt(999999));
+
+        // Send OTP to the entered email
+        boolean sent = EmailSender.sendOtpEmail(userEmail, otp, userFirstName);
+        if (sent) {
+            try {
+                // Save OTP to the database
+                dbConnector dbc = new dbConnector();
+                String sql = "INSERT INTO otp_requests (user_email, otp_code, expiry_time, is_used) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE), 0)";
+                PreparedStatement pst = dbc.getConnection().prepareStatement(sql);
+                pst.setString(1, userEmail);
+                pst.setString(2, otp);
+                pst.executeUpdate();
+                pst.close();
+
+                JOptionPane.showMessageDialog(this, "OTP sent successfully to your email.");
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Failed to save OTP: " + e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to send OTP email.");
+        }
     }//GEN-LAST:event_otpbuttonActionPerformed
 
     /**

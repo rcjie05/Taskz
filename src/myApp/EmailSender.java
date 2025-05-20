@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package myApp;
 
 import java.util.Properties;
@@ -10,36 +5,56 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 public class EmailSender {
-    public static boolean sendOtpEmail(String toEmail, String otp) {
-        final String fromEmail = "godzdemonz05@gmail.com"; // fixed sender email
-        final String password = "apwg zakm dpdq ngze";       // fixed app password
+    
+    public static boolean sendOtpEmail(String toEmail, String otp, String firstName) {
+        // Define email host and port (this example uses Gmail)
+        String host = "smtp.gmail.com";
+        String port = "587"; // TLS port for Gmail
+        String fromEmail = "godzdemonz05@gmail.com"; // Change this to your email
+        String fromPassword = "apwg zakm dpdq ngze"; // Change this to your email password
+        
+        // Setup properties for the mail session
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", port);
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
 
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        // Create a new session
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, fromPassword);
+            }
+        });
 
-        Session session = Session.getInstance(props,
-            new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(fromEmail, password);
-                }
-            });
-
+        // Prepare the email message
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(fromEmail));             // sender (fixed)
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(toEmail));                    // recipient (dynamic)
-            message.setSubject("Your OTP Code");
-            message.setText("Your OTP is: " + otp);
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setSubject("Password Reset OTP");
 
+            // Email content
+            String emailContent = "Hello " + firstName + ",\n\n"
+                                + "Your OTP for password reset is: " + otp + "\n\n"
+                                
+                                +"We received a request to reset your password for the Task Management System. " +
+                                "Please use the following One-Time Password (OTP) to proceed with resetting your password:\n\n" +
+                                "OTP: " + otp + "\n\n" +
+                                "This OTP will expire in 10 minutes. If you did not request a password reset, please ignore this email.\n\n" +
+                                "Best regards,\n" +
+                                "Task Management System Support Team";
+
+            message.setText(emailContent);
+
+            // Send the email
             Transport.send(message);
-            return true;
+            System.out.println("OTP sent successfully.");
+            return true; // Email sent successfully
         } catch (MessagingException e) {
             e.printStackTrace();
-            return false;
+            return false; // Email sending failed
         }
     }
 }

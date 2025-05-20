@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2025 at 09:42 AM
+-- Generation Time: May 20, 2025 at 02:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,6 +48,16 @@ CREATE TABLE `tbl_logs` (
   `l_action` varchar(255) NOT NULL,
   `l_timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_logs`
+--
+
+INSERT INTO `tbl_logs` (`l_id`, `u_id`, `l_action`, `l_timestamp`) VALUES
+(1, 1, 'Login failed', '2025-05-20 11:56:04'),
+(2, 1, 'Login failed', '2025-05-20 11:56:13'),
+(3, 1, 'Login', '2025-05-20 11:59:45'),
+(4, 1, 'Logout', '2025-05-20 12:00:15');
 
 -- --------------------------------------------------------
 
@@ -130,8 +140,8 @@ CREATE TABLE `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_contact`, `u_gender`, `u_username`, `u_password`, `u_type`, `u_status`) VALUES
-(1, 'Rcjie', 'Villena', 'weakpointz05@gmail.com', '09123456789', 'Male', 'admin', 'rcjie123', 'ADMIN', 'Active'),
-(2, 'Dave', 'Tupas', 'godzdemonz05@gmail.com', '09987654321', 'Male', 'dave', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'USER', 'Active'),
+(1, 'Rcjie', 'Villena', 'godzdemonz05@gmail.com', '09123456789', 'Male', 'admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', 'Active'),
+(2, 'Dave', 'Tupas', 'weakpointz05@gmail.com', '09987654321', 'Male', 'dave', '0644a2e329ec3e997a352bea6d045223b6626f8a026e569675991162a32f9be6', 'USER', 'Active'),
 (3, 'Anthony', 'Teves', 'mike@stcecilia.edu.ph', '09123456789', 'Male', 'teves', '0755ba9f152a6620a080afe71d32cd8e4b743438f06df94cc58c5a156340f744', 'USER', 'Active');
 
 --
@@ -186,7 +196,7 @@ ALTER TABLE `otp_requests`
 -- AUTO_INCREMENT for table `tbl_logs`
 --
 ALTER TABLE `tbl_logs`
-  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_project`
