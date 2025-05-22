@@ -11,10 +11,14 @@ import Admin.Taskpage;
 import config.dbConnector;
 import Admin.Userpage;
 import config.Session;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import myApp.LoginForm;
@@ -27,6 +31,7 @@ import myApp.LoginForm;
 public class crud_tasks extends javax.swing.JFrame {   
     public crud_tasks() {
         initComponents();
+        populateComboBoxes();
     }
     private void populateComboBoxes() {
     dbConnector db = new dbConnector();
@@ -38,7 +43,7 @@ public class crud_tasks extends javax.swing.JFrame {
         while (rsProjects.next()) {
             String projectName = rsProjects.getString("p_name");
             projectModel.addElement(projectName);
-            System.out.println("Project Name loaded: " + projectName);  // Debug log
+            System.out.println("Project Name loaded: " + projectName);
         }
         pname.setModel(projectModel);
         String sqlUsers = "SELECT u_fname FROM tbl_users"; 
@@ -48,13 +53,13 @@ public class crud_tasks extends javax.swing.JFrame {
         while (rsUsers.next()) {
             String userName = rsUsers.getString("u_fname");
             userModel.addElement(userName);
-            System.out.println("User Name loaded: " + userName);  // Debug log
+            System.out.println("User Name loaded: " + userName);
         }
         assignuser.setModel(userModel);
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
     }
-}
+}    
        
 
     /**
@@ -89,6 +94,8 @@ public class crud_tasks extends javax.swing.JFrame {
         user_id = new javax.swing.JTextField();
         umaker = new javax.swing.JTextField();
         assignuser = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        salary = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -105,8 +112,10 @@ public class crud_tasks extends javax.swing.JFrame {
         jPanel1.setLayout(null);
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECT", "Active", "Not Active", "Completed" }));
+        jPanel2.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 291, 220, 30));
 
         add.setText("Add");
         add.addActionListener(new java.awt.event.ActionListener() {
@@ -114,6 +123,7 @@ public class crud_tasks extends javax.swing.JFrame {
                 addActionPerformed(evt);
             }
         });
+        jPanel2.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 327, 81, 28));
 
         cancel.setText("Cancel");
         cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -121,30 +131,39 @@ public class crud_tasks extends javax.swing.JFrame {
                 cancelActionPerformed(evt);
             }
         });
+        jPanel2.add(cancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(279, 361, 81, 28));
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Start Date:");
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 222, 120, 26));
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Due Date:");
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 256, 120, 26));
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Maker ID");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 57, 120, 26));
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Status:");
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 292, 120, 26));
 
         assign_name.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         assign_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         assign_name.setText("Assign Name:");
+        jPanel2.add(assign_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 120, 26));
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Project Name:");
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 92, 120, 26));
+        jPanel2.add(date, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 220, 28));
+        jPanel2.add(due, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 256, 220, 29));
 
         update.setText("Update");
         update.setEnabled(false);
@@ -153,6 +172,7 @@ public class crud_tasks extends javax.swing.JFrame {
                 updateActionPerformed(evt);
             }
         });
+        jPanel2.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(279, 327, 81, 28));
 
         clear.setText("Clear");
         clear.addActionListener(new java.awt.event.ActionListener() {
@@ -160,6 +180,7 @@ public class crud_tasks extends javax.swing.JFrame {
                 clearActionPerformed(evt);
             }
         });
+        jPanel2.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 361, 81, 28));
 
         pname.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Project", "Item 2", "Item 3", "Item 4" }));
         pname.addActionListener(new java.awt.event.ActionListener() {
@@ -167,20 +188,26 @@ public class crud_tasks extends javax.swing.JFrame {
                 pnameActionPerformed(evt);
             }
         });
+        jPanel2.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 92, 220, 26));
 
         jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("task_id");
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 21, 110, 26));
 
         t_id.setEnabled(false);
+        jPanel2.add(t_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 220, 30));
 
         jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Maker Name:");
+        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 157, 120, 26));
 
         user_id.setEnabled(false);
+        jPanel2.add(user_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 56, 220, 30));
 
         umaker.setEnabled(false);
+        jPanel2.add(umaker, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 160, 220, 25));
 
         assignuser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User", "Item 2", "Item 3", "Item 4" }));
         assignuser.addActionListener(new java.awt.event.ActionListener() {
@@ -188,95 +215,20 @@ public class crud_tasks extends javax.swing.JFrame {
                 assignuserActionPerformed(evt);
             }
         });
+        jPanel2.add(assignuser, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 190, 220, 26));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(150, 150, 150)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(clear, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(update, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(assign_name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pname, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(status, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(t_id)
-                            .addComponent(due, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(user_id, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                            .addComponent(umaker)
-                            .addComponent(assignuser, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(53, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pname, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(umaker, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(assign_name, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(assignuser, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(due, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(clear, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        jLabel8.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Salary:");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 120, 26));
+
+        salary.setEnabled(false);
+        salary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salaryActionPerformed(evt);
+            }
+        });
+        jPanel2.add(salary, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, 220, 25));
 
         jPanel1.add(jPanel2);
         jPanel2.setBounds(290, 20, 370, 400);
@@ -314,45 +266,37 @@ public class crud_tasks extends javax.swing.JFrame {
     java.util.Date t_date = date.getDate();
     java.util.Date t_duedate = due.getDate();
 
-    // Check if any required field is empty
-     if (p_name.equals("Select Project") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
+    if (p_name.equals("Select Project") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
         JOptionPane.showMessageDialog(null, "Please fill in all required fields.");
         return;
     }
 
-    // Get current date and time
-    java.util.Date currentDate = new java.util.Date(); // Current date and time
-
-    // Check if the task start date or due date is before the current date and time
+    java.util.Date currentDate = new java.util.Date();
     if (t_date.before(currentDate)) {
         JOptionPane.showMessageDialog(null, "Start date cannot be earlier than the current date.");
         return;
     }
 
-    // Check if the due date is earlier than the current date and time
     if (t_duedate.before(t_date)) {
         JOptionPane.showMessageDialog(null, "Due date cannot be earlier than the start date.");
         return;
     }
 
-    // Check if the start date is after the due date
-    if (t_date.after(t_duedate)) {
-        JOptionPane.showMessageDialog(null, "Start date cannot be after the due date.");
-        return;
-    }
-
     java.sql.Date sqlt_date = new java.sql.Date(t_date.getTime());
     java.sql.Date sqlt_duedate = new java.sql.Date(t_duedate.getTime());
+
     Session session = Session.getInstance();
     int creatorId = session.getU_id();
     String creatorName = session.getU_fname();
-    String u_fname = creatorName != null ? creatorName : "Unknown";
+    String u_fname = (creatorName != null) ? creatorName : "Unknown";
+    String p_salary = "0"; // TODO: Set salary properly if needed
+
     dbConnector db = new dbConnector();
 
     try {
-        // Get Project ID based on project name
-        String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         int p_id = -1;
+
+        String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
             pst.setString(1, p_name);
             ResultSet rs = pst.executeQuery();
@@ -364,12 +308,10 @@ public class crud_tasks extends javax.swing.JFrame {
             }
         }
 
-        // Get the assigned user
         String assignUser = (String) assignuser.getSelectedItem();
         String userAssign = (assignUser != null && !assignUser.trim().isEmpty() && !assignUser.equals("Select User")) ? assignUser : "";
 
         if (!userAssign.isEmpty()) {
-            // Check if the assigned user exists in the tbl_users table
             String checkUserQuery = "SELECT COUNT(*) FROM tbl_users WHERE u_fname = ?";
             try (PreparedStatement pst = db.connect.prepareStatement(checkUserQuery)) {
                 pst.setString(1, userAssign);
@@ -381,23 +323,18 @@ public class crud_tasks extends javax.swing.JFrame {
             }
         }
 
-        // Insert the new task into tbl_task
-        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, u_fname, user_assign, t_date, t_duedate, t_status, accept) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, p_salary, u_fname, user_assign, t_date, t_duedate, t_status, accept) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstInsert = db.connect.prepareStatement(insertQuery)) {
             pstInsert.setInt(1, p_id);
             pstInsert.setInt(2, creatorId);
             pstInsert.setString(3, p_name);
-            pstInsert.setString(4, u_fname);
-            pstInsert.setString(5, userAssign);
-            pstInsert.setDate(6, sqlt_date);
-            pstInsert.setDate(7, sqlt_duedate);
-            pstInsert.setString(8, t_status);
-
-            if (!userAssign.isEmpty()) {
-                pstInsert.setString(9, "Accepted");
-            } else {
-                pstInsert.setNull(9, java.sql.Types.VARCHAR);
-            }
+            pstInsert.setString(4, p_salary);
+            pstInsert.setString(5, u_fname);
+            pstInsert.setString(6, userAssign);
+            pstInsert.setDate(7, sqlt_date);
+            pstInsert.setDate(8, sqlt_duedate);
+            pstInsert.setString(9, t_status);
+            pstInsert.setString(10, !userAssign.isEmpty() ? "Accepted" : "Pending");
 
             int rowsAffected = pstInsert.executeUpdate();
             if (rowsAffected > 0) {
@@ -472,8 +409,7 @@ public class crud_tasks extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-                                      
-    if (t_id.getText().isEmpty() || pname.getSelectedItem().equals("Select Project") ||
+      if (t_id.getText().isEmpty() || pname.getSelectedItem().equals("Select Project") ||
         umaker.getText().isEmpty() || date.getDate() == null ||
         due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
 
@@ -490,8 +426,10 @@ public class crud_tasks extends javax.swing.JFrame {
         String selectedProject = (String) pname.getSelectedItem();
         String currentuser = umaker.getText().trim();
         String selectedUser = (String) assignuser.getSelectedItem();
+
         int p_id = -1;
         int u_id = -1;
+
         String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
             pst.setString(1, selectedProject);
@@ -503,6 +441,7 @@ public class crud_tasks extends javax.swing.JFrame {
                 return;
             }
         }
+
         String getUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(getUidQuery)) {
             pst.setString(1, currentuser);
@@ -514,19 +453,21 @@ public class crud_tasks extends javax.swing.JFrame {
                 return;
             }
         }
+
         String sql = "UPDATE tbl_task SET p_id = ?, u_id = ?, p_name = ?, u_fname = ?, user_assign = ?, " +
                      "t_date = ?, t_duedate = ?, t_status = ?, accept = CASE WHEN user_assign IS NOT NULL THEN 'Accepted' ELSE 'Pending' END " +
                      "WHERE t_id = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(sql)) {
             pst.setInt(1, p_id);
-            pst.setInt(2, u_id); 
-            pst.setString(3, selectedProject); 
-            pst.setString(4, currentuser); 
-            pst.setString(5, selectedUser); 
+            pst.setInt(2, u_id);
+            pst.setString(3, selectedProject);
+            pst.setString(4, currentuser);
+            pst.setString(5, selectedUser);
             pst.setString(6, formattedDate);
             pst.setString(7, formattedDueDate);
             pst.setString(8, status.getSelectedItem().toString());
             pst.setInt(9, Integer.parseInt(t_id.getText()));
+
             int rowsAffected = pst.executeUpdate();
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Task updated successfully!");
@@ -546,7 +487,7 @@ public class crud_tasks extends javax.swing.JFrame {
     } finally {
         try {
             if (db.connect != null && !db.connect.isClosed()) {
-                db.connect.close(); 
+                db.connect.close();
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage());
@@ -565,6 +506,10 @@ public class crud_tasks extends javax.swing.JFrame {
     private void assignuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignuserActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_assignuserActionPerformed
+
+    private void salaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salaryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salaryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -619,10 +564,12 @@ public class crud_tasks extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JComboBox<String> pname;
+    public javax.swing.JTextField salary;
     public javax.swing.JComboBox<String> status;
     public javax.swing.JTextField t_id;
     public javax.swing.JTextField umaker;

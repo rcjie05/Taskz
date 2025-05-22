@@ -3,12 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/CrudsAdmin/crud_project.java</file>
-            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/User/change_pass.java</file>
-            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/Logs/Logs.java</file>
-            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/config/dbConnector.java</file>
-            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/Admin/AdminDashboard.java</file>
-            <file>file:/C:/Users/davetupas/Desktop/Taskz/src/User/Acceptedpage.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/dbsql/task%20(1).sql</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/Admin/AdminDashboard.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/config/Session.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/Printer/printer.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/CrudsAdmin/crud_tasks.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/CrudsAdmin/crud_project.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/Printer/PrintTaskz.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/Printer/printerclass.java</file>
+            <file>file:/C:/Users/PC15/Desktop/Taskz/src/Admin/Projectpage.java</file>
         </group>
     </open-files>
 </project-private>

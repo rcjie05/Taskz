@@ -50,7 +50,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         report = new javax.swing.JButton();
         userPage = new javax.swing.JButton();
         projectPage = new javax.swing.JButton();
-        taskPage = new javax.swing.JButton();
+        print = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         fname = new javax.swing.JLabel();
         lname = new javax.swing.JLabel();
@@ -60,6 +60,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         username = new javax.swing.JLabel();
         home = new javax.swing.JButton();
         setting = new javax.swing.JLabel();
+        taskPage1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-gear-100.png"))); // NOI18N
@@ -79,7 +80,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("ADMIN DASHBOARD");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 190, 30));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 190, 30));
 
         javax.swing.GroupLayout mainDesktopLayout = new javax.swing.GroupLayout(mainDesktop);
         mainDesktop.setLayout(mainDesktopLayout);
@@ -92,7 +93,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGap(0, 370, Short.MAX_VALUE)
         );
 
-        jPanel1.add(mainDesktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 80, 540, -1));
+        jPanel1.add(mainDesktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 80, 540, -1));
 
         jPanel2.setBackground(new java.awt.Color(51, 255, 153));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -104,7 +105,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 reportActionPerformed(evt);
             }
         });
-        jPanel2.add(report, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 240, -1, 40));
+        jPanel2.add(report, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 100, 40));
 
         userPage.setBackground(new java.awt.Color(204, 255, 102));
         userPage.setText("User Page");
@@ -121,7 +122,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 userPageActionPerformed(evt);
             }
         });
-        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 120, 40));
+        jPanel2.add(userPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 100, 40));
 
         projectPage.setBackground(new java.awt.Color(204, 255, 102));
         projectPage.setText("Project Page");
@@ -138,24 +139,24 @@ public class AdminDashboard extends javax.swing.JFrame {
                 projectPageActionPerformed(evt);
             }
         });
-        jPanel2.add(projectPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 120, 40));
+        jPanel2.add(projectPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 100, 40));
 
-        taskPage.setBackground(new java.awt.Color(204, 255, 102));
-        taskPage.setText("Task Page");
-        taskPage.addMouseListener(new java.awt.event.MouseAdapter() {
+        print.setBackground(new java.awt.Color(204, 255, 102));
+        print.setText("Print");
+        print.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                taskPageMouseEntered(evt);
+                printMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                taskPageMouseExited(evt);
+                printMouseExited(evt);
             }
         });
-        taskPage.addActionListener(new java.awt.event.ActionListener() {
+        print.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                taskPageActionPerformed(evt);
+                printActionPerformed(evt);
             }
         });
-        jPanel2.add(taskPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, 120, 40));
+        jPanel2.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 340, 100, 40));
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-user-50.png"))); // NOI18N
@@ -207,7 +208,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 homeActionPerformed(evt);
             }
         });
-        jPanel2.add(home, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 70, 40));
+        jPanel2.add(home, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 240, 100, 40));
 
         setting.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         setting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-setting-50.png"))); // NOI18N
@@ -216,18 +217,37 @@ public class AdminDashboard extends javax.swing.JFrame {
                 settingMouseClicked(evt);
             }
         });
-        jPanel2.add(setting, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 50, 50));
+        jPanel2.add(setting, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, 50, 50));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 450));
+        taskPage1.setBackground(new java.awt.Color(204, 255, 102));
+        taskPage1.setText("Task Page");
+        taskPage1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                taskPage1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                taskPage1MouseExited(evt);
+            }
+        });
+        taskPage1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskPage1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(taskPage1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 100, 40));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 250, 450));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 0, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 790, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -278,10 +298,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         mainDesktop.add(pp).setVisible(true);
     }//GEN-LAST:event_projectPageActionPerformed
 
-    private void taskPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskPageActionPerformed
+    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
         Taskpage tp = new Taskpage();
         mainDesktop.add(tp).setVisible(true);
-    }//GEN-LAST:event_taskPageActionPerformed
+    }//GEN-LAST:event_printActionPerformed
 
     private void homeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeMouseEntered
         
@@ -309,18 +329,30 @@ public class AdminDashboard extends javax.swing.JFrame {
         
     }//GEN-LAST:event_projectPageMouseExited
 
-    private void taskPageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskPageMouseEntered
+    private void printMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseEntered
         
-    }//GEN-LAST:event_taskPageMouseEntered
+    }//GEN-LAST:event_printMouseEntered
 
-    private void taskPageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskPageMouseExited
+    private void printMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseExited
         
-    }//GEN-LAST:event_taskPageMouseExited
+    }//GEN-LAST:event_printMouseExited
 
     private void settingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingMouseClicked
         settings s = new settings();
         mainDesktop.add(s).setVisible(true);
     }//GEN-LAST:event_settingMouseClicked
+
+    private void taskPage1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskPage1MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_taskPage1MouseEntered
+
+    private void taskPage1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskPage1MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_taskPage1MouseExited
+
+    private void taskPage1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskPage1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_taskPage1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -371,10 +403,11 @@ public class AdminDashboard extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel2;
     public javax.swing.JLabel lname;
     public javax.swing.JDesktopPane mainDesktop;
+    public javax.swing.JButton print;
     public javax.swing.JButton projectPage;
     public javax.swing.JButton report;
     public javax.swing.JLabel setting;
-    public javax.swing.JButton taskPage;
+    public javax.swing.JButton taskPage1;
     public javax.swing.JButton userPage;
     public javax.swing.JLabel username;
     // End of variables declaration//GEN-END:variables

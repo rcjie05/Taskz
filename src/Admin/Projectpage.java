@@ -45,15 +45,16 @@ public class Projectpage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT p_id, p_name,p_description, u_fname, p_date, p_duedate, p_status FROM tbl_project");
+            ResultSet rs = dbc.getData("SELECT p_id, p_name, p_salary, p_description, u_fname, p_date, p_duedate, p_status FROM tbl_project");
             projectTable.setModel(DbUtils.resultSetToTableModel(rs));
             projectTable.getColumnModel().getColumn(0).setHeaderValue("P ID");
             projectTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-            projectTable.getColumnModel().getColumn(2).setHeaderValue("Description");
-            projectTable.getColumnModel().getColumn(3).setHeaderValue("Maker Name");
-            projectTable.getColumnModel().getColumn(4).setHeaderValue("Start Date");
-            projectTable.getColumnModel().getColumn(5).setHeaderValue("Due Date");
-            projectTable.getColumnModel().getColumn(6).setHeaderValue("Status");
+            projectTable.getColumnModel().getColumn(2).setHeaderValue("Salary");
+            projectTable.getColumnModel().getColumn(3).setHeaderValue("Description");
+            projectTable.getColumnModel().getColumn(4).setHeaderValue("Maker Name");
+            projectTable.getColumnModel().getColumn(5).setHeaderValue("Start Date");
+            projectTable.getColumnModel().getColumn(6).setHeaderValue("Due Date");
+            projectTable.getColumnModel().getColumn(7).setHeaderValue("Status");
             
         }catch(SQLException ex){
                     System.out.println("Errors:"+ex.getMessage());
@@ -184,41 +185,60 @@ public class Projectpage extends javax.swing.JInternalFrame {
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
         int rowIndex = projectTable.getSelectedRow();
 
-        if (rowIndex < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a project to edit.");
+    if (rowIndex < 0) {
+        JOptionPane.showMessageDialog(null, "Please select a project to edit.");
+        return;
+    }
+
+    try {
+        TableModel model = projectTable.getModel();
+        int projectIdToEdit = (int) model.getValueAt(rowIndex, 0);
+
+        dbConnector dbc = new dbConnector();
+        String query = "SELECT * FROM tbl_project WHERE p_id = '" + projectIdToEdit + "'";
+        ResultSet rs = dbc.getData(query);
+
+        if (rs != null && rs.next()) {
+            // Save project data to session
+            Session session = Session.getInstance();
+            session.setP_id(rs.getInt("p_id"));
+            session.setP_name(rs.getString("p_name"));
+            session.setP_salary(rs.getString("p_salary"));
+            session.setP_description(rs.getString("p_description"));
+            session.setU_fname(rs.getString("u_fname"));
+
+            // Launch form and populate fields
+            crud_project ap = new crud_project();
+            ap.p_id.setText(String.valueOf(rs.getInt("p_id")));
+            ap.user_id.setText(String.valueOf(rs.getInt("u_id")));
+            ap.pname.setText(rs.getString("p_name"));
+            ap.salary.setText(rs.getString("p_salary"));
+            ap.description.setText(rs.getString("p_description"));
+            ap.uname.setText(rs.getString("u_fname"));
+            ap.date.setDate(rs.getDate("p_date"));
+            ap.due.setDate(rs.getDate("p_duedate"));
+            ap.status.setSelectedItem(rs.getString("p_status"));
+
+            // Enable update mode
+            ap.add.setEnabled(false);
+            ap.update.setEnabled(true);
+
+            ap.setVisible(true);
+
+            // Close current frame
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+            parent.dispose();
         } else {
-            try {
-                dbConnector dbc = new dbConnector();
-                TableModel model = projectTable.getModel();
-                int projectIdToEdit = (int) model.getValueAt(rowIndex, 0);
-                Session session = Session.getInstance();
-                session.setP_id(projectIdToEdit);
-
-                crud_project ap = new crud_project();
-                ResultSet rs = dbc.getData("SELECT * FROM tbl_project WHERE p_id = '" + projectIdToEdit + "'");
-                if (rs.next()) {
-                    ap.user_id.setText("" + rs.getInt("u_id"));
-                    ap.pname.setText("" + rs.getString("p_name"));
-                    ap.uname.setText("" + rs.getString("u_fname"));
-                    java.util.Date pDate = rs.getDate("p_date");
-                    java.util.Date pDueDate = rs.getDate("p_duedate");
-                    ap.date.setDate(pDate);
-                    ap.due.setDate(pDueDate);
-                    ap.status.setSelectedItem("" + rs.getString("p_status"));
-                    ap.add.setEnabled(false);
-                    ap.update.setEnabled(true);
-
-                    ap.setVisible(true);
-                    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-                    parent.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error: Project with ID " + projectIdToEdit + " not found.");
-                }
-
-            } catch (SQLException ex) {
-                Logger.getLogger(Projectpage.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            JOptionPane.showMessageDialog(null, "Project not found.");
         }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
+        ex.printStackTrace();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Unexpected error: " + e.getMessage());
+        e.printStackTrace();
+    }
     }//GEN-LAST:event_editActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed

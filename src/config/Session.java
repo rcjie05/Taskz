@@ -24,7 +24,9 @@ public class Session {
     private String u_gender;
     private String u_type;
     private String u_status;
-    
+    private String p_salary;
+    private String p_description;
+  
     private Session(){
         //private cons. prevents intance
     }
@@ -116,6 +118,21 @@ public class Session {
     }
     public void setU_status(String u_status) {
         this.u_status = u_status;
+    }
+    public String getP_description() {
+        return p_description;
+    }
+
+    public void setP_description(String p_description) {
+        this.p_description = p_description;
+    }
+
+    public String getP_salary() {
+        return p_salary;
+    }
+
+    public void setP_salary(String p_salary) {
+        this.p_salary = p_salary;
     }
 
 }
