@@ -1,76 +1,54 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package config;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import java.awt.print.*;
 import javax.swing.JPanel;
 
-/**
- *
- * @author davetupas
- */
 public class PanelPrinter implements Printable {
+    private final JPanel panel;
 
-    private JPanel panelToPrint;
-
-    public PanelPrinter(JPanel panelToPrint) {
-        this.panelToPrint = panelToPrint;
+    public PanelPrinter(JPanel panel) {
+        this.panel = panel;
     }
-
-    public PanelPrinter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-   @Override
-public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-    if (pageIndex > 0) {
-        return Printable.NO_SUCH_PAGE;
-    }
-    Graphics2D g2d = (Graphics2D) graphics;
-    // Set page format to bond paper (8.5 x 11 inches)
-    pageFormat.setOrientation(PageFormat.PORTRAIT);
-    pageFormat.setPaper(new Paper());
-    Paper paper = pageFormat.getPaper();
-    double width = 8.5 * 72; // 8.5 inches converted to points (1 inch = 72 points)
-    double height = 11 * 72; // 11 inches converted to points
-    paper.setSize(width, height);
-    paper.setImageableArea(0, 0, width, height);
-    pageFormat.setPaper(paper);
-
-    // Translate graphics context to center of the page with one-inch top margin
-    double panelWidth = panelToPrint.getPreferredSize().getWidth();
-    double panelHeight = panelToPrint.getPreferredSize().getHeight();
-    double xOffset = (pageFormat.getImageableWidth() - panelWidth) / 2;
-    double yOffset = pageFormat.getImageableY() + 72; // One-inch margin at the top
-    g2d.translate(pageFormat.getImageableX() + xOffset, yOffset);
-
-    // Make sure the panel is fully rendered before printing
-    panelToPrint.printAll(graphics);
-
-    return Printable.PAGE_EXISTS;
-}
-
 
     public void printPanel() {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(this);
-        if (job.printDialog()) {
+
+        System.out.println("Calling print dialog...");
+        boolean doPrint = job.printDialog();
+
+        System.out.println("Print dialog returned: " + doPrint);
+
+        if (doPrint) {
             try {
                 job.print();
+                System.out.println("Print job sent.");
             } catch (PrinterException ex) {
                 ex.printStackTrace();
             }
+        } else {
+            System.out.println("Print cancelled by user or no printers available.");
         }
     }
 
-}
+    @Override
+    public int print(Graphics graphics, PageFormat pf, int pageIndex) throws PrinterException {
+    if (pageIndex > 0) {
+        return NO_SUCH_PAGE;
+    }
 
+    Graphics2D g2d = (Graphics2D) graphics;
+    g2d.translate(pf.getImageableX(), pf.getImageableY());
+
+    double scaleX = pf.getImageableWidth() / panel.getWidth();
+    double scaleY = pf.getImageableHeight() / panel.getHeight();
+    double scale = Math.min(scaleX, scaleY);
+
+    g2d.scale(scale, scale);
+    panel.printAll(g2d);
+
+    return PAGE_EXISTS;
+}
+}
