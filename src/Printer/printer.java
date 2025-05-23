@@ -44,7 +44,6 @@ public class printer extends javax.swing.JFrame {
         p_salary.setText(sess.getP_salary());
         t_status.setText(sess.getT_status());
         approver.setText(sess.getU_lname());    // Maker
-        assign_fname.setText(sess.getU_fname()); // Assigned user
     }
 
     private void loadAssignedUserData() {
@@ -113,14 +112,12 @@ public class printer extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         page = new javax.swing.JPanel();
-        cancel = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         assign_name = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        print = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -129,18 +126,20 @@ public class printer extends javax.swing.JFrame {
         t_id = new javax.swing.JLabel();
         approver = new javax.swing.JLabel();
         p_name = new javax.swing.JLabel();
-        assign_fname = new javax.swing.JLabel();
-        assign_lname = new javax.swing.JLabel();
         u_email = new javax.swing.JLabel();
         u_contact = new javax.swing.JLabel();
         u_gender = new javax.swing.JLabel();
         t_status = new javax.swing.JLabel();
         p_salary = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
         user_id = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
+        cancels = new javax.swing.JToggleButton();
+        prints = new javax.swing.JToggleButton();
         jLabel1 = new javax.swing.JLabel();
 
         jLabel9.setText("jLabel9");
@@ -157,14 +156,6 @@ public class printer extends javax.swing.JFrame {
 
         page.setBackground(new java.awt.Color(51, 255, 153));
         page.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        cancel.setText("Cancel");
-        cancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelActionPerformed(evt);
-            }
-        });
-        page.add(cancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, 81, 28));
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -196,14 +187,6 @@ public class printer extends javax.swing.JFrame {
         jLabel6.setText("Project Name:");
         page.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 100, 26));
 
-        print.setText("Print");
-        print.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printActionPerformed(evt);
-            }
-        });
-        page.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 81, 28));
-
         jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Task ID:");
@@ -228,7 +211,7 @@ public class printer extends javax.swing.JFrame {
         image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         image.setText("No I mage");
         image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, 100, 100));
+        page.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 100, 100));
 
         t_id.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         t_id.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -244,16 +227,6 @@ public class printer extends javax.swing.JFrame {
         p_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         p_name.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         page.add(p_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 150, 100, 26));
-
-        assign_fname.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        assign_fname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        assign_fname.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(assign_fname, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 100, 26));
-
-        assign_lname.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        assign_lname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        assign_lname.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(assign_lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, 100, 26));
 
         u_email.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         u_email.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -280,11 +253,6 @@ public class printer extends javax.swing.JFrame {
         p_salary.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         page.add(p_salary, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 360, 100, 26));
 
-        jLabel22.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
-        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel22.setText("Printer Form");
-        page.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 30));
-
         user_id.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         user_id.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         user_id.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -294,6 +262,23 @@ public class printer extends javax.swing.JFrame {
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("User ID:");
         page.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 100, 26));
+
+        jTextField1.setBackground(new java.awt.Color(51, 255, 153));
+        jTextField1.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        page.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, 100, 26));
+
+        jTextField2.setBackground(new java.awt.Color(51, 255, 153));
+        jTextField2.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        page.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 100, 26));
+
+        jLabel22.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel22.setText("Salary Reciept");
+        page.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 30));
 
         jPanel1.add(page);
         page.setBounds(270, 10, 390, 430);
@@ -308,6 +293,24 @@ public class printer extends javax.swing.JFrame {
         jLabel23.setText("SYSTEM");
         jPanel1.add(jLabel23);
         jLabel23.setBounds(20, 40, 140, 30);
+
+        cancels.setText("Cancel");
+        cancels.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelsActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cancels);
+        cancels.setBounds(180, 100, 80, 30);
+
+        prints.setText("Print");
+        prints.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printsActionPerformed(evt);
+            }
+        });
+        jPanel1.add(prints);
+        prints.setBounds(180, 60, 80, 30);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
         jPanel1.add(jLabel1);
@@ -360,9 +363,7 @@ public class printer extends javax.swing.JFrame {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                user_id.setText(String.valueOf(rs.getInt("u_id")));
-                assign_fname.setText(rs.getString("u_fname"));
-                assign_lname.setText(rs.getString("u_lname"));
+                user_id.setText(String.valueOf(rs.getInt("u_id")));                                
                 u_email.setText(rs.getString("u_email"));
                 u_contact.setText(rs.getString("u_contact"));
                 u_gender.setText(rs.getString("u_gender"));
@@ -383,20 +384,20 @@ public class printer extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_formWindowActivated
 
-    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
+    private void printsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printsActionPerformed
+         JPanel myPanel = new JPanel();
+      PanelPrinter pPrint = new PanelPrinter(page);
+      pPrint.printPanel();
+    }//GEN-LAST:event_printsActionPerformed
+
+    private void cancelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelsActionPerformed
         AdminDashboard ads = new AdminDashboard();
             ads.setVisible(true);
             Taskpage tp = new Taskpage();
             tp.setVisible(true);
             ads.mainDesktop.add(tp);
             this.dispose();
-    }//GEN-LAST:event_cancelActionPerformed
-
-    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
-          JPanel myPanel = new JPanel();
-      PanelPrinter pPrint = new PanelPrinter(page);
-      pPrint.printPanel();
-    }//GEN-LAST:event_printActionPerformed
+    }//GEN-LAST:event_cancelsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -437,10 +438,8 @@ public class printer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel approver;
-    private javax.swing.JLabel assign_fname;
-    private javax.swing.JLabel assign_lname;
     private javax.swing.JLabel assign_name;
-    private javax.swing.JButton cancel;
+    private javax.swing.JToggleButton cancels;
     private javax.swing.JLabel image;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -458,10 +457,12 @@ public class printer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel p_name;
     private javax.swing.JLabel p_salary;
     public javax.swing.JPanel page;
-    private javax.swing.JButton print;
+    private javax.swing.JToggleButton prints;
     private javax.swing.JLabel t_id;
     private javax.swing.JLabel t_status;
     private javax.swing.JLabel u_contact;

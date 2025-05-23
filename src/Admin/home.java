@@ -41,44 +41,32 @@ public class home extends javax.swing.JInternalFrame {
     public void displayData(){
     try {
         dbConnector dbc = new dbConnector();
-        ResultSet rs = dbc.getData("SELECT u_fname, u_lname FROM tbl_users");
-        userTable.setModel(DbUtils.resultSetToTableModel(rs));
 
-        // Update column names for the user table
+        // Users table data
+        ResultSet rsUsers = dbc.getData("SELECT u_fname, u_lname FROM tbl_users");
+        userTable.setModel(DbUtils.resultSetToTableModel(rsUsers));
         userTable.getColumnModel().getColumn(0).setHeaderValue("First Name");
         userTable.getColumnModel().getColumn(1).setHeaderValue("Last Name");
 
-    } catch(SQLException ex) {
-        System.out.println("Errors:" + ex.getMessage());
-    }
-
-    try {
-        dbConnector dbc = new dbConnector();
-        ResultSet rs = dbc.getData("SELECT p_name FROM tbl_project");
-        projectTable.setModel(DbUtils.resultSetToTableModel(rs));
-
-        // Update column name for the project table
+        // Projects table data
+        ResultSet rsProjects = dbc.getData("SELECT p_name FROM tbl_project");
+        projectTable.setModel(DbUtils.resultSetToTableModel(rsProjects));
         projectTable.getColumnModel().getColumn(0).setHeaderValue("Project Name");
 
-    } catch(SQLException ex) {
-        System.out.println("Errors:" + ex.getMessage());
-    }
-
-    try {
-        dbConnector dbc = new dbConnector();
-        ResultSet rs = dbc.getData("SELECT t_id, p_name FROM tbl_task");
-        taskTable.setModel(DbUtils.resultSetToTableModel(rs));
-
-        // Update column names for the task table
+        // Tasks table data with JOIN to get project name
+        String taskQuery = "SELECT t.t_id, p.p_name " +
+                           "FROM tbl_task t " +
+                           "JOIN tbl_project p ON t.p_id = p.p_id"; // <-- Make sure p.p_id is the correct PK for tbl_project
+        ResultSet rsTasks = dbc.getData(taskQuery);
+        taskTable.setModel(DbUtils.resultSetToTableModel(rsTasks));
         taskTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
-        taskTable.getColumnModel().getColumn(1).setHeaderValue("Task Name");
+        taskTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
 
     } catch(SQLException ex) {
-        System.out.println("Errors:" + ex.getMessage());
+        System.out.println("Errors: " + ex.getMessage());
     }
-        
-                
-    }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -212,42 +200,53 @@ public class home extends javax.swing.JInternalFrame {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String keyword = searchBar.getText().trim();
-        String selectedCategory = (String) searchCategory.getSelectedItem();  // Get selected category
+    String selectedCategory = (String) searchCategory.getSelectedItem();  // Get selected category
 
-        if (keyword.isEmpty()) {
-            displayData();  // Reload all data if search is empty
-            return;
+    if (keyword.isEmpty()) {
+        displayData();  // Reload all data if search is empty
+        return;
+    }
+
+    try {
+        dbConnector dbc = new dbConnector();
+        ResultSet rs = null;
+
+        if ("Users".equals(selectedCategory)) {
+            String query = "SELECT u_fname, u_lname FROM tbl_users " +
+                           "WHERE u_fname LIKE '%" + keyword + "%' " +
+                           "OR u_lname LIKE '%" + keyword + "%'";
+            rs = dbc.getData(query);
+            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+            userTable.getColumnModel().getColumn(0).setHeaderValue("First Name");
+            userTable.getColumnModel().getColumn(1).setHeaderValue("Last Name");
+            userTable.getTableHeader().repaint();
+
+        } else if ("Projects".equals(selectedCategory)) {
+            String query = "SELECT p_name FROM tbl_project " +
+                           "WHERE p_name LIKE '%" + keyword + "%'";
+            rs = dbc.getData(query);
+            projectTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+            // Fix column header
+            projectTable.getColumnModel().getColumn(0).setHeaderValue("Project Name");
+            projectTable.getTableHeader().repaint();
+
+        } else if ("Tasks".equals(selectedCategory)) {
+            String query = "SELECT t_id, p_name FROM tbl_task " +
+                           "WHERE p_name LIKE '%" + keyword + "%' " +
+                           "OR t_id LIKE '%" + keyword + "%'";
+            rs = dbc.getData(query);
+            taskTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+            // Fix column headers
+            taskTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+            taskTable.getColumnModel().getColumn(1).setHeaderValue("Task Name");
+            taskTable.getTableHeader().repaint();
         }
 
-        try {
-            dbConnector dbc = new dbConnector();
-            ResultSet rs = null;
-            
-            if ("Users".equals(selectedCategory)) {
-                String query = "SELECT u_fname, u_lname FROM tbl_users " +
-                               "WHERE u_fname LIKE '%" + keyword + "%' " +
-                               "OR u_lname LIKE '%" + keyword + "%'";
-                rs = dbc.getData(query);
-                userTable.setModel(DbUtils.resultSetToTableModel(rs));
-
-            } else if ("Projects".equals(selectedCategory)) {
-                String query = "SELECT p_name FROM tbl_project " +
-                               "WHERE p_name LIKE '%" + keyword + "%'";
-                rs = dbc.getData(query);
-                projectTable.setModel(DbUtils.resultSetToTableModel(rs));
-
-            } else if ("Tasks".equals(selectedCategory)) {
-                String query = "SELECT t_id, p_name FROM tbl_task " +
-                               "WHERE p_name LIKE '%" + keyword + "%' " +
-                               "OR t_id LIKE '%" + keyword + "%'";
-                rs = dbc.getData(query);
-                taskTable.setModel(DbUtils.resultSetToTableModel(rs));
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("Error during search: " + ex.getMessage());
-        }
-    
+    } catch (SQLException ex) {
+        System.out.println("Error during search: " + ex.getMessage());
+    }         
     }//GEN-LAST:event_searchButtonActionPerformed
 
 

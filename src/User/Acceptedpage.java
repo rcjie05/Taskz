@@ -43,32 +43,71 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
     }
 
     public void displayData() {
+    dbConnector dbc = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
     try {
-        dbConnector dbc = new dbConnector();
+        dbc = new dbConnector();
+
+        // Get current logged-in user's ID from Session
         Session sess = Session.getInstance();
-        String currentUserFname = sess.getU_fname();
+        int currentUserId = sess.getU_id();  // <-- Important: user ID, not name
 
-        String query = "SELECT t_id, p_name, user_assign, t_date, t_duedate, t_status, accept " +
-                       "FROM tbl_task WHERE accept = 'Accepted' AND user_assign = ?";
+        String sql = "SELECT t.t_id, p.p_name, u.u_fname, p.p_date, p.p_duedate, t.t_status, t.accept " +
+                     "FROM tbl_task t " +
+                     "JOIN tbl_project p ON t.p_id = p.p_id " +
+                     "JOIN tbl_users u ON t.user_assign = u.u_id " +  // join to get user first name
+                     "WHERE t.accept = 'Accepted' AND t.user_assign = ?";
 
-        PreparedStatement pst = dbc.connect.prepareStatement(query);
-        pst.setString(1, currentUserFname);
-        ResultSet rs = pst.executeQuery();
+        pst = dbc.connect.prepareStatement(sql);
+        pst.setInt(1, currentUserId);
 
-        userTable.setModel(DbUtils.resultSetToTableModel(rs));
+        rs = pst.executeQuery();
+        taskTable.setModel(DbUtils.resultSetToTableModel(rs));
 
-        userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
-        userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-        userTable.getColumnModel().getColumn(2).setHeaderValue("Assign User");
-        userTable.getColumnModel().getColumn(3).setHeaderValue("Start Date");
-        userTable.getColumnModel().getColumn(4).setHeaderValue("Due Date");
-        userTable.getColumnModel().getColumn(5).setHeaderValue("Status");
-        userTable.getColumnModel().getColumn(6).setHeaderValue("Accept/Decline");
+        // Disable auto resize so horizontal scroll appears if needed
+        taskTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+        // Set preferred widths for columns (adjust as needed)
+        int[] columnWidths = {80, 150, 120, 100, 100, 100, 90};
+        for (int i = 0; i < columnWidths.length; i++) {
+            if (i < taskTable.getColumnModel().getColumnCount()) {
+                taskTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+            }
+        }
+
+        // Set header names explicitly (matches selected columns count = 7)
+        taskTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+        taskTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
+        taskTable.getColumnModel().getColumn(2).setHeaderValue("Assigned User");
+        taskTable.getColumnModel().getColumn(3).setHeaderValue("Project Start Date");
+        taskTable.getColumnModel().getColumn(4).setHeaderValue("Project Due Date");
+        taskTable.getColumnModel().getColumn(5).setHeaderValue("Task Status");
+        taskTable.getColumnModel().getColumn(6).setHeaderValue("Acceptance");
+
+        taskTable.getTableHeader().repaint();
+
+        // Add the table to the scroll pane if not already added (usually done in initComponents)
+        if (taskTable.getParent() == null) {
+            jScrollPane1.setViewportView(taskTable);
+        }
 
     } catch (SQLException ex) {
-        System.out.println("Errors:" + ex.getMessage());
+        System.out.println("Error displaying accepted tasks: " + ex.getMessage());
+        JOptionPane.showMessageDialog(null, "Error loading accepted tasks: " + ex.getMessage());
+    } finally {
+        // Close resources carefully
+        try {
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+            if (dbc != null && dbc.connect != null && !dbc.connect.isClosed()) dbc.connect.close();
+        } catch (SQLException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
+        }
     }
 }
+
 
 
     /**
@@ -84,9 +123,8 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
         searchBar = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
         decline = new javax.swing.JButton();
-        accept = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        userTable = new javax.swing.JTable();
+        taskTable = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -116,17 +154,9 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
                 declineActionPerformed(evt);
             }
         });
-        jPanel1.add(decline, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, 100, -1));
+        jPanel1.add(decline, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 100, -1));
 
-        accept.setText("Accept");
-        accept.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                acceptActionPerformed(evt);
-            }
-        });
-        jPanel1.add(accept, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 90, -1));
-
-        userTable.setModel(new javax.swing.table.DefaultTableModel(
+        taskTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -134,7 +164,7 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(userTable);
+        jScrollPane1.setViewportView(taskTable);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
 
@@ -163,68 +193,6 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_searchBarActionPerformed
 
-    private void acceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptActionPerformed
-    int selectedRow = userTable.getSelectedRow();
-
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(null, "Please select a task to accept.");
-        return;
-    }
-
-    int taskId = (int) userTable.getValueAt(selectedRow, 0);
-
-    // Get the current logged-in user's name from session
-    Session sess = Session.getInstance();
-    String currentUserFname = sess.getU_fname();  // Get user from session
-
-    dbConnector dbc = new dbConnector();
-
-    // Step 1: Check if the task is already accepted
-    String checkQuery = "SELECT accept FROM tbl_task WHERE t_id = ?";
-    try (PreparedStatement checkPst = dbc.connect.prepareStatement(checkQuery)) {
-        checkPst.setInt(1, taskId);
-        ResultSet rs = checkPst.executeQuery();
-
-        if (rs.next()) {
-            String acceptStatus = rs.getString("accept");
-            if ("Accepted".equalsIgnoreCase(acceptStatus)) {
-                JOptionPane.showMessageDialog(null, "This task has already been accepted.");
-                return;
-            }
-        }
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // Step 2: Accept the task and assign the user
-    String updateQuery = "UPDATE tbl_task SET accept = 'Accepted', user_assign = ? WHERE t_id = ?";
-    try (PreparedStatement pst = dbc.connect.prepareStatement(updateQuery)) {
-        pst.setString(1, currentUserFname);
-        pst.setInt(2, taskId);
-        int rowsAffected = pst.executeUpdate();
-
-        if (rowsAffected > 0) {
-            accept.setText("Accepted");
-            accept.setEnabled(false);
-            JOptionPane.showMessageDialog(null, "Task accepted successfully!");
-        } else {
-            JOptionPane.showMessageDialog(null, "Error accepting task.");
-        }
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    } finally {
-        displayData();
-        try {
-            if (dbc.connect != null && !dbc.connect.isClosed()) {
-                dbc.connect.close();
-            }
-        } catch (SQLException e) { 
-            System.out.println("Error closing connection: " + e.getMessage());
-        }
-    }
-    }//GEN-LAST:event_acceptActionPerformed
-
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String keyword = searchBar.getText().trim();
 
@@ -242,10 +210,10 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
             javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
             model.setColumnIdentifiers(new String[]{"Message"});
             model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
-            userTable.setModel(model);
+            taskTable.setModel(model);
         } else {
             // Show search results
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+            taskTable.setModel(DbUtils.resultSetToTableModel(rs));
         }
 
     } catch (SQLException ex) {
@@ -254,50 +222,58 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void declineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineActionPerformed
-        int selectedRow = userTable.getSelectedRow();
-    
+       int selectedRow = taskTable.getSelectedRow();
+
     if (selectedRow == -1) {
-        // No row selected, show an error message
         JOptionPane.showMessageDialog(null, "Please select a task to decline.");
         return;
     }
 
-    // Get the task ID from the selected row (assuming the task ID is in the first column)
-    int taskId = (int) userTable.getValueAt(selectedRow, 0);
-    
-    // Step 1: Check if the selected task is already accepted
-    String checkQuery = "SELECT accept FROM tbl_task WHERE t_id = ?";
+    int taskId = (int) taskTable.getValueAt(selectedRow, 0);
     dbConnector dbc = new dbConnector();
-    
+
+    // Get current logged-in user ID
+    Session sess = Session.getInstance();
+    int currentUserId = sess.getU_id();
+
+    // Check if task is accepted and assigned to current user
+    String checkQuery = "SELECT accept, user_assign FROM tbl_task WHERE t_id = ?";
     try (PreparedStatement checkPst = dbc.connect.prepareStatement(checkQuery)) {
         checkPst.setInt(1, taskId);
         ResultSet rs = checkPst.executeQuery();
 
         if (rs.next()) {
-            // If the task is already accepted, show an error message
             String acceptStatus = rs.getString("accept");
-            if ("Yes".equals(acceptStatus)) {
-                JOptionPane.showMessageDialog(null, "This task has already been accepted and cannot be declined.");
+            int assignedUserId = rs.getInt("user_assign");
+
+            if (!"Accepted".equalsIgnoreCase(acceptStatus)) {
+                JOptionPane.showMessageDialog(null, "This task is not currently accepted.");
                 return;
             }
+
+            if (assignedUserId != currentUserId) {
+                JOptionPane.showMessageDialog(null, "You can only decline tasks assigned to you.");
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Selected task not found.");
+            return;
         }
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // Step 2: Update the accept column to "No" for the selected task (decline it)
-    String updateQuery = "UPDATE tbl_task SET accept = 'Decline', user_assign = NULL WHERE t_id = ?";
+    // Decline task: set accept = 'Declined' and user_assign = NULL
+    String updateQuery = "UPDATE tbl_task SET accept = 'Declined', user_assign = NULL WHERE t_id = ?";
 
-    
     try (PreparedStatement pst = dbc.connect.prepareStatement(updateQuery)) {
         pst.setInt(1, taskId);
         int rowsAffected = pst.executeUpdate();
 
         if (rowsAffected > 0) {
-            // If update is successful, change the button text and disable it
             decline.setText("Declined");
-            decline.setEnabled(false);  // Disable the button to prevent multiple decline actions
+            decline.setEnabled(false);
             JOptionPane.showMessageDialog(null, "Task declined successfully!");
         } else {
             JOptionPane.showMessageDialog(null, "Error declining task.");
@@ -305,10 +281,7 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     } finally {
-        // Optionally, you can reload the table data after declining a task
         displayData();
-        
-        // Close the database connection
         try {
             if (dbc.connect != null && !dbc.connect.isClosed()) {
                 dbc.connect.close();
@@ -317,13 +290,10 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
             System.out.println("Error closing connection: " + e.getMessage());
         }
     }
-
-
     }//GEN-LAST:event_declineActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton accept;
     private javax.swing.JButton decline;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -331,6 +301,6 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton searchButton;
-    public javax.swing.JTable userTable;
+    public javax.swing.JTable taskTable;
     // End of variables declaration//GEN-END:variables
 }

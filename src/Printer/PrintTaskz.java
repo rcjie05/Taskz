@@ -37,26 +37,47 @@ public class PrintTaskz extends javax.swing.JInternalFrame {
         searchBar.setBackground(new Color(0,0,0,0));
     }
     
-    public void displayData(){
-        try {
-            dbConnector dbc = new dbConnector();
-            String sql = "SELECT t.t_id, p.p_name, p.p_salary, p.p_description, u.u_fname, t.user_assign, t.t_status " +
-                         "FROM tbl_task t " +
-                         "JOIN tbl_project p ON t.p_id = p.p_id " +
-                         "JOIN tbl_users u ON t.u_id = u.u_id";
-            ResultSet rs = dbc.getData(sql);
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
-            userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
-            userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-            userTable.getColumnModel().getColumn(2).setHeaderValue("Salary");
-            userTable.getColumnModel().getColumn(3).setHeaderValue("Description");
-            userTable.getColumnModel().getColumn(4).setHeaderValue("Maker Name");
-            userTable.getColumnModel().getColumn(5).setHeaderValue("Assign User");
-            userTable.getColumnModel().getColumn(6).setHeaderValue("Status");
-        } catch(SQLException ex) {
-            System.out.println("Errors: " + ex.getMessage());
-        }
+   public void displayData() {
+    try {
+        dbConnector dbc = new dbConnector();
+        String query =
+            "SELECT u.u_id, t.t_id, p.p_name, p.p_salary, " +
+            "u.u_fname, u.u_lname, u.u_email, u.u_contact, u.u_gender, u.u_status, " +
+            "au.u_fname AS assign_u_fname, au.u_lname AS assign_u_lname, au.u_email AS assign_u_email, " +
+            "au.u_contact AS assign_u_contact, au.u_gender AS assign_u_gender " +
+            "FROM tbl_users u " +
+            "JOIN tbl_task t ON u.u_id = t.u_id " +
+            "JOIN tbl_project p ON t.p_id = p.p_id " +
+            "LEFT JOIN tbl_users au ON au.u_id = CAST(t.user_assign AS UNSIGNED) " +
+            "WHERE t.accept = 'accepted' AND u.u_type != 'admin'";
+
+        ResultSet rs = dbc.getData(query);
+        userTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+        userTable.getColumnModel().getColumn(0).setHeaderValue("User ID");
+        userTable.getColumnModel().getColumn(1).setHeaderValue("Task ID");
+        userTable.getColumnModel().getColumn(2).setHeaderValue("Project Name");
+        userTable.getColumnModel().getColumn(3).setHeaderValue("Salary");
+        userTable.getColumnModel().getColumn(4).setHeaderValue("First Name");
+        userTable.getColumnModel().getColumn(5).setHeaderValue("Last Name");
+        userTable.getColumnModel().getColumn(6).setHeaderValue("Email");
+        userTable.getColumnModel().getColumn(7).setHeaderValue("Contact");
+        userTable.getColumnModel().getColumn(8).setHeaderValue("Gender");
+        userTable.getColumnModel().getColumn(9).setHeaderValue("Status");
+
+        userTable.getColumnModel().getColumn(10).setHeaderValue("Assigned First Name");
+        userTable.getColumnModel().getColumn(11).setHeaderValue("Assigned Last Name");
+        userTable.getColumnModel().getColumn(12).setHeaderValue("Assigned Email");
+        userTable.getColumnModel().getColumn(13).setHeaderValue("Assigned Contact");
+        userTable.getColumnModel().getColumn(14).setHeaderValue("Assigned Gender");
+
+    } catch (SQLException ex) {
+        System.out.println("Errors: " + ex.getMessage());
     }
+}
+
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -141,61 +162,74 @@ public class PrintTaskz extends javax.swing.JInternalFrame {
 
     private void printbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printbuttonActionPerformed
        int row = userTable.getSelectedRow();
-        if (row == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select a task to print.");
-            return;
-        }
+    if (row == -1) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Please select a user to print.");
+        return;
+    }
 
-        // Collect data (excluding dates)
-        int t_id = Integer.parseInt(userTable.getValueAt(row, 0).toString());
-        String p_name = userTable.getValueAt(row, 1).toString();
-        String p_salary = userTable.getValueAt(row, 2).toString();
-        String description = userTable.getValueAt(row, 3).toString();
-        String maker = userTable.getValueAt(row, 4).toString();
-        String assign_user = userTable.getValueAt(row, 5).toString();
-        String status = userTable.getValueAt(row, 6).toString();
+    int u_id = Integer.parseInt(userTable.getValueAt(row, 0).toString());
+    String fname = userTable.getValueAt(row, 1).toString();
+    String lname = userTable.getValueAt(row, 2).toString();
+    String email = userTable.getValueAt(row, 3).toString();
+    String contact = userTable.getValueAt(row, 4).toString();
+    String status = userTable.getValueAt(row, 5).toString();
 
-        // Save to Session
-        Session sess = Session.getInstance();
-        sess.setT_id(t_id);
-        sess.setP_name(p_name);
-        sess.setP_salary(p_salary);
-        sess.setP_description(description);
-        sess.setT_status(status);
-        sess.setU_fname(assign_user); // Assigned user
-        sess.setU_lname(maker);       // Maker/Approver
+    Session sess = Session.getInstance();
+    sess.setU_id(u_id);
+    sess.setU_fname(fname);
+    sess.setU_lname(lname);
+    sess.setU_email(email);
+    sess.setU_contact(contact);
+    sess.setU_status(status);
 
-        // Open printer form
-        printer p = new printer();
-        p.setVisible(true);
+    printer p = new printer();
+    p.setVisible(true);
 
-        // Close current window
-        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-        parent.dispose();
+    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+    parent.dispose();
     }//GEN-LAST:event_printbuttonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+    try {
         String keyword = searchBar.getText().trim();
-        try {
-            dbConnector dbc = new dbConnector();
-            String query = "SELECT u_id, p_id, t_id, u_fname, p_name, user_assign FROM tbl_task " +
-                           "WHERE u_fname LIKE '%" + keyword + "%' " +
-                           "OR p_name LIKE '%" + keyword + "%' " +
-                           "OR t_id LIKE '%" + keyword + "%' " +
-                           "OR user_assign LIKE '%" + keyword + "%' " +
-                           "OR p_id LIKE '%" + keyword + "%'";
-            ResultSet rs = dbc.getData(query);
-            if (!rs.isBeforeFirst()) {
-                javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
-                model.setColumnIdentifiers(new String[]{"Message"});
-                model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
-                userTable.setModel(model);
-            } else {
-                userTable.setModel(DbUtils.resultSetToTableModel(rs));
-            }
-        } catch (SQLException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        dbConnector dbc = new dbConnector();
+        String query =
+    "SELECT u.u_id, t.t_id, p.p_name, p.p_salary, " +
+    "u.u_fname, u.u_lname, u.u_email, u.u_contact, " +
+    "u.u_gender, u.u_status " +
+    "FROM tbl_users u " +
+    "JOIN tbl_task t ON u.u_id = t.u_id " +
+    "JOIN tbl_project p ON t.p_id = p.p_id " +
+    "WHERE u.u_fname LIKE '%" + keyword + "%' " +
+    "OR u.u_lname LIKE '%" + keyword + "%' " +
+    "OR u.u_email LIKE '%" + keyword + "%' " +
+    "OR p.p_name LIKE '%" + keyword + "%' " +
+    "OR t.t_id LIKE '%" + keyword + "%'";
+
+        ResultSet rs = dbc.getData(query);
+        if (!rs.isBeforeFirst()) {
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+            model.setColumnIdentifiers(new String[]{"Message"});
+            model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
+            userTable.setModel(model);
+        } else {
+            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+            // Set headers again to keep them readable after search
+            userTable.getColumnModel().getColumn(0).setHeaderValue("User ID");
+            userTable.getColumnModel().getColumn(1).setHeaderValue("Task ID");
+            userTable.getColumnModel().getColumn(2).setHeaderValue("Project Name");
+            userTable.getColumnModel().getColumn(3).setHeaderValue("Salary");
+            userTable.getColumnModel().getColumn(4).setHeaderValue("First Name");
+            userTable.getColumnModel().getColumn(5).setHeaderValue("Last Name");
+            userTable.getColumnModel().getColumn(6).setHeaderValue("Email");
+            userTable.getColumnModel().getColumn(7).setHeaderValue("Contact");
+            userTable.getColumnModel().getColumn(8).setHeaderValue("Gender");
+            userTable.getColumnModel().getColumn(9).setHeaderValue("Status");
         }
+    } catch (SQLException ex) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_searchButtonActionPerformed
 
 

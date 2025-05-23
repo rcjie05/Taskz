@@ -12,6 +12,7 @@ import config.Session;
 import java.awt.Color;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import config.dbConnector;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -44,25 +45,60 @@ public class Taskpage extends javax.swing.JInternalFrame {
         searchBar.setBackground(new Color(0,0,0,0));
     }
     
-    public void displayData(){
-    try{
-        dbConnector dbc = new dbConnector();
-        String sql = "SELECT t.t_id, p.p_name, p.p_description, u.u_fname, t.user_assign, t.t_date, t.t_duedate, t.t_status " +
+    public void displayData() {
+    dbConnector dbc = null;
+    ResultSet rs = null;
+
+    try {
+        dbc = new dbConnector();
+
+        String sql = "SELECT t.t_id, p.p_name, p.p_salary, p.p_description, u.u_fname AS maker_name, " +
+                     "assignee.u_fname AS assign_user, p.p_date, p.p_duedate, t.t_status " +
                      "FROM tbl_task t " +
                      "JOIN tbl_project p ON t.p_id = p.p_id " +
-                     "JOIN tbl_users u ON t.u_id = u.u_id";
-        ResultSet rs = dbc.getData(sql);
+                     "JOIN tbl_users u ON t.u_id = u.u_id " +  // maker of project
+                     "LEFT JOIN tbl_users assignee ON t.user_assign = assignee.u_id"; // assigned user
+
+        rs = dbc.getData(sql);
         userTable.setModel(DbUtils.resultSetToTableModel(rs));
-        userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
-        userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-        userTable.getColumnModel().getColumn(2).setHeaderValue("Description");
-        userTable.getColumnModel().getColumn(3).setHeaderValue("Maker Name");
-        userTable.getColumnModel().getColumn(4).setHeaderValue("Assign User");
-        userTable.getColumnModel().getColumn(5).setHeaderValue("Start Date");
-        userTable.getColumnModel().getColumn(6).setHeaderValue("Due Date");
-        userTable.getColumnModel().getColumn(7).setHeaderValue("Status");       
-    } catch(SQLException ex){
+
+        // Explicit column headers
+        String[] headers = {
+            "Task ID", "Project Name", "Salary", "Description", "Maker Name",
+            "Assigned User", "Start Date", "Due Date", "Status"
+        };
+
+        for (int i = 0; i < headers.length; i++) {
+            if (i < userTable.getColumnModel().getColumnCount()) {
+                userTable.getColumnModel().getColumn(i).setHeaderValue(headers[i]);
+            }
+        }
+
+        // Enable scrolling
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        // Set column widths for better layout
+        userTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        int[] columnWidths = {60, 120, 80, 150, 100, 120, 90, 90, 100};
+        for (int i = 0; i < columnWidths.length; i++) {
+            if (i < userTable.getColumnModel().getColumnCount()) {
+                userTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+            }
+        }
+
+        userTable.getTableHeader().repaint();
+        rs.close();
+
+    } catch (SQLException ex) {
         System.out.println("Errors: " + ex.getMessage());
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (dbc != null && dbc.connect != null && !dbc.connect.isClosed()) dbc.connect.close();
+        } catch (SQLException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
+        }
     }
 }
     /**
@@ -93,7 +129,7 @@ public class Taskpage extends javax.swing.JInternalFrame {
                 searchButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, -1, -1));
+        jPanel1.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 80, -1, -1));
 
         addButton.setText("ADD");
         addButton.addActionListener(new java.awt.event.ActionListener() {
@@ -119,6 +155,7 @@ public class Taskpage extends javax.swing.JInternalFrame {
         });
         jPanel1.add(deletebutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
 
+        searchBar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         searchBar.setMinimumSize(new java.awt.Dimension(8, 20));
         searchBar.setPreferredSize(new java.awt.Dimension(8, 20));
         searchBar.addActionListener(new java.awt.event.ActionListener() {
@@ -162,95 +199,200 @@ public class Taskpage extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBarActionPerformed
-        // TODO add your handling code here:
+        searchButtonActionPerformed(evt);
     }//GEN-LAST:event_searchBarActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        crud_tasks at = new crud_tasks();
-        at.setVisible(true);
+       crud_tasks at = new crud_tasks();
+        at.setVisible(true);       
+        at.loadProjectNames();
+        at.loadAssignUsers();
+        at.pname.setEnabled(true);    // Enable combo box
+        at.add.setEnabled(true);       // Enable Add button
+        at.update.setEnabled(false);   // Disable Update button
+
         JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
         parent.dispose();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        String keyword = searchBar.getText().trim();
-    try {
-        dbConnector dbc = new dbConnector();
-        String query = "SELECT u_id, p_id, t_id, u_fname, p_name, user_assign FROM tbl_task " +
-                       "WHERE u_fname LIKE '%" + keyword + "%' " +
-                       "OR p_name LIKE '%" + keyword + "%' " +
-                       "OR t_id LIKE '%" + keyword + "%' " +
-                        "OR user_assign LIKE '%" + keyword + "%' " +
-                       "OR p_id LIKE '%" + keyword + "%'";
-        ResultSet rs = dbc.getData(query);
-        if (!rs.isBeforeFirst()) {
-            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
-            model.setColumnIdentifiers(new String[]{"Message"});
-            model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
-            userTable.setModel(model);
-        } else {
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
+                String keyword = searchBar.getText().trim();
+        if(keyword.isEmpty()){
+            displayData(); // Show all if search is empty
+            return;
         }
-    } catch (SQLException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-    }
+        try {
+            dbConnector dbc = new dbConnector();
+            // Properly join tables for search on related columns
+            String query = "SELECT t.t_id, p.p_name, p.p_description, u.u_fname, t.user_assign, t.t_date, t.t_duedate, t.t_status " +
+                           "FROM tbl_task t " +
+                           "JOIN tbl_project p ON t.p_id = p.p_id " +
+                           "JOIN tbl_users u ON t.u_id = u.u_id " +
+                           "WHERE u.u_fname LIKE ? " +
+                           "OR p.p_name LIKE ? " +
+                           "OR t.t_id LIKE ? " +
+                           "OR t.user_assign LIKE ? " +
+                           "OR p.p_id LIKE ?";
+
+            PreparedStatement pst = dbc.connect.prepareStatement(query);
+            String likeKeyword = "%" + keyword + "%";
+            for (int i = 1; i <= 5; i++) {
+                pst.setString(i, likeKeyword);
+            }
+            ResultSet rs = pst.executeQuery();
+
+            if (!rs.isBeforeFirst()) {
+                javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+                model.setColumnIdentifiers(new String[]{"Message"});
+                model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
+                userTable.setModel(model);
+            } else {
+                userTable.setModel(DbUtils.resultSetToTableModel(rs));
+                // Reset headers after search too
+                userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+                userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
+                userTable.getColumnModel().getColumn(2).setHeaderValue("Description");
+                userTable.getColumnModel().getColumn(3).setHeaderValue("Maker Name");
+                userTable.getColumnModel().getColumn(4).setHeaderValue("Assign User");
+                userTable.getColumnModel().getColumn(5).setHeaderValue("Start Date");
+                userTable.getColumnModel().getColumn(6).setHeaderValue("Due Date");
+                userTable.getColumnModel().getColumn(7).setHeaderValue("Status");
+                userTable.getTableHeader().repaint();
+            }
+            rs.close();
+            pst.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void editbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbuttonActionPerformed
-        int rowIndex = userTable.getSelectedRow();
-
+ int rowIndex = userTable.getSelectedRow();
         if (rowIndex < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a project to edit.");
-        } else {
-            try {
-                dbConnector dbc = new dbConnector();
-                TableModel model = userTable.getModel();
-                int taskIdToEdit = (int) model.getValueAt(rowIndex, 0);
-                Session session = Session.getInstance();
-                session.setT_id(taskIdToEdit);
-                crud_tasks at = new crud_tasks();
-                ResultSet rs = dbc.getData("SELECT * FROM tbl_task WHERE t_id = '" + taskIdToEdit + "'");
-                if (rs.next()) {
-                    at.assignuser.setSelectedItem("" + rs.getInt("u_id"));
-                    at.pname.setSelectedItem("" + rs.getString("p_name"));
-                    at.umaker.setText("" + rs.getString("u_fname"));
-                    java.util.Date pDate = rs.getDate("t_date");
-                    java.util.Date pDueDate = rs.getDate("t_duedate");
-                    at.date.setDate(pDate);
-                    at.due.setDate(pDueDate);
-                    at.status.setSelectedItem("" + rs.getString("t_status"));
-                    at.add.setEnabled(false);
-                    at.update.setEnabled(true);
-                    at.setVisible(true);
-                    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-                    parent.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error: Project with ID " + taskIdToEdit + " not found.");
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Projectpage.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            JOptionPane.showMessageDialog(null, "Please select a task to edit.");
+            return;
         }
+
+        try {
+            TableModel model = userTable.getModel();
+            int taskIdToEdit = Integer.parseInt(model.getValueAt(rowIndex, 0).toString());
+
+            Session session = Session.getInstance();
+            session.setT_id(taskIdToEdit);
+
+            dbConnector dbc = new dbConnector();
+
+            String sql = "SELECT t.*, p.p_name, p.p_salary, p.p_date, p.p_duedate, u.u_fname " +
+                         "FROM tbl_task t " +
+                         "JOIN tbl_project p ON t.p_id = p.p_id " +
+                         "JOIN tbl_users u ON t.u_id = u.u_id " +
+                         "WHERE t.t_id = ?";
+            PreparedStatement pst = dbc.connect.prepareStatement(sql);
+            pst.setInt(1, taskIdToEdit);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                crud_tasks at = new crud_tasks();
+
+                final String projectName = rs.getString("p_name");
+                final int assignId = rs.getInt("user_assign");
+                final String projectSalary = rs.getString("p_salary");
+                final String taskStatus = rs.getString("t_status");
+                final java.util.Date startDate = rs.getDate("p_date");
+                final java.util.Date dueDate = rs.getDate("p_duedate");
+                final String makerName = rs.getString("u_fname");
+
+                at.loadProjectNames();
+                at.loadAssignUsers();
+
+                // Set text fields and combo boxes
+                at.salary.setText(projectSalary);
+                at.umaker.setText(makerName);
+                at.date.setDate(startDate);
+                at.due.setDate(dueDate);
+                at.status.setSelectedItem(taskStatus);
+                at.t_id.setText(String.valueOf(taskIdToEdit));
+
+                // Disable project selection in edit mode and set selected project
+                at.pname.setSelectedItem(projectName);
+                at.pname.setEnabled(false);
+
+                at.add.setEnabled(false);
+                at.update.setEnabled(true);
+
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        PreparedStatement pstUser = dbc.connect.prepareStatement(
+                            "SELECT u_fname FROM tbl_users WHERE u_id = ?");
+                        pstUser.setInt(1, assignId);
+                        ResultSet rsUser = pstUser.executeQuery();
+                        if (rsUser.next()) {
+                            String assignedName = rsUser.getString("u_fname");
+                            boolean foundUser = false;
+                            for (int i = 0; i < at.assignuser.getItemCount(); i++) {
+                                if (at.assignuser.getItemAt(i).equalsIgnoreCase(assignedName)) {
+                                    at.assignuser.setSelectedIndex(i);
+                                    foundUser = true;
+                                    break;
+                                }
+                            }
+                            if (!foundUser) {
+                                at.assignuser.addItem(assignedName);
+                                at.assignuser.setSelectedItem(assignedName);
+                            }
+                        }
+                        rsUser.close();
+                        pstUser.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                at.setVisible(true);
+                JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+                parent.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error: Task not found.");
+            }
+
+            rs.close();
+            pst.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error loading task: " + ex.getMessage());
+            ex.printStackTrace();
+        }    
     }//GEN-LAST:event_editbuttonActionPerformed
 
     private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
         int rowIndex = userTable.getSelectedRow();
         if (rowIndex < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a user to delete.");
+            JOptionPane.showMessageDialog(null, "Please select a task to delete.");
             return;
         }
         TableModel model = userTable.getModel();
-        String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
+        int taskIdToDelete = Integer.parseInt(model.getValueAt(rowIndex, 0).toString());
+
         int confirm = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to delete this project?",
+                "Are you sure you want to delete this task?",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            dbConnector dbc = new dbConnector();
-            String query = "DELETE FROM tbl_task WHERE t_id = '" + userId + "'";
-            dbc.deleteData(query);
-            JOptionPane.showMessageDialog(null, "Task deleted successfully!");
-            displayData();
+            try {
+                dbConnector dbc = new dbConnector();
+                String query = "DELETE FROM tbl_task WHERE t_id = ?";
+                PreparedStatement pst = dbc.connect.prepareStatement(query);
+                pst.setInt(1, taskIdToDelete);
+                int deleted = pst.executeUpdate();
+                pst.close();
+                if (deleted > 0) {
+                    JOptionPane.showMessageDialog(null, "Task deleted successfully!");
+                    displayData();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to delete task.");
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
+            }
         }
     }//GEN-LAST:event_deletebuttonActionPerformed
 

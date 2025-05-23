@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 22, 2025 at 07:01 AM
+-- Generation Time: May 23, 2025 at 12:46 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `task`
+-- Database: `taskz`
 --
 
 -- --------------------------------------------------------
@@ -56,25 +56,6 @@ CREATE TABLE `tbl_logs` (
   `l_timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tbl_logs`
---
-
-INSERT INTO `tbl_logs` (`l_id`, `u_id`, `l_action`, `l_timestamp`) VALUES
-(1, 1, 'Login failed', '2025-05-20 11:56:04'),
-(2, 1, 'Login failed', '2025-05-20 11:56:13'),
-(3, 1, 'Login', '2025-05-20 11:59:45'),
-(4, 1, 'Logout', '2025-05-20 12:00:15'),
-(5, 2, 'Login', '2025-05-22 02:44:44'),
-(6, 1, 'Login', '2025-05-22 04:39:12'),
-(7, 1, 'Login', '2025-05-22 04:40:11'),
-(8, 1, 'Login', '2025-05-22 04:42:50'),
-(9, 1, 'Login failed', '2025-05-22 04:48:31'),
-(10, 1, 'Login', '2025-05-22 04:48:39'),
-(11, 1, 'Login', '2025-05-22 04:54:37'),
-(12, 1, 'Login', '2025-05-22 04:55:35'),
-(13, 1, 'Login', '2025-05-22 05:00:09');
-
 -- --------------------------------------------------------
 
 --
@@ -87,7 +68,6 @@ CREATE TABLE `tbl_project` (
   `p_name` varchar(255) NOT NULL,
   `p_salary` varchar(255) NOT NULL,
   `p_description` varchar(255) NOT NULL,
-  `u_fname` varchar(255) NOT NULL,
   `p_date` date NOT NULL,
   `p_duedate` date NOT NULL,
   `p_status` varchar(255) NOT NULL
@@ -97,12 +77,9 @@ CREATE TABLE `tbl_project` (
 -- Dumping data for table `tbl_project`
 --
 
-INSERT INTO `tbl_project` (`u_id`, `p_id`, `p_name`, `p_salary`, `p_description`, `u_fname`, `p_date`, `p_duedate`, `p_status`) VALUES
-(1, 1, 'Project 1', '', '', 'Rcjie', '2025-05-09', '2025-05-10', 'Active'),
-(1, 2, 'Project 2', '', '', 'Rcjie', '2025-05-09', '2025-05-17', 'Active'),
-(1, 3, 'Project 3', '', '', 'Rcjie', '2025-05-09', '2025-05-17', 'Active'),
-(1, 4, 'Trial', '', 'pagbuhat ug unsa', 'Rcjie', '2025-05-07', '2025-05-24', 'Active'),
-(1, 5, 'Salary Check', '20,000', 'Test Salary', 'Rcjie', '2025-05-22', '2025-05-31', 'Active');
+INSERT INTO `tbl_project` (`u_id`, `p_id`, `p_name`, `p_salary`, `p_description`, `p_date`, `p_duedate`, `p_status`) VALUES
+(1, 1, 'Tester', '100000', 'bahala na', '2025-05-24', '2025-05-31', 'Active'),
+(1, 2, 'Gadget', '100000000', 'free', '2025-05-24', '2025-05-31', 'Active');
 
 -- --------------------------------------------------------
 
@@ -111,29 +88,21 @@ INSERT INTO `tbl_project` (`u_id`, `p_id`, `p_name`, `p_salary`, `p_description`
 --
 
 CREATE TABLE `tbl_task` (
+  `t_id` int(11) NOT NULL,
   `u_id` int(11) DEFAULT NULL,
   `p_id` int(11) DEFAULT NULL,
-  `t_id` int(11) NOT NULL,
-  `p_name` varchar(255) DEFAULT NULL,
-  `p_salary` varchar(255) NOT NULL,
-  `u_fname` varchar(255) DEFAULT NULL,
-  `user_assign` varchar(255) NOT NULL,
-  `t_date` date NOT NULL,
-  `t_duedate` date NOT NULL,
-  `t_status` varchar(255) NOT NULL,
-  `accept` varchar(255) DEFAULT NULL
+  `user_assign` int(11) DEFAULT NULL,
+  `accept` varchar(255) DEFAULT NULL,
+  `t_status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_task`
 --
 
-INSERT INTO `tbl_task` (`u_id`, `p_id`, `t_id`, `p_name`, `p_salary`, `u_fname`, `user_assign`, `t_date`, `t_duedate`, `t_status`, `accept`) VALUES
-(1, 1, 1, 'Project 1', '', 'Rcjie', 'Dave', '2025-05-09', '2025-05-17', 'Active', 'Accepted'),
-(1, 2, 2, 'Project 2', '', 'Rcjie', 'Dave', '2025-05-09', '2025-05-31', 'Active', 'Accepted'),
-(1, 3, 3, 'Project 3', '', 'Rcjie', '', '2025-05-09', '2025-05-24', 'Active', NULL),
-(1, 1, 4, 'Project 1', '', 'Rcjie', 'Anthony', '2025-05-14', '2025-05-30', 'Active', 'Accepted'),
-(1, 4, 5, 'Trial', '', 'Rcjie', 'Anthony', '2025-05-14', '2025-05-24', 'Active', 'Accepted');
+INSERT INTO `tbl_task` (`t_id`, `u_id`, `p_id`, `user_assign`, `accept`, `t_status`) VALUES
+(1, 1, 1, 2, 'Accepted', 'Active'),
+(2, 1, 2, 3, 'Accepted', 'Active');
 
 -- --------------------------------------------------------
 
@@ -215,19 +184,19 @@ ALTER TABLE `otp_requests`
 -- AUTO_INCREMENT for table `tbl_logs`
 --
 ALTER TABLE `tbl_logs`
-  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `l_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_project`
 --
 ALTER TABLE `tbl_project`
-  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_task`
 --
 ALTER TABLE `tbl_task`
-  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`

@@ -43,26 +43,26 @@ public class Projectpage extends javax.swing.JInternalFrame {
     }
     
     public void displayData(){
-        try{
-            dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT p_id, p_name, p_salary, p_description, u_fname, p_date, p_duedate, p_status FROM tbl_project");
-            projectTable.setModel(DbUtils.resultSetToTableModel(rs));
-            projectTable.getColumnModel().getColumn(0).setHeaderValue("P ID");
-            projectTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-            projectTable.getColumnModel().getColumn(2).setHeaderValue("Salary");
-            projectTable.getColumnModel().getColumn(3).setHeaderValue("Description");
-            projectTable.getColumnModel().getColumn(4).setHeaderValue("Maker Name");
-            projectTable.getColumnModel().getColumn(5).setHeaderValue("Start Date");
-            projectTable.getColumnModel().getColumn(6).setHeaderValue("Due Date");
-            projectTable.getColumnModel().getColumn(7).setHeaderValue("Status");
-            
-        }catch(SQLException ex){
-                    System.out.println("Errors:"+ex.getMessage());
-      
+    try{
+        dbConnector dbc = new dbConnector();
+
+        // Join user table to get user first name (maker name)
+        String query = "SELECT p.p_id, p.p_name, p.p_salary, p.p_description, u.u_fname, p.p_date, p.p_duedate, p.p_status " +
+                       "FROM tbl_project p LEFT JOIN tbl_users u ON p.u_id = u.u_id";
+        ResultSet rs = dbc.getData(query);
+
+        projectTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+        String[] headers = {"P ID", "Project Name", "Salary", "Description", "Maker Name", "Start Date", "Due Date", "Status"};
+        for (int i = 0; i < headers.length; i++) {
+            projectTable.getColumnModel().getColumn(i).setHeaderValue(headers[i]);
         }
-        
-                
+        projectTable.getTableHeader().repaint();
+
+    }catch(SQLException ex){
+        System.out.println("Errors:"+ex.getMessage());
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -192,13 +192,26 @@ public class Projectpage extends javax.swing.JInternalFrame {
 
     try {
         TableModel model = projectTable.getModel();
-        int projectIdToEdit = (int) model.getValueAt(rowIndex, 0);
+        Object idObj = model.getValueAt(rowIndex, 0);
+        if (idObj == null) {
+            JOptionPane.showMessageDialog(null, "Selected project ID is invalid.");
+            return;
+        }
+        int projectIdToEdit = Integer.parseInt(idObj.toString());
 
         dbConnector dbc = new dbConnector();
-        String query = "SELECT * FROM tbl_project WHERE p_id = '" + projectIdToEdit + "'";
-        ResultSet rs = dbc.getData(query);
 
-        if (rs != null && rs.next()) {
+        String query = "SELECT p.*, u.u_fname " +
+                       "FROM tbl_project p LEFT JOIN tbl_users u ON p.u_id = u.u_id " +
+                       "WHERE p.p_id = ?";
+
+        java.sql.Connection conn = dbc.getConnection();
+        java.sql.PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.setInt(1, projectIdToEdit);
+
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
             // Save project data to session
             Session session = Session.getInstance();
             session.setP_id(rs.getInt("p_id"));
@@ -214,7 +227,7 @@ public class Projectpage extends javax.swing.JInternalFrame {
             ap.pname.setText(rs.getString("p_name"));
             ap.salary.setText(rs.getString("p_salary"));
             ap.description.setText(rs.getString("p_description"));
-            ap.uname.setText(rs.getString("u_fname"));
+            ap.uname.setText(rs.getString("u_fname"));  // might be null if no user
             ap.date.setDate(rs.getDate("p_date"));
             ap.due.setDate(rs.getDate("p_duedate"));
             ap.status.setSelectedItem(rs.getString("p_status"));
@@ -246,11 +259,19 @@ public class Projectpage extends javax.swing.JInternalFrame {
 
     try {
         dbConnector dbc = new dbConnector();
-        String query = "SELECT u_id, p_id, u_fname, p_name FROM tbl_project " +
-                       "WHERE u_fname LIKE '%" + keyword + "%' " +
-                       "OR p_name LIKE '%" + keyword + "%' " +
-                       "OR p_id LIKE '%" + keyword + "%'";
-        ResultSet rs = dbc.getData(query);
+
+        String query = "SELECT p.p_id, p.p_name, p.p_salary, p.p_description, u.u_fname, p.p_date, p.p_duedate, p.p_status " +
+                       "FROM tbl_project p LEFT JOIN tbl_users u ON p.u_id = u.u_id " +
+                       "WHERE u.u_fname LIKE ? OR p.p_name LIKE ? OR p.p_id LIKE ?";
+
+        java.sql.Connection conn = dbc.getConnection();
+        java.sql.PreparedStatement pstmt = conn.prepareStatement(query);
+        String likeKeyword = "%" + keyword + "%";
+        pstmt.setString(1, likeKeyword);
+        pstmt.setString(2, likeKeyword);
+        pstmt.setString(3, likeKeyword);
+
+        ResultSet rs = pstmt.executeQuery();
 
         if (!rs.isBeforeFirst()) {
             javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
@@ -258,41 +279,60 @@ public class Projectpage extends javax.swing.JInternalFrame {
             model.addRow(new Object[]{"No results found for \"" + keyword + "\""});
             projectTable.setModel(model);
         } else {
-            // Show search results
             projectTable.setModel(DbUtils.resultSetToTableModel(rs));
+            String[] headers = {"P ID", "Project Name", "Salary", "Description", "Maker Name", "Start Date", "Due Date", "Status"};
+            for (int i = 0; i < headers.length; i++) {
+                projectTable.getColumnModel().getColumn(i).setHeaderValue(headers[i]);
+            }
+            projectTable.getTableHeader().repaint();
         }
 
     } catch (SQLException ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void deletebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebuttonActionPerformed
         int rowIndex = projectTable.getSelectedRow();
 
-        if (rowIndex < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a user to delete.");
-            return;
+    if (rowIndex < 0) {
+        JOptionPane.showMessageDialog(null, "Please select a project to delete.");
+        return;
+    }
+
+    TableModel model = projectTable.getModel();
+    Object pIdObj = model.getValueAt(rowIndex, 0);  // p_id should be in column 0
+    if (pIdObj == null) {
+        JOptionPane.showMessageDialog(null, "Selected row has invalid project ID.");
+        return;
+    }
+
+    String projectId = pIdObj.toString();
+
+    int confirm = JOptionPane.showConfirmDialog(null,
+            "Are you sure you want to delete this project?",
+            "Confirm Deletion",
+            JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        dbConnector dbc = new dbConnector();
+        String query = "DELETE FROM tbl_project WHERE p_id = ?";
+        try {
+            java.sql.Connection conn = dbc.getConnection();
+            java.sql.PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, projectId);
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                JOptionPane.showMessageDialog(null, "Project deleted successfully!");
+                displayData();
+            } else {
+                JOptionPane.showMessageDialog(null, "No project found with the specified ID.");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to delete project: " + e.getMessage());
         }
-
-        TableModel model = projectTable.getModel();
-        String userId = model.getValueAt(rowIndex, 0).toString();  // Assuming u_id is in column 0
-
-        int confirm = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to delete this project?",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            dbConnector dbc = new dbConnector();
-            String query = "DELETE FROM tbl_project WHERE p_id = '" + userId + "'";
-            dbc.deleteData(query);
-
-            JOptionPane.showMessageDialog(null, "Project deleted successfully!");
-
-            // Refresh the table data after deletion
-            displayData();
-        }
+    }
     }//GEN-LAST:event_deletebuttonActionPerformed
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed

@@ -9,6 +9,9 @@ import Admin.AdminDashboard;
 import Admin.Projectpage;
 import config.dbConnector;
 import config.Session;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import myApp.LoginForm;
 
@@ -212,59 +215,86 @@ public class crud_project extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        if (pname.getText().isEmpty() ||description.getText().isEmpty() || uname.getText().isEmpty() ||
-        date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
-        JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
-    } else {
+       if (pname.getText().isEmpty() || description.getText().isEmpty() || salary.getText().isEmpty() ||
+            date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
+            JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
+            return;
+        }
+
         dbConnector dbc = new dbConnector();
-        try {
-            // Format dates
+        String insertSQL = "INSERT INTO tbl_project (u_id, p_name, p_salary, p_description, p_date, p_duedate, p_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = dbc.getConnection().prepareStatement(insertSQL)) {
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = sdf.format(date.getDate());
             String formattedDueDate = sdf.format(due.getDate());
 
-            // Insert without p_id (as it might be auto-generated or not needed for adding)
-            String sql = "INSERT INTO tbl_project (u_id, p_name, p_salary, p_description, u_fname, p_date, p_duedate, p_status) VALUES ('"
-                        + user_id.getText() + "', '"
-                        + pname.getText() + "', '"
-                        + salary.getText() + "', '"
-                        + description.getText() + "', '"
-                        + uname.getText() + "', '" // Using uname for Maker Name as per your variable name
-                        + formattedDate + "', '"
-                        + formattedDueDate + "', '"
-                        + status.getSelectedItem().toString() + "')";
+            pstmt.setString(1, user_id.getText());
+            pstmt.setString(2, pname.getText());
+            pstmt.setString(3, salary.getText());
+            pstmt.setString(4, description.getText());
+            pstmt.setString(5, formattedDate);
+            pstmt.setString(6, formattedDueDate);
+            pstmt.setString(7, status.getSelectedItem().toString());
 
-            dbc.insertData(sql);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                JOptionPane.showMessageDialog(null, "Project Added Successfully!");
 
-            JOptionPane.showMessageDialog(null, "Project Added Successfully!");
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);
-            Projectpage pp = new Projectpage();
-            pp.setVisible(true);
-            ads.mainDesktop.add(pp);
-            this.dispose();
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Failed to insert project. Error: " + ex.getMessage());
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to add project.");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Database error on insert: " + ex.getMessage());
         }
-    }
     }//GEN-LAST:event_addActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-         Session sess = Session.getInstance();
-      
-      if(sess.getU_id()==0){
-          JOptionPane.showMessageDialog(null,"No Account. Login First!");
-          LoginForm lf = new LoginForm();
-          lf.setVisible(true);
-          this.dispose();
-      }else{
-          p_id.setText(""+sess.getP_id());
-          user_id.setText(""+sess.getU_id());
-          uname.setText(""+sess.getU_fname());
-          salary.setText(""+sess.getP_salary());
-          
-      }
+        Session sess = Session.getInstance();
+        salary.setText(sess.getP_salary());
+        description.setText(sess.getP_description());
+
+    if (sess.getU_id() == 0) {
+        JOptionPane.showMessageDialog(null, "No Account. Login First!");
+        LoginForm lf = new LoginForm();
+        lf.setVisible(true);
+        this.dispose();
+        return;
+    }
+
+    p_id.setText(String.valueOf(sess.getP_id()));
+    user_id.setText(String.valueOf(sess.getU_id()));
+
+    try {
+        dbConnector dbc = new dbConnector();
+        String sql = "SELECT u_fname, u_lname FROM tbl_users WHERE u_id = ?";
+        PreparedStatement pstmt = dbc.getConnection().prepareStatement(sql);
+        pstmt.setInt(1, sess.getU_id());
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            String u_fname = rs.getString("u_fname");
+            String u_lname = rs.getString("u_lname");
+
+            // Null-safe handling
+            if (u_fname == null) u_fname = "";
+            if (u_lname == null) u_lname = "";
+
+            String fullName = (u_fname + " " + u_lname).trim();
+
+            if (fullName.isEmpty()) {
+                uname.setText("Unknown User");
+            } else {
+                uname.setText(fullName);
+            }
+        } else {
+            uname.setText("Unknown User");
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Failed to load user name: " + e.getMessage());
+    }        
+
+    salary.setText(String.valueOf(sess.getP_salary()));
     }//GEN-LAST:event_formWindowActivated
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -277,46 +307,55 @@ public class crud_project extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-                if (p_id.getText().isEmpty() || pname.getText().isEmpty()|| salary.getText().isEmpty()|| uname.getText().isEmpty() ||
-        date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
-        JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
-    } else {
-        dbConnector dbc = new dbConnector();
-        try {
-            // Format dates
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-            String formattedDate = sdf.format(date.getDate());
-            String formattedDueDate = sdf.format(due.getDate());
+               if (p_id.getText().isEmpty() || pname.getText().isEmpty() || salary.getText().isEmpty() || description.getText().isEmpty() ||
+    date.getDate() == null || due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
+    JOptionPane.showMessageDialog(null, "All Fields Are Required and Status must be selected!");
+} else {
+    dbConnector dbc = new dbConnector();
+    String sql = "UPDATE tbl_project SET u_id = ?, p_name = ?, p_salary = ?, p_description = ?, p_date = ?, p_duedate = ?, p_status = ? WHERE p_id = ?";
+    try (PreparedStatement pst = dbc.connect.prepareStatement(sql)) {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date.getDate());
+        String formattedDueDate = sdf.format(due.getDate());
 
-            // Update using p_id
-            String sql = "UPDATE tbl_project SET " +
-                         "u_id = '" + user_id.getText() + "', " +
-                         "p_name = '" + pname.getText() + "', " +
-                         "p_salary = '" + salary.getText() + "', " +
-                         "u_fname = '" + uname.getText() + "', " + // Using uname for Maker Name
-                         "p_date = '" + formattedDate + "', " +
-                         "p_duedate = '" + formattedDueDate + "', " +
-                         "p_status = '" + status.getSelectedItem().toString() + "' " +
-                         "WHERE p_id = '" + p_id.getText() + "'";
+        pst.setString(1, user_id.getText());
+        pst.setString(2, pname.getText());
+        pst.setString(3, salary.getText());
+        pst.setString(4, description.getText());
+        pst.setString(5, formattedDate);
+        pst.setString(6, formattedDueDate);
+        pst.setString(7, status.getSelectedItem().toString());
+        pst.setString(8, p_id.getText());
 
-            dbc.updateData(sql);
-
+        int rowsUpdated = pst.executeUpdate();
+        if (rowsUpdated > 0) {
             JOptionPane.showMessageDialog(null, "Project Updated Successfully!");
+
             AdminDashboard ads = new AdminDashboard();
             ads.setVisible(true);
+
             Projectpage pp = new Projectpage();
             pp.setVisible(true);
             ads.mainDesktop.add(pp);
-            this.dispose();
 
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Failed to update project. Error: " + ex.getMessage());
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "No project found with the provided ID.");
         }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, "Failed to update project. Error: " + ex.getMessage());
     }
+}
+
     }//GEN-LAST:event_updateActionPerformed
 
     private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
         pname.setText("");
+        description.setText("");
+        salary.setText("");
+        date.setDate(null);
+        due.setDate(null);
+        status.setSelectedIndex(0);
     }//GEN-LAST:event_clearActionPerformed
 
     private void salaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salaryActionPerformed

@@ -24,78 +24,102 @@ import myApp.LoginForm;
 public class crud_tasks extends javax.swing.JFrame {   
     public crud_tasks() {
         initComponents();
-        populateComboBoxes();
-    }
-// Inside your crud_tasks class
+        loadProjectNames();
+        loadAssignUsers();
+        setupProjectComboListener();
 
-private void populateComboBoxes() {
-    dbConnector db = new dbConnector();
-    try {
-        // Populate Projects
-        String sqlProjects = "SELECT p_name FROM tbl_project";
-        ResultSet rsProjects = db.getData(sqlProjects);
-        DefaultComboBoxModel<String> projectModel = new DefaultComboBoxModel<>();
-        projectModel.addElement("Select Project");
-        while (rsProjects.next()) {
-            String projectName = rsProjects.getString("p_name");
-            projectModel.addElement(projectName);
-            System.out.println("Project Name loaded: " + projectName);
-        }
-        pname.setModel(projectModel);
-
-        // Populate Users
-        String sqlUsers = "SELECT u_fname FROM tbl_users";
-        ResultSet rsUsers = db.getData(sqlUsers);
-        DefaultComboBoxModel<String> userModel = new DefaultComboBoxModel<>();
-        userModel.addElement("Select User");
-        while (rsUsers.next()) {
-            String userName = rsUsers.getString("u_fname");
-            userModel.addElement(userName);
-            System.out.println("User Name loaded: " + userName);
-        }
-        assignuser.setModel(userModel);
-
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
-    }
-}
-
-private void updateSalaryField() {
-    String selectedProject = (String) pname.getSelectedItem();
-
-    if (selectedProject == null || selectedProject.equals("Select Project")) {
-        salary.setText("");
-        return;
+        // Enable combo boxes for Add mode
+        pname.setEnabled(true);
+        assignuser.setEnabled(true);
+        add.setEnabled(true);
+        update.setEnabled(false);
     }
 
-    dbConnector db = new dbConnector();
-    String query = "SELECT p_salary FROM tbl_project WHERE p_name = ? LIMIT 1";
+    public void loadProjectNames() {
+        pname.removeAllItems();
+        pname.addItem("Select Project");
 
-    try (PreparedStatement pst = db.getConnection().prepareStatement(query)) {
-        pst.setString(1, selectedProject);
-
-        ResultSet rs = pst.executeQuery();
-
-        if (rs.next()) {
-            salary.setText(rs.getString("p_salary"));
-        } else {
-            salary.setText("Not Found");
-        }
-
-        rs.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-        salary.setText("Error");
-    } finally {
         try {
-            if (db.getConnection() != null && !db.getConnection().isClosed()) {
-                db.getConnection().close();
+            dbConnector dbc = new dbConnector();
+            String sql = "SELECT p_name FROM tbl_project ORDER BY p_name";
+            PreparedStatement pst = dbc.connect.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                pname.addItem(rs.getString("p_name"));
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+
+            rs.close();
+            pst.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading project names: " + e.getMessage());
         }
     }
-}
+
+    public void loadAssignUsers() {
+        assignuser.removeAllItems();
+        assignuser.addItem("Select User");
+
+        try {
+            dbConnector dbc = new dbConnector();
+            String sql = "SELECT u_fname FROM tbl_users ORDER BY u_fname";
+            PreparedStatement pst = dbc.connect.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                assignuser.addItem(rs.getString("u_fname"));
+            }
+
+            rs.close();
+            pst.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading users: " + e.getMessage());
+        }
+    }
+
+    // Call this method on project combo selection change to update salary field
+    private void updateSalaryField() {
+        String selectedProject = (String) pname.getSelectedItem();
+
+        if (selectedProject == null || selectedProject.equals("Select Project")) {
+            salary.setText("");
+            return;
+        }
+
+        dbConnector db = new dbConnector();
+        String query = "SELECT p_salary FROM tbl_project WHERE p_name = ? LIMIT 1";
+
+        try (PreparedStatement pst = db.getConnection().prepareStatement(query)) {
+            pst.setString(1, selectedProject);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                salary.setText(rs.getString("p_salary"));
+            } else {
+                salary.setText("Not Found");
+            }
+
+            rs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            salary.setText("Error");
+        } finally {
+            try {
+                if (db.getConnection() != null && !db.getConnection().isClosed()) {
+                    db.getConnection().close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    // Add a listener on your pname JComboBox to call updateSalaryField when selection changes
+    private void setupProjectComboListener() {
+        pname.addActionListener(e -> updateSalaryField());
+    }
 
 // This method will be called when the project combo box selection changes
 
@@ -302,89 +326,65 @@ private void updateSalaryField() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-    String p_name = (String) pname.getSelectedItem();
+        String p_name = (String) pname.getSelectedItem();
     String t_status = (String) status.getSelectedItem();
-    java.util.Date t_date = date.getDate();
-    java.util.Date t_duedate = due.getDate();
 
-    // Validate required fields
-    if (p_name.equals("Select Project") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
+    if (p_name.equals("Select Project") || t_status.equals("SELECT")) {
         JOptionPane.showMessageDialog(null, "Please fill in all required fields.");
         return;
     }
 
-    // Validate date order
-    java.util.Date currentDate = new java.util.Date();
-    if (t_date.before(currentDate)) {
-        JOptionPane.showMessageDialog(null, "Start date cannot be earlier than the current date.");
-        return;
-    }
-
-    if (t_duedate.before(t_date)) {
-        JOptionPane.showMessageDialog(null, "Due date cannot be earlier than the start date.");
-        return;
-    }
-
-    // Convert to SQL dates
-    java.sql.Date sqlt_date = new java.sql.Date(t_date.getTime());
-    java.sql.Date sqlt_duedate = new java.sql.Date(t_duedate.getTime());
-
-    // Get session data
     Session session = Session.getInstance();
     int creatorId = session.getU_id();
-    String creatorName = session.getU_fname();
-    String u_fname = (creatorName != null) ? creatorName : "Unknown";
 
     dbConnector db = new dbConnector();
 
     try {
         int p_id = -1;
-        String p_salary = "0";
 
-        // Get project ID and salary
-        String getProjectQuery = "SELECT p_id, p_salary FROM tbl_project WHERE p_name = ?";
+        // Get project details from tbl_project by name
+        String getProjectQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         try (PreparedStatement pst = db.connect.prepareStatement(getProjectQuery)) {
             pst.setString(1, p_name);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 p_id = rs.getInt("p_id");
-                p_salary = rs.getString("p_salary");
             } else {
                 JOptionPane.showMessageDialog(null, "Project not found.");
                 return;
             }
         }
 
-        // Get assigned user
         String assignUser = (String) assignuser.getSelectedItem();
-        String userAssign = (assignUser != null && !assignUser.trim().isEmpty() && !assignUser.equals("Select User")) ? assignUser : "";
+        int assignedUserId = 0; // default if no assigned user
 
-        // Check if assigned user exists
-        if (!userAssign.isEmpty()) {
-            String checkUserQuery = "SELECT COUNT(*) FROM tbl_users WHERE u_fname = ?";
-            try (PreparedStatement pst = db.connect.prepareStatement(checkUserQuery)) {
-                pst.setString(1, userAssign);
+        if (assignUser != null && !assignUser.trim().isEmpty() && !assignUser.equals("Select User")) {
+            // Lookup assigned user's ID by their first name (u_fname)
+            String getUserIdQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
+            try (PreparedStatement pst = db.connect.prepareStatement(getUserIdQuery)) {
+                pst.setString(1, assignUser);
                 ResultSet rs = pst.executeQuery();
-                if (!rs.next() || rs.getInt(1) == 0) {
+                if (rs.next()) {
+                    assignedUserId = rs.getInt("u_id");
+                } else {
                     JOptionPane.showMessageDialog(null, "Assigned user does not exist.");
                     return;
                 }
             }
         }
 
-        // Insert task into the database
-        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, p_salary, u_fname, user_assign, t_date, t_duedate, t_status, accept) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Insert into tbl_task (adjust columns as per your table schema)
+        String insertQuery = "INSERT INTO tbl_task (p_id, u_id, user_assign, t_status, accept) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstInsert = db.connect.prepareStatement(insertQuery)) {
             pstInsert.setInt(1, p_id);
             pstInsert.setInt(2, creatorId);
-            pstInsert.setString(3, p_name);
-            pstInsert.setString(4, p_salary);
-            pstInsert.setString(5, u_fname);
-            pstInsert.setString(6, userAssign);
-            pstInsert.setDate(7, sqlt_date);
-            pstInsert.setDate(8, sqlt_duedate);
-            pstInsert.setString(9, t_status);
-            pstInsert.setString(10, !userAssign.isEmpty() ? "Accepted" : "Pending");
+            if (assignedUserId > 0) {
+                pstInsert.setInt(3, assignedUserId);
+            } else {
+                pstInsert.setNull(3, java.sql.Types.INTEGER);
+            }
+            pstInsert.setString(4, t_status);
+            pstInsert.setString(5, (assignedUserId > 0) ? "Accepted" : "Pending");
 
             int rowsAffected = pstInsert.executeUpdate();
             if (rowsAffected > 0) {
@@ -406,11 +406,11 @@ private void updateSalaryField() {
             JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage());
         }
     }
-
     }//GEN-LAST:event_addActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-         Session sess = Session.getInstance();
+        Session sess = Session.getInstance();
+
     if (sess.getU_id() == 0) {
         JOptionPane.showMessageDialog(null, "No Account. Login First!");
         LoginForm lf = new LoginForm();
@@ -418,38 +418,70 @@ private void updateSalaryField() {
         this.dispose();
         return;
     }
-    populateComboBoxes();
-    pname.setSelectedItem(String.valueOf(sess.getP_name()));
-    user_id.setText(String.valueOf(sess.getU_id()));
-    salary.setText(String.valueOf(sess.getP_salary()));
-    t_id.setText(String.valueOf(sess.getT_id()));
-    assignuser.setSelectedItem("");
-    String sessionProjectName = sess.getP_name();
-    if (sessionProjectName != null && !sessionProjectName.trim().isEmpty()) {
-        boolean projectMatchFound = false;
-        for (int i = 0; i < pname.getItemCount(); i++) {
-            String item = pname.getItemAt(i).toString().trim();
-            if (item.equalsIgnoreCase(sessionProjectName.trim())) {
-                pname.setSelectedItem(item);
-                projectMatchFound = true;
-                break;
+ // make sure this method populates pname JComboBox correctly
+
+    dbConnector db = new dbConnector();
+
+    try {
+        int projectId = sess.getP_id(); // Make sure Session class has getP_id()
+
+        if (projectId > 0) {
+            String query = "SELECT p_name, p_salary FROM tbl_project WHERE p_id = ?";
+            PreparedStatement pst = db.connect.prepareStatement(query);
+            pst.setInt(1, projectId);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                String projectName = rs.getString("p_name");
+                String projectSalary = rs.getString("p_salary");
+                salary.setText(projectSalary);
+
+                // Set pname combo box
+                pname.setSelectedItem(projectName);
+
+                // If project name doesn't exist in combo box, add it and select
+                boolean found = false;
+                for (int i = 0; i < pname.getItemCount(); i++) {
+                    if (pname.getItemAt(i).equalsIgnoreCase(projectName)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    pname.addItem(projectName);
+                    pname.setSelectedItem(projectName);
+                }
+
+                // Set salary field
+                salary.setText(String.valueOf(projectSalary));
+            } else {
+                pname.setSelectedItem("Select Project");
+                salary.setText("");
             }
+
+            rs.close();
+            pst.close();
         }
-        if (!projectMatchFound) {
-            pname.addItem(sessionProjectName);
-            pname.setSelectedItem(sessionProjectName);
+
+        // Set user info from session
+        umaker.setText(sess.getU_fname() != null ? sess.getU_fname() : "");
+        user_id.setText(String.valueOf(sess.getU_id()));
+        t_id.setText(String.valueOf(sess.getT_id()));
+
+        assignuser.setSelectedItem("Select User");
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Error loading project info: " + ex.getMessage());
+        ex.printStackTrace();
+    } finally {
+        try {
+            if (db.connect != null && !db.connect.isClosed()) {
+                db.connect.close();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-    } else {
-        pname.setSelectedItem("Select Project");
     }
-    String sessionUserFname = sess.getU_fname();
-    if (sessionUserFname != null && !sessionUserFname.trim().isEmpty()) {
-        umaker.setText(sessionUserFname);
-    } else {
-        umaker.setText("");
-    }
-    pname.repaint();
-    umaker.repaint();
     }//GEN-LAST:event_formWindowActivated
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -462,9 +494,11 @@ private void updateSalaryField() {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-      if (t_id.getText().isEmpty() || pname.getSelectedItem().equals("Select Project") ||
-        umaker.getText().isEmpty() || date.getDate() == null ||
-        due.getDate() == null || status.getSelectedItem().equals("SELECT")) {
+    if (t_id.getText().isEmpty() || 
+        pname.getSelectedItem() == null || pname.getSelectedItem().equals("Select Project") ||
+        umaker.getText().isEmpty() || 
+        assignuser.getSelectedItem() == null ||  // allow "Select User"
+        status.getSelectedItem() == null || status.getSelectedItem().toString().equalsIgnoreCase("SELECT")) {
 
         JOptionPane.showMessageDialog(null, "All fields are required and status must be selected!");
         return;
@@ -473,70 +507,112 @@ private void updateSalaryField() {
     dbConnector db = new dbConnector();
 
     try {
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = sdf.format(date.getDate());
-        String formattedDueDate = sdf.format(due.getDate());
-        String selectedProject = (String) pname.getSelectedItem();
-        String currentuser = umaker.getText().trim();
-        String selectedUser = (String) assignuser.getSelectedItem();
+        String selectedProject = pname.getSelectedItem().toString();
+        String currentUser = umaker.getText().trim();
+        String selectedUser = assignuser.getSelectedItem().toString();
+        int taskId = Integer.parseInt(t_id.getText().trim());
 
         int p_id = -1;
         int u_id = -1;
+        int assignUserId = -1;  // for user_assign field, default to -1 (no user assigned)
 
+        // Get project ID
         String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
-        try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
-            pst.setString(1, selectedProject);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                p_id = rs.getInt("p_id");
-            } else {
-                JOptionPane.showMessageDialog(null, "Project not found.");
-                return;
-            }
-        }
+        PreparedStatement pst1 = db.connect.prepareStatement(getPidQuery);
+        pst1.setString(1, selectedProject);
+        ResultSet rs1 = pst1.executeQuery();
 
+        if (rs1.next()) {
+            p_id = rs1.getInt("p_id");
+        } else {
+            JOptionPane.showMessageDialog(null, "Project not found.");
+            pst1.close();
+            return;
+        }
+        pst1.close();
+
+        // Get current user ID (umaker)
         String getUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
-        try (PreparedStatement pst = db.connect.prepareStatement(getUidQuery)) {
-            pst.setString(1, currentuser);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                u_id = rs.getInt("u_id");
+        PreparedStatement pst2 = db.connect.prepareStatement(getUidQuery);
+        pst2.setString(1, currentUser);
+        ResultSet rs2 = pst2.executeQuery();
+
+        if (rs2.next()) {
+            u_id = rs2.getInt("u_id");
+        } else {
+            JOptionPane.showMessageDialog(null, "Current user not found.");
+            pst2.close();
+            return;
+        }
+        pst2.close();
+
+        // Get assigned user's ID if a user is selected (not "Select User")
+        if (!selectedUser.equals("Select User")) {
+            String getAssignUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
+            PreparedStatement pstAssignUser = db.connect.prepareStatement(getAssignUidQuery);
+            pstAssignUser.setString(1, selectedUser);
+            ResultSet rsAssignUser = pstAssignUser.executeQuery();
+
+            if (rsAssignUser.next()) {
+                assignUserId = rsAssignUser.getInt("u_id");
             } else {
-                JOptionPane.showMessageDialog(null, "User not found.");
+                JOptionPane.showMessageDialog(null, "Assigned user not found.");
+                pstAssignUser.close();
                 return;
             }
+            pstAssignUser.close();
+        } else {
+            // No assigned user selected
+            assignUserId = 0; // or -1 depending on your DB design, 0 or NULL
         }
 
-        String sql = "UPDATE tbl_task SET p_id = ?, u_id = ?, p_name = ?, u_fname = ?, user_assign = ?, " +
-                     "t_date = ?, t_duedate = ?, t_status = ?, accept = CASE WHEN user_assign IS NOT NULL THEN 'Accepted' ELSE 'Pending' END " +
-                     "WHERE t_id = ?";
-        try (PreparedStatement pst = db.connect.prepareStatement(sql)) {
-            pst.setInt(1, p_id);
-            pst.setInt(2, u_id);
-            pst.setString(3, selectedProject);
-            pst.setString(4, currentuser);
-            pst.setString(5, selectedUser);
-            pst.setString(6, formattedDate);
-            pst.setString(7, formattedDueDate);
-            pst.setString(8, status.getSelectedItem().toString());
-            pst.setInt(9, Integer.parseInt(t_id.getText()));
-
-            int rowsAffected = pst.executeUpdate();
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(null, "Task updated successfully!");
-                AdminDashboard ads = new AdminDashboard();
-                ads.setVisible(true);
-                Taskpage pp = new Taskpage();
-                ads.mainDesktop.add(pp);
-                pp.setVisible(true);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(null, "Failed to update task.");
-            }
+        // Validate status
+        String statusValue = status.getSelectedItem().toString();
+        if (statusValue.equalsIgnoreCase("SELECT") || statusValue.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please select a valid status.");
+            return;
         }
+
+        // Prepare update statement
+        String updateQuery = "UPDATE tbl_task SET p_id = ?, u_id = ?, user_assign = ?, t_status = ?, accept = ? WHERE t_id = ?";
+        PreparedStatement pst3 = db.connect.prepareStatement(updateQuery);
+        pst3.setInt(1, p_id);
+        pst3.setInt(2, u_id);
+
+        if (assignUserId > 0) {
+            pst3.setInt(3, assignUserId);
+        } else {
+            pst3.setNull(3, java.sql.Types.INTEGER);  // set to NULL in DB if no user assigned
+        }
+
+        pst3.setString(4, statusValue);
+
+        String acceptStatus = (assignUserId > 0) ? "Accepted" : "Pending";
+        pst3.setString(5, acceptStatus);
+
+        pst3.setInt(6, taskId);
+
+        int rowsAffected = pst3.executeUpdate();
+        pst3.close();
+
+        if (rowsAffected > 0) {
+            JOptionPane.showMessageDialog(null, "Task updated successfully!");
+
+            AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+            Taskpage pp = new Taskpage();
+            ads.mainDesktop.add(pp);
+            pp.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "No task was updated.");
+        }
+
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
         ex.printStackTrace();
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(null, "Invalid task ID format.");
     } finally {
         try {
             if (db.connect != null && !db.connect.isClosed()) {
@@ -553,7 +629,47 @@ private void updateSalaryField() {
     }//GEN-LAST:event_clearActionPerformed
 
     private void pnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pnameActionPerformed
-        updateSalaryField();
+    String selectedProject = (String) pname.getSelectedItem();
+    if (selectedProject == null || selectedProject.equals("Select Project")) {
+        date.setDate(null);
+        due.setDate(null);
+        salary.setText(""); // clear salary too
+        return;
+    }
+
+    dbConnector db = new dbConnector();
+    try {
+        String query = "SELECT p_date, p_duedate, p_salary FROM tbl_project WHERE p_name = ?";
+        try (PreparedStatement pst = db.connect.prepareStatement(query)) {
+            pst.setString(1, selectedProject);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                java.sql.Date startDate = rs.getDate("p_date");
+                java.sql.Date dueDate = rs.getDate("p_duedate");
+                String salaryValue = rs.getString("p_salary");
+
+                date.setDate(startDate != null ? new java.util.Date(startDate.getTime()) : null);
+                due.setDate(dueDate != null ? new java.util.Date(dueDate.getTime()) : null);
+                salary.setText(salaryValue != null ? salaryValue : "");
+            } else {
+                date.setDate(null);
+                due.setDate(null);
+                salary.setText("");
+            }
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error fetching project data: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (db.connect != null && !db.connect.isClosed()) {
+                db.connect.close();
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error closing DB connection: " + ex.getMessage());
+        }
+    }
     }//GEN-LAST:event_pnameActionPerformed
 
     private void assignuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignuserActionPerformed
