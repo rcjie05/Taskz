@@ -236,7 +236,8 @@ public class UserDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_acceptedActionPerformed
 
     private void declineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineActionPerformed
-        // TODO add your handling code here:
+        Declinepage dp = new Declinepage();
+        mainDesktop.add(dp).setVisible(true);
     }//GEN-LAST:event_declineActionPerformed
 
     /**

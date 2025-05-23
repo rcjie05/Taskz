@@ -6,19 +6,12 @@
 package CrudsAdmin;
 
 import Admin.AdminDashboard;
-import Admin.Projectpage;
 import Admin.Taskpage;
 import config.dbConnector;
-import Admin.Userpage;
 import config.Session;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import myApp.LoginForm;
@@ -33,10 +26,13 @@ public class crud_tasks extends javax.swing.JFrame {
         initComponents();
         populateComboBoxes();
     }
-    private void populateComboBoxes() {
+// Inside your crud_tasks class
+
+private void populateComboBoxes() {
     dbConnector db = new dbConnector();
     try {
-        String sqlProjects = "SELECT p_name FROM tbl_project"; 
+        // Populate Projects
+        String sqlProjects = "SELECT p_name FROM tbl_project";
         ResultSet rsProjects = db.getData(sqlProjects);
         DefaultComboBoxModel<String> projectModel = new DefaultComboBoxModel<>();
         projectModel.addElement("Select Project");
@@ -46,7 +42,9 @@ public class crud_tasks extends javax.swing.JFrame {
             System.out.println("Project Name loaded: " + projectName);
         }
         pname.setModel(projectModel);
-        String sqlUsers = "SELECT u_fname FROM tbl_users"; 
+
+        // Populate Users
+        String sqlUsers = "SELECT u_fname FROM tbl_users";
         ResultSet rsUsers = db.getData(sqlUsers);
         DefaultComboBoxModel<String> userModel = new DefaultComboBoxModel<>();
         userModel.addElement("Select User");
@@ -56,10 +54,53 @@ public class crud_tasks extends javax.swing.JFrame {
             System.out.println("User Name loaded: " + userName);
         }
         assignuser.setModel(userModel);
+
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Error fetching data: " + ex.getMessage());
     }
-}    
+}
+
+private void updateSalaryField() {
+    String selectedProject = (String) pname.getSelectedItem();
+
+    if (selectedProject == null || selectedProject.equals("Select Project")) {
+        salary.setText("");
+        return;
+    }
+
+    dbConnector db = new dbConnector();
+    String query = "SELECT p_salary FROM tbl_project WHERE p_name = ? LIMIT 1";
+
+    try (PreparedStatement pst = db.getConnection().prepareStatement(query)) {
+        pst.setString(1, selectedProject);
+
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            salary.setText(rs.getString("p_salary"));
+        } else {
+            salary.setText("Not Found");
+        }
+
+        rs.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+        salary.setText("Error");
+    } finally {
+        try {
+            if (db.getConnection() != null && !db.getConnection().isClosed()) {
+                db.getConnection().close();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+
+// This method will be called when the project combo box selection changes
+
+
+
        
 
     /**
@@ -266,11 +307,13 @@ public class crud_tasks extends javax.swing.JFrame {
     java.util.Date t_date = date.getDate();
     java.util.Date t_duedate = due.getDate();
 
+    // Validate required fields
     if (p_name.equals("Select Project") || t_status.equals("SELECT") || t_date == null || t_duedate == null) {
         JOptionPane.showMessageDialog(null, "Please fill in all required fields.");
         return;
     }
 
+    // Validate date order
     java.util.Date currentDate = new java.util.Date();
     if (t_date.before(currentDate)) {
         JOptionPane.showMessageDialog(null, "Start date cannot be earlier than the current date.");
@@ -282,35 +325,41 @@ public class crud_tasks extends javax.swing.JFrame {
         return;
     }
 
+    // Convert to SQL dates
     java.sql.Date sqlt_date = new java.sql.Date(t_date.getTime());
     java.sql.Date sqlt_duedate = new java.sql.Date(t_duedate.getTime());
 
+    // Get session data
     Session session = Session.getInstance();
     int creatorId = session.getU_id();
     String creatorName = session.getU_fname();
     String u_fname = (creatorName != null) ? creatorName : "Unknown";
-    String p_salary = "0"; // TODO: Set salary properly if needed
 
     dbConnector db = new dbConnector();
 
     try {
         int p_id = -1;
+        String p_salary = "0";
 
-        String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
-        try (PreparedStatement pst = db.connect.prepareStatement(getPidQuery)) {
+        // Get project ID and salary
+        String getProjectQuery = "SELECT p_id, p_salary FROM tbl_project WHERE p_name = ?";
+        try (PreparedStatement pst = db.connect.prepareStatement(getProjectQuery)) {
             pst.setString(1, p_name);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 p_id = rs.getInt("p_id");
+                p_salary = rs.getString("p_salary");
             } else {
                 JOptionPane.showMessageDialog(null, "Project not found.");
                 return;
             }
         }
 
+        // Get assigned user
         String assignUser = (String) assignuser.getSelectedItem();
         String userAssign = (assignUser != null && !assignUser.trim().isEmpty() && !assignUser.equals("Select User")) ? assignUser : "";
 
+        // Check if assigned user exists
         if (!userAssign.isEmpty()) {
             String checkUserQuery = "SELECT COUNT(*) FROM tbl_users WHERE u_fname = ?";
             try (PreparedStatement pst = db.connect.prepareStatement(checkUserQuery)) {
@@ -323,6 +372,7 @@ public class crud_tasks extends javax.swing.JFrame {
             }
         }
 
+        // Insert task into the database
         String insertQuery = "INSERT INTO tbl_task (p_id, u_id, p_name, p_salary, u_fname, user_assign, t_date, t_duedate, t_status, accept) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstInsert = db.connect.prepareStatement(insertQuery)) {
             pstInsert.setInt(1, p_id);
@@ -343,6 +393,7 @@ public class crud_tasks extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error adding task.");
             }
         }
+
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage());
         e.printStackTrace();
@@ -355,6 +406,7 @@ public class crud_tasks extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage());
         }
     }
+
     }//GEN-LAST:event_addActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -369,6 +421,7 @@ public class crud_tasks extends javax.swing.JFrame {
     populateComboBoxes();
     pname.setSelectedItem(String.valueOf(sess.getP_name()));
     user_id.setText(String.valueOf(sess.getU_id()));
+    salary.setText(String.valueOf(sess.getP_salary()));
     t_id.setText(String.valueOf(sess.getT_id()));
     assignuser.setSelectedItem("");
     String sessionProjectName = sess.getP_name();
@@ -500,7 +553,7 @@ public class crud_tasks extends javax.swing.JFrame {
     }//GEN-LAST:event_clearActionPerformed
 
     private void pnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pnameActionPerformed
-       
+        updateSalaryField();
     }//GEN-LAST:event_pnameActionPerformed
 
     private void assignuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignuserActionPerformed

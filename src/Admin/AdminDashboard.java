@@ -6,6 +6,7 @@
 package Admin;
 
 import Logs.Logs;
+import Printer.PrintTaskz;
 import config.Session;
 import java.awt.Color;
 import javax.swing.JFrame;
@@ -299,7 +300,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_projectPageActionPerformed
 
     private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
-        Taskpage tp = new Taskpage();
+        PrintTaskz tp = new PrintTaskz();
         mainDesktop.add(tp).setVisible(true);
     }//GEN-LAST:event_printActionPerformed
 
@@ -351,7 +352,8 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_taskPage1MouseExited
 
     private void taskPage1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskPage1ActionPerformed
-        // TODO add your handling code here:
+        Taskpage h = new Taskpage();
+        mainDesktop.add(h).setVisible(true);
     }//GEN-LAST:event_taskPage1ActionPerformed
 
     /**

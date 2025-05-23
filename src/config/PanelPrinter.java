@@ -1,19 +1,32 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package config;
 
-package Printer;
-
-import java.awt.*;
-import java.awt.print.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import javax.swing.JPanel;
 
-public class printerclass implements Printable {
+/**
+ *
+ * @author davetupas
+ */
+public class PanelPrinter implements Printable {
 
     private JPanel panelToPrint;
 
-    public printerclass(JPanel panelToPrint) {
+    public PanelPrinter(JPanel panelToPrint) {
         this.panelToPrint = panelToPrint;
     }
 
-    public printerclass() {
+    public PanelPrinter() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -60,3 +73,4 @@ public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws
     }
 
 }
+

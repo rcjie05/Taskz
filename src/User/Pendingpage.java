@@ -47,7 +47,8 @@ public class Pendingpage extends javax.swing.JInternalFrame {
                        dbConnector dbc = new dbConnector();
             ResultSet rs = dbc.getData(
                 "SELECT t_id, p_name, user_assign, t_date, t_duedate, t_status, accept " +
-                "FROM tbl_task WHERE accept IS NULL OR accept = 'Decline'"
+                "FROM tbl_task WHERE accept IS NULL OR accept = 'Pending' OR accept = 'Decline'"
+
             );
             userTable.setModel(DbUtils.resultSetToTableModel(rs));
 

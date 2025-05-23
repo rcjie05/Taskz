@@ -24,12 +24,12 @@ import net.proteanit.sql.DbUtils;
  *
  * @author SCC-COLLEGE
  */
-public class Acceptedpage extends javax.swing.JInternalFrame {
+public class Declinepage extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Userpage
      */
-    public Acceptedpage() {
+    public Declinepage() {
         initComponents();
         
         displayData();
@@ -43,33 +43,26 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
     }
 
     public void displayData() {
-    try {
-        dbConnector dbc = new dbConnector();
-        Session sess = Session.getInstance();
-        String currentUserFname = sess.getU_fname();
+        try {
+                       dbConnector dbc = new dbConnector();
+            ResultSet rs = dbc.getData(
+                "SELECT t_id, p_name, user_assign, t_date, t_duedate, t_status, accept " +
+                "FROM tbl_task WHERE accept IS NULL OR accept = 'Decline'"
+            );
+            userTable.setModel(DbUtils.resultSetToTableModel(rs));
 
-        String query = "SELECT t_id, p_name, user_assign, t_date, t_duedate, t_status, accept " +
-                       "FROM tbl_task WHERE accept = 'Accepted' AND user_assign = ?";
+            userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
+            userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
+            userTable.getColumnModel().getColumn(2).setHeaderValue("Assign User");
+            userTable.getColumnModel().getColumn(3).setHeaderValue("Start Date");
+            userTable.getColumnModel().getColumn(4).setHeaderValue("Due Date");
+            userTable.getColumnModel().getColumn(5).setHeaderValue("Status");
+            userTable.getColumnModel().getColumn(6).setHeaderValue("Accept/Decline");
 
-        PreparedStatement pst = dbc.connect.prepareStatement(query);
-        pst.setString(1, currentUserFname);
-        ResultSet rs = pst.executeQuery();
-
-        userTable.setModel(DbUtils.resultSetToTableModel(rs));
-
-        userTable.getColumnModel().getColumn(0).setHeaderValue("Task ID");
-        userTable.getColumnModel().getColumn(1).setHeaderValue("Project Name");
-        userTable.getColumnModel().getColumn(2).setHeaderValue("Assign User");
-        userTable.getColumnModel().getColumn(3).setHeaderValue("Start Date");
-        userTable.getColumnModel().getColumn(4).setHeaderValue("Due Date");
-        userTable.getColumnModel().getColumn(5).setHeaderValue("Status");
-        userTable.getColumnModel().getColumn(6).setHeaderValue("Accept/Decline");
-
-    } catch (SQLException ex) {
-        System.out.println("Errors:" + ex.getMessage());
+        } catch (SQLException ex) {
+            System.out.println("Errors:" + ex.getMessage());
+        }
     }
-}
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -139,7 +132,7 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 520, 250));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setText("Accepted Task Page");
+        jLabel2.setText("Pending Task Page");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
@@ -219,7 +212,7 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
             if (dbc.connect != null && !dbc.connect.isClosed()) {
                 dbc.connect.close();
             }
-        } catch (SQLException e) { 
+        } catch (SQLException e) {
             System.out.println("Error closing connection: " + e.getMessage());
         }
     }
@@ -287,8 +280,7 @@ public class Acceptedpage extends javax.swing.JInternalFrame {
     }
 
     // Step 2: Update the accept column to "No" for the selected task (decline it)
-    String updateQuery = "UPDATE tbl_task SET accept = 'Decline', user_assign = NULL WHERE t_id = ?";
-
+    String updateQuery = "UPDATE tbl_task SET accept = 'Decline' WHERE t_id = ?";
     
     try (PreparedStatement pst = dbc.connect.prepareStatement(updateQuery)) {
         pst.setInt(1, taskId);

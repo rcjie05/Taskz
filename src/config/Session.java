@@ -26,6 +26,7 @@ public class Session {
     private String u_status;
     private String p_salary;
     private String p_description;
+    private String t_status;
   
     private Session(){
         //private cons. prevents intance
@@ -133,6 +134,14 @@ public class Session {
 
     public void setP_salary(String p_salary) {
         this.p_salary = p_salary;
+    }
+
+    public String getT_status() {
+        return t_status;
+    }
+
+    public void setT_status(String t_status) {
+        this.t_status = t_status;
     }
 
 }
