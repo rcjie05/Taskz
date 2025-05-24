@@ -7,6 +7,7 @@ package CrudsAdmin;
 
 import Admin.AdminDashboard;
 import Admin.Taskpage;
+import Admin.Userpage;
 import config.dbConnector;
 import config.Session;
 import java.sql.PreparedStatement;
@@ -389,6 +390,12 @@ public class crud_tasks extends javax.swing.JFrame {
             int rowsAffected = pstInsert.executeUpdate();
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Task added successfully!");
+                AdminDashboard ads = new AdminDashboard();
+                ads.setVisible(true);
+                Taskpage tp = new Taskpage();
+                tp.setVisible(true);
+                ads.mainDesktop.add(tp);
+                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Error adding task.");
             }

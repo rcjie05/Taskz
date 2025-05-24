@@ -240,6 +240,12 @@ public class crud_project extends javax.swing.JFrame {
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
                 JOptionPane.showMessageDialog(null, "Project Added Successfully!");
+                AdminDashboard ads = new AdminDashboard();
+            ads.setVisible(true);
+            Projectpage pp = new Projectpage();
+            pp.setVisible(true);
+            ads.mainDesktop.add(pp);
+            this.dispose();
 
             } else {
                 JOptionPane.showMessageDialog(null, "Failed to add project.");

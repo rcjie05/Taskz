@@ -41,57 +41,51 @@ public class PrintTaskz extends javax.swing.JInternalFrame {
     }
     
    public void displayData() {
-        dbConnector dbc = null;
-        ResultSet rs = null;
+    dbConnector dbc = null;
+    ResultSet rs = null;
 
+    try {
+        dbc = new dbConnector();
+
+        String sql = "SELECT " +
+                "t.t_id AS `Task ID`, " +
+                "u.u_id AS `User ID`, " +
+                "CONCAT(u.u_fname, ' ', u.u_lname) AS `Approved By`, " +
+                "p.p_name AS `Project Name`, " +
+                "CONCAT(assignee.u_fname, ' ', assignee.u_lname) AS `Assigned To`, " +
+                "assignee.u_email AS `Email`, " +
+                "assignee.u_contact AS `Contact`, " +
+                "assignee.u_gender AS `Gender`, " +
+                "t.t_status AS `Status`, " +
+                "p.p_salary AS `Salary` " +
+                "FROM tbl_users u " +
+                "JOIN tbl_task t ON u.u_id = t.u_id " +
+                "JOIN tbl_project p ON t.p_id = p.p_id " +
+                "LEFT JOIN tbl_users assignee ON assignee.u_id = CAST(t.user_assign AS UNSIGNED) " +
+                "WHERE t.t_status = 'Completed'";  // <-- Filter only completed tasks
+
+        rs = dbc.getData(sql);
+        userTable.setModel(DbUtils.resultSetToTableModel(rs));
+
+        // Set proper column widths
+        userTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        int[] columnWidths = {60, 60, 120, 120, 120, 150, 100, 70, 70, 100};
+        for (int i = 0; i < columnWidths.length && i < userTable.getColumnModel().getColumnCount(); i++) {
+            userTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+        }
+
+    } catch (SQLException ex) {
+        System.out.println("Error: " + ex.getMessage());
+    } finally {
         try {
-            dbc = new dbConnector();
-
-            String sql = "SELECT u.u_id, t.t_id, p.p_name, p.p_salary, " +
-                         "CONCAT(u.u_fname, ' ', u.u_lname) AS Full_Name, " +
-                         "u.u_email, u.u_contact, u.u_gender, u.u_status, " +
-                         "CONCAT(assignee.u_fname, ' ', assignee.u_lname) AS Assigned_To " +
-                         "FROM tbl_users u " +
-                         "JOIN tbl_task t ON u.u_id = t.u_id " +
-                         "JOIN tbl_project p ON t.p_id = p.p_id " +
-                         "LEFT JOIN tbl_users assignee ON assignee.u_id = CAST(t.user_assign AS UNSIGNED)";
-
-            rs = dbc.getData(sql);
-            userTable.setModel(DbUtils.resultSetToTableModel(rs));
-
-            // Column headers consistent with search
-            String[] headers = {
-                "User ID", "Task ID", "Project Name", "Salary",
-                "Full Name", "Email", "Contact", "Gender",
-                "Status", "Assigned To"
-            };
-
-            for (int i = 0; i < headers.length && i < userTable.getColumnModel().getColumnCount(); i++) {
-                userTable.getColumnModel().getColumn(i).setHeaderValue(headers[i]);
-            }
-
-            userTable.getTableHeader().repaint();
-
-            // Optional: set column widths to improve layout
-            userTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-            int[] columnWidths = {60, 60, 120, 80, 120, 150, 100, 60, 80, 120};
-            for (int i = 0; i < columnWidths.length && i < userTable.getColumnModel().getColumnCount(); i++) {
-                userTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-            }
-
-            rs.close();
-
-        } catch (SQLException ex) {
-            System.out.println("Errors: " + ex.getMessage());
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (dbc != null && dbc.connect != null && !dbc.connect.isClosed()) dbc.connect.close();
-            } catch (SQLException e) {
-                System.out.println("Error closing resources: " + e.getMessage());
-            }
+            if (rs != null) rs.close();
+            if (dbc != null && dbc.connect != null && !dbc.connect.isClosed()) dbc.connect.close();
+        } catch (SQLException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
         }
     }
+}
+
 
 
 
@@ -182,32 +176,32 @@ public class PrintTaskz extends javax.swing.JInternalFrame {
 
     private void printbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printbuttonActionPerformed
       int row = userTable.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a row to print.");
-            return;
-        }
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a row to print.");
+        return;
+    }
 
-        try {
-            // Extract data from the selected row based on the defined column indices
-            String u_id = userTable.getValueAt(row, 0).toString();        // User ID (u.u_id)
-            String t_id = userTable.getValueAt(row, 1).toString();        // Task ID (t.t_id)
-            String pname = userTable.getValueAt(row, 2).toString();       // Project Name (p.p_name)
-            String salary = userTable.getValueAt(row, 3).toString();      // Salary (p.p_salary)
-            String umaker = userTable.getValueAt(row, 4).toString();      // User Maker (Full_Name)
-            String email = userTable.getValueAt(row, 5).toString();       // Email (u.u_email)
-            String contact = userTable.getValueAt(row, 6).toString();     // Contact (u.u_contact)
-            String gender = userTable.getValueAt(row, 7).toString();      // Gender (u.u_gender)
-            String status = userTable.getValueAt(row, 8).toString();      // Status (u.u_status)
-            String assignuser = userTable.getValueAt(row, 9).toString();  // Assigned User (Assigned_To)
+    try {
+        // Get data from selected row
+        String t_id = userTable.getValueAt(row, 0).toString();        // Creator's User ID
+        String u_id = userTable.getValueAt(row, 1).toString();        // Task ID
+        String umaker = userTable.getValueAt(row, 2).toString();       // Project Name
+        String pname = userTable.getValueAt(row, 3).toString();      // Project Salary
+        String assignuser = userTable.getValueAt(row, 4).toString();      // Task Creator (Umaker)
+        String email = userTable.getValueAt(row, 9).toString();  // Assigned User Name
+        String contact = userTable.getValueAt(row, 5).toString();       // Assigned User Email
+        String gender = userTable.getValueAt(row, 6).toString();     // Assigned User Contact
+        String status = userTable.getValueAt(row, 7).toString();      // Assigned User Gender
+        String salary = userTable.getValueAt(row, 8).toString();      // Task Status
 
-            // Open the printer form, passing the extracted data
-            printer p = new printer(t_id, u_id, assignuser, pname, umaker, email, contact, gender, status, salary);
-            p.setVisible(true);
+        // Pass the correct parameters to the printer constructor
+        printer p = new printer(t_id, u_id, umaker, pname, assignuser, email, contact, gender, status, salary);
+        p.setVisible(true);
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error reading data or opening printer form: " + e.getMessage());
-            e.printStackTrace();
-        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error reading data or opening printer form: " + e.getMessage());
+        e.printStackTrace();
+    }
     }//GEN-LAST:event_printbuttonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed

@@ -8,54 +8,119 @@ package Printer;
 import Admin.AdminDashboard;
 import Admin.Taskpage;
 import config.PanelPrinter;
-// import config.Session; // No longer needed for data population
-// import config.dbConnector; // No longer needed for data population
+import config.dbConnector;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-// import java.sql.Connection; // No longer needed for data population
-// import java.sql.PreparedStatement; // No longer needed for data population
-// import java.sql.ResultSet; // No longer needed for data population
-// import java.sql.SQLException; // No longer needed for data population
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-// import myApp.LoginForm; // No longer needed for data population
+
+
 
 
 /**
  *
  * @author PC15
  */
-public class printer extends javax.swing.JFrame { 
+public class printer extends javax.swing.JFrame {
     
     public printer() {
-        initComponents();
+    initComponents();
+}
+    
+    public printer(String t_id, String u_id, String umaker, String pname,
+               String assignuser, String email, String contact,
+               String gender, String status, String salary) {
+    initComponents();
+
+    this.t_id.setText(t_id);
+    this.u_id.setText(u_id);
+    this.umaker.setText(umaker);
+    this.pname.setText(pname);
+    this.assignuser.setText(assignuser);
+    this.email.setText(email);
+    this.contact.setText(contact);
+    this.gender.setText(gender);
+    this.status.setText(status);
+    this.salary.setText(salary);
     }
 
-   public printer(String t_id_val, String u_id_val, String assignuser_val, String pname_val,
-                   String umaker_val, String email_val, String contact_val, String gender_val,
-                   String status_val, String salary_val) {
-        initComponents();
 
-        this.t_id.setText(t_id_val);
-        this.user_id.setText(u_id_val);
-        this.assignuser.setText(assignuser_val);
-        this.pname.setText(pname_val);
-        this.umaker.setText(umaker_val);
-        this.email.setText(email_val);
-        this.contact.setText(contact_val);
-        this.gender.setText(gender_val);
-        this.status.setText(status_val);
-        this.salary.setText(salary_val);
+      public void loadTaskAndUserData(String taskId) {
+        dbConnector db = new dbConnector();
+        try (Connection conn = db.getConnection()) {
+            // Modified SQL: Added project name and salary from project table
+            String query = "SELECT " +
+                "t.t_id, t.t_status, t.user_assign, " +
+                "u.u_id, CONCAT(u.u_fname, ' ', u.u_lname) AS user_name, " +
+                "u.u_email, u.u_contact, u.u_gender, " +
+                "p.p_name, p.p_salary, " +
+                "u.user_image_path, " + 
+                "u.u_maker " +  // Assuming you have this field, or replace accordingly
+                "FROM tbl_task t " +
+                "JOIN tbl_users u ON t.user_assign = u.u_id " +
+                "JOIN tbl_projects p ON t.project_id = p.p_id " +
+                "WHERE t.t_id = ?";
+
+            PreparedStatement pst = conn.prepareStatement(query);
+            pst.setString(1, taskId);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                // Extract values from ResultSet
+                String tId = rs.getString("t_id");
+                String uId = rs.getString("u_id");
+                String uMaker = rs.getString("u_maker");   // or get from some column
+                String projectName = rs.getString("p_name");
+                String assignUser = rs.getString("user_name");  // or t.user_assign?
+                String emailStr = rs.getString("u_email");
+                String contactStr = rs.getString("u_contact");
+                String genderStr = rs.getString("u_gender");
+                String statusStr = rs.getString("t_status");
+                String salaryStr = rs.getString("p_salary");
+
+
+                t_id.setText(tId);
+                u_id.setText(uId);
+                umaker.setText(uMaker != null ? uMaker : ""); // check null if needed
+                pname.setText(projectName);
+                assignuser.setText(assignUser);
+                email.setText(emailStr);
+                contact.setText(contactStr);
+                gender.setText(genderStr);
+                status.setText(statusStr);
+                salary.setText(salaryStr);
+
+                // Load image
+                String imagePath = rs.getString("user_image_path");
+                if (imagePath != null && !imagePath.isEmpty()) {
+                    image.setIcon(ResizeImage(imagePath, null, image));
+                    image.setText("");
+                } else {
+                    image.setIcon(null);
+                    image.setText("No Image");
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Task not found.");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-
-     
-       public ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+    public ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
         ImageIcon MyImage;
         if (ImagePath != null) {
             MyImage = new ImageIcon(ImagePath);
@@ -102,29 +167,30 @@ public class printer extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        taskID = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
         image = new javax.swing.JLabel();
-        t_id = new javax.swing.JLabel();
+        salary = new javax.swing.JLabel();
         umaker = new javax.swing.JLabel();
         pname = new javax.swing.JLabel();
+        assignuser = new javax.swing.JLabel();
         email = new javax.swing.JLabel();
         contact = new javax.swing.JLabel();
         gender = new javax.swing.JLabel();
+        t_id = new javax.swing.JLabel();
+        u_id = new javax.swing.JLabel();
         status = new javax.swing.JLabel();
-        salary = new javax.swing.JLabel();
-        user_id = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        assignuser = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
-        cancels = new javax.swing.JToggleButton();
-        prints = new javax.swing.JToggleButton();
+        prints = new javax.swing.JButton();
+        cancels = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         jLabel9.setText("jLabel9");
@@ -137,157 +203,115 @@ public class printer extends javax.swing.JFrame {
         });
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel1.setLayout(null);
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         page.setBackground(new java.awt.Color(51, 255, 153));
         page.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Email:");
-        page.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 100, 26));
+        jLabel3.setText("Salary of Project:");
+        page.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 110, 26));
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Contact:");
-        page.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 100, 26));
+        jLabel4.setText("Email:");
+        page.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 110, 26));
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Approve By:");
-        page.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 100, 26));
-
-        jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Gender:");
-        page.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 100, 26));
+        page.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 110, 26));
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Project Name:");
-        page.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 100, 26));
+        page.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 110, 26));
 
-        jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Task ID:");
-        page.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 100, 26));
-
-        jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText(" User Name:");
-        page.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 180, 100, 26));
+        jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Contact:");
+        page.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 110, 26));
 
         jLabel8.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Status:");
-        page.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 100, 26));
+        jLabel8.setText("Gender:");
+        page.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 110, 26));
+
+        taskID.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        taskID.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        taskID.setText("Task ID:");
+        page.add(taskID, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 110, 26));
+
+        jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText(" Employee Name:");
+        page.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 180, 110, 26));
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setText("Salary:");
-        page.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 100, 26));
+        jLabel12.setText("Status of Project:");
+        page.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 110, 26));
+
+        jLabel13.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel13.setText("User ID:");
+        page.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 110, 26));
+
+        jLabel22.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel22.setText("Salary Receipt");
+        page.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 30));
 
         image.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
         image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         image.setText("No I mage");
         image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 100, 100));
+        page.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 30, 100, 100));
+        page.add(salary, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 330, 220, 26));
+        page.add(umaker, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 120, 26));
+        page.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 120, 26));
+        page.add(assignuser, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 220, 26));
+        page.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 220, 26));
+        page.add(contact, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 240, 220, 26));
+        page.add(gender, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 270, 220, 26));
+        page.add(t_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 60, 120, 26));
+        page.add(u_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 120, 26));
+        page.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 300, 220, 26));
 
-        t_id.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        t_id.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        t_id.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(t_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 60, 130, 26));
+        jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel10.setText("\" Thank you for your Hard work in our Company \"");
+        page.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 390, -1, -1));
 
-        umaker.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        umaker.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        umaker.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(umaker, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 120, 130, 26));
-
-        pname.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        pname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        pname.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 150, 130, 26));
-
-        email.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        email.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        email.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, 250, 26));
-
-        contact.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        contact.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        contact.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(contact, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 240, 250, 26));
-
-        gender.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        gender.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        gender.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(gender, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 270, 250, 26));
-
-        status.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        status.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        status.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 300, 250, 26));
-
-        salary.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        salary.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        salary.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(salary, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 330, 250, 26));
-
-        user_id.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        user_id.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        user_id.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(user_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, 130, 26));
-
-        jLabel13.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setText("User ID:");
-        page.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 100, 26));
-
-        jLabel22.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
-        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel22.setText("Salary Reciept");
-        page.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 30));
-
-        assignuser.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        assignuser.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        assignuser.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        page.add(assignuser, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 250, 26));
-
-        jPanel1.add(page);
-        page.setBounds(270, 10, 390, 430);
+        jPanel1.add(page, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 410, 430));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("TASK MANAGEMENT");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(10, 10, 240, 30);
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 240, 30));
 
         jLabel23.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         jLabel23.setText("SYSTEM");
-        jPanel1.add(jLabel23);
-        jLabel23.setBounds(20, 40, 140, 30);
+        jPanel1.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 140, 30));
 
-        cancels.setText("Cancel");
-        cancels.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelsActionPerformed(evt);
-            }
-        });
-        jPanel1.add(cancels);
-        cancels.setBounds(180, 100, 80, 30);
-
-        prints.setText("Print");
+        prints.setText("PRINT");
         prints.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printsActionPerformed(evt);
             }
         });
-        jPanel1.add(prints);
-        prints.setBounds(180, 60, 80, 30);
+        jPanel1.add(prints, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 90, 80, 30));
+
+        cancels.setText("CANCEL");
+        cancels.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelsActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cancels, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 130, 80, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(0, 0, 680, 450);
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 680, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -311,35 +335,8 @@ public class printer extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void printsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printsActionPerformed
-        page.doLayout();
-    page.validate();
-    page.repaint();
-
-    java.awt.print.PrinterJob job = java.awt.print.PrinterJob.getPrinterJob();
-
-    // Explicitly set print service (optional - picks default printer)
-    javax.print.PrintService service = javax.print.PrintServiceLookup.lookupDefaultPrintService();
-    if (service != null) {
-        try {
-            job.setPrintService(service);
-        } catch (java.awt.print.PrinterException e) {
-            JOptionPane.showMessageDialog(this, "Failed to set print service: " + e.getMessage());
-            return;
-        }
-    } else {
-        JOptionPane.showMessageDialog(this, "No print service found on your system.");
-        return;
-    }
-
-    job.setPrintable(new PanelPrinter(page));
-
-    if (job.printDialog()) {
-        try {
-            job.print();
-        } catch (java.awt.print.PrinterException e) {
-            JOptionPane.showMessageDialog(this, "Print failed: " + e.getMessage());
-        }
-    }        
+    PanelPrinter printer = new PanelPrinter(page);
+        printer.printPanel();
     }//GEN-LAST:event_printsActionPerformed
 
     private void cancelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelsActionPerformed
@@ -355,7 +352,7 @@ public class printer extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        try {
+         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -363,21 +360,21 @@ public class printer extends javax.swing.JFrame {
                 }
             }
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(printer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            System.out.println("Nimbus look and feel not found.");
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            new printer().setVisible(true); // Uses the default constructor
+            new printer().setVisible(true);
         });
    
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JLabel assignuser;
-    private javax.swing.JToggleButton cancels;
-    public javax.swing.JLabel contact;
-    public javax.swing.JLabel email;
-    public javax.swing.JLabel gender;
+    private javax.swing.JLabel assignuser;
+    private javax.swing.JButton cancels;
+    private javax.swing.JLabel contact;
+    private javax.swing.JLabel email;
+    private javax.swing.JLabel gender;
     private javax.swing.JLabel image;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -396,12 +393,13 @@ public class printer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     public javax.swing.JPanel page;
-    public javax.swing.JLabel pname;
-    private javax.swing.JToggleButton prints;
-    public javax.swing.JLabel salary;
-    public javax.swing.JLabel status;
-    public javax.swing.JLabel t_id;
-    public javax.swing.JLabel umaker;
-    public javax.swing.JLabel user_id;
+    private javax.swing.JLabel pname;
+    private javax.swing.JButton prints;
+    private javax.swing.JLabel salary;
+    private javax.swing.JLabel status;
+    private javax.swing.JLabel t_id;
+    private javax.swing.JLabel taskID;
+    private javax.swing.JLabel u_id;
+    private javax.swing.JLabel umaker;
     // End of variables declaration//GEN-END:variables
 }
