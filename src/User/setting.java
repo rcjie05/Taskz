@@ -59,6 +59,8 @@ public class setting extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         settings = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        task = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -166,17 +168,35 @@ public class setting extends javax.swing.JInternalFrame {
                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel8.setBackground(new java.awt.Color(51, 255, 153));
         jPanel8.setPreferredSize(new java.awt.Dimension(100, 140));
+
+        jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Task List");
+
+        task.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        task.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/backlog (1).png"))); // NOI18N
+        task.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                taskMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addComponent(task, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 148, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(task, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -197,9 +217,9 @@ public class setting extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -280,11 +300,21 @@ if (sess.getU_id() == 0) {
     private void settingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsMouseClicked
         UserDashboard ads = new UserDashboard();
             ads.setVisible(true);
-            change_pass tp = new change_pass();
+            change_pass cp = new change_pass();
+            cp.setVisible(true);
+            ads.mainDesktop.add(cp);
+            this.dispose();
+    }//GEN-LAST:event_settingsMouseClicked
+
+    private void taskMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskMouseClicked
+        UserDashboard ads = new UserDashboard();
+            ads.setVisible(true);
+            Taskpageuser tp = new Taskpageuser();
             tp.setVisible(true);
             ads.mainDesktop.add(tp);
             this.dispose();
-    }//GEN-LAST:event_settingsMouseClicked
+            
+    }//GEN-LAST:event_taskMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -297,6 +327,7 @@ if (sess.getU_id() == 0) {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -306,6 +337,7 @@ if (sess.getU_id() == 0) {
     private javax.swing.JLabel lname;
     private javax.swing.JLabel logout;
     private javax.swing.JLabel settings;
+    private javax.swing.JLabel task;
     private javax.swing.JLabel u_type;
     // End of variables declaration//GEN-END:variables
 }

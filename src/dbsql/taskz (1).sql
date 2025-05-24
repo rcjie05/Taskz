@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2025 at 12:46 PM
+-- Generation Time: May 24, 2025 at 02:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,6 +91,7 @@ CREATE TABLE `tbl_task` (
   `t_id` int(11) NOT NULL,
   `u_id` int(11) DEFAULT NULL,
   `p_id` int(11) DEFAULT NULL,
+  `u_maker` int(11) DEFAULT NULL,
   `user_assign` int(11) DEFAULT NULL,
   `accept` varchar(255) DEFAULT NULL,
   `t_status` varchar(255) NOT NULL
@@ -100,9 +101,11 @@ CREATE TABLE `tbl_task` (
 -- Dumping data for table `tbl_task`
 --
 
-INSERT INTO `tbl_task` (`t_id`, `u_id`, `p_id`, `user_assign`, `accept`, `t_status`) VALUES
-(1, 1, 1, 2, 'Accepted', 'Active'),
-(2, 1, 2, 3, 'Accepted', 'Active');
+INSERT INTO `tbl_task` (`t_id`, `u_id`, `p_id`, `u_maker`, `user_assign`, `accept`, `t_status`) VALUES
+(1, 1, 1, 1, 2, 'Accepted', 'Active'),
+(2, 1, 2, 1, 2, 'Accepted', 'Active'),
+(3, 1, 2, 1, 3, 'Accepted', 'Active'),
+(4, 1, 2, 1, NULL, 'Pending', 'Active');
 
 -- --------------------------------------------------------
 
@@ -130,7 +133,8 @@ CREATE TABLE `tbl_users` (
 INSERT INTO `tbl_users` (`u_id`, `u_fname`, `u_lname`, `u_email`, `u_contact`, `u_gender`, `u_username`, `u_password`, `u_type`, `u_status`) VALUES
 (1, 'Rcjie', 'Villena', 'godzdemonz05@gmail.com', '09123456789', 'Male', 'admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', 'Active'),
 (2, 'Dave', 'Tupas', 'alexded192@gmail.com', '09987654321', 'Male', 'dave', '0644a2e329ec3e997a352bea6d045223b6626f8a026e569675991162a32f9be6', 'USER', 'Active'),
-(3, 'Anthony', 'Teves', 'mike@stcecilia.edu.ph', '09123456789', 'Male', 'teves', '0755ba9f152a6620a080afe71d32cd8e4b743438f06df94cc58c5a156340f744', 'USER', 'Active');
+(3, 'Anthony', 'Teves', 'mike@stcecilia.edu.ph', '09123456789', 'Male', 'teves', '0755ba9f152a6620a080afe71d32cd8e4b743438f06df94cc58c5a156340f744', 'USER', 'Active'),
+(4, 'Grace', 'Ganda', 'warkoman05@gmail.com', '09987654321', 'Female', 'admins', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', 'Active');
 
 --
 -- Indexes for dumped tables
@@ -196,13 +200,13 @@ ALTER TABLE `tbl_project`
 -- AUTO_INCREMENT for table `tbl_task`
 --
 ALTER TABLE `tbl_task`
-  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

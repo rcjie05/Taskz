@@ -22,6 +22,7 @@ public class UserDashboard extends javax.swing.JFrame {
      */
     public UserDashboard() {
         initComponents();
+        
     }
     
     Color navcolor = new Color(51,255,153);
