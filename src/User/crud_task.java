@@ -40,10 +40,11 @@ public class crud_task extends javax.swing.JFrame {
     
     public void loadTaskForEdit(int taskIdToEdit) {
     dbConnector dbc = null;
+
     try {
         dbc = new dbConnector();
 
-        String sql = "SELECT t.*, p.p_name, p.p_salary, p.p_date, p.p_duedate, u.u_fname " +
+        String sql = "SELECT t.*, p.p_name, p.p_salary, p.p_date, p.p_duedate, u.u_fname, u.u_id " +
                      "FROM tbl_task t " +
                      "JOIN tbl_project p ON t.p_id = p.p_id " +
                      "JOIN tbl_users u ON t.u_id = u.u_id " +
@@ -53,24 +54,24 @@ public class crud_task extends javax.swing.JFrame {
         ResultSet rs = pst.executeQuery();
 
         if (rs.next()) {
-            // Create or get your form instance (assuming this method is inside crud_tasks class)
-            crud_task at = this; // or new crud_tasks();
+            crud_task at = this;
 
             final String projectName = rs.getString("p_name");
-            final int assignId = rs.getInt("user_assign");  // Assigned user ID
+            final int assignId = rs.getInt("user_assign"); // Assigned user ID
             final String projectSalary = rs.getString("p_salary");
             final String taskStatus = rs.getString("t_status");
             final java.util.Date startDate = rs.getDate("p_date");
             final java.util.Date dueDate = rs.getDate("p_duedate");
             final String makerName = rs.getString("u_fname");
+            final int makerId = rs.getInt("u_id"); // ✅ This is the maker's ID
 
-            // Load all project names into pname combobox
+            // Load project names
             at.loadProjectNames();
 
-            // Load all users into assignuser combobox
+            // Load assignable users
             at.loadAssignUsers();
 
-            // Now select assigned user by assignId
+            // Set assigned user by ID
             try (PreparedStatement pstUser = dbc.connect.prepareStatement(
                          "SELECT u_fname FROM tbl_users WHERE u_id = ?")) {
                 pstUser.setInt(1, assignId);
@@ -86,12 +87,10 @@ public class crud_task extends javax.swing.JFrame {
                             }
                         }
                         if (!foundUser) {
-                            // Add and select if not found
                             at.assignuser.addItem(assignedName);
                             at.assignuser.setSelectedItem(assignedName);
                         }
                     } else {
-                        // No assigned user, select first/default item
                         if (at.assignuser.getItemCount() > 0) {
                             at.assignuser.setSelectedIndex(0);
                         }
@@ -102,26 +101,28 @@ public class crud_task extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(at, "Error loading assigned user: " + ex.getMessage());
             }
 
-            // Populate the rest of the fields
-            at.salary.setText(projectSalary);
+            // ✅ Set Maker Name and Maker ID fields
             at.umaker.setText(makerName);
+            at.user_id.setText(String.valueOf(makerId));
+
+            // Other task info
+            at.salary.setText(projectSalary);
             at.date.setDate(startDate);
             at.due.setDate(dueDate);
             at.status.setSelectedItem(taskStatus);
             at.t_id.setText(String.valueOf(taskIdToEdit));
 
-            // Set project name selected and disable editing project name
+            // Lock project selection
             at.pname.setSelectedItem(projectName);
             at.pname.setEnabled(false);
 
-            // Enable/Disable buttons appropriately
-
+            // Enable update button
             at.update.setEnabled(true);
 
             // Show the form
             at.setVisible(true);
 
-            // Close the current window (if applicable)
+            // Close parent window if any
             JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
             if (parent != null) parent.dispose();
 
@@ -337,7 +338,11 @@ public class crud_task extends javax.swing.JFrame {
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Project Name:");
         jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 92, 120, 26));
+
+        date.setEnabled(false);
         jPanel2.add(date, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 220, 28));
+
+        due.setEnabled(false);
         jPanel2.add(due, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 256, 220, 29));
 
         update.setText("Update");
@@ -385,6 +390,7 @@ public class crud_task extends javax.swing.JFrame {
         jPanel2.add(umaker, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 160, 220, 25));
 
         assignuser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User", "Item 2", "Item 3", "Item 4" }));
+        assignuser.setEnabled(false);
         assignuser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 assignuserActionPerformed(evt);
@@ -436,7 +442,7 @@ public class crud_task extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-       Session sess = Session.getInstance();
+    Session sess = Session.getInstance();
 
     if (sess.getU_id() == 0) {
         JOptionPane.showMessageDialog(null, "No Account. Login First!");
@@ -461,6 +467,11 @@ public class crud_task extends javax.swing.JFrame {
                 String projectName = rs.getString("p_name");
                 String projectSalary = rs.getString("p_salary");
 
+                umaker.setEnabled(false);   // prevent changing the maker name
+                user_id.setEnabled(false);  // prevent changing the u_id
+                assignuser.setEnabled(false); // prevent changing assigned user
+                assignuser.setSelectedItem(Session.getInstance().getU_fname());
+
                 // Set project name only if in Add mode
                 if (pname.isEnabled()) {
                     pname.setSelectedItem(projectName);
@@ -484,9 +495,11 @@ public class crud_task extends javax.swing.JFrame {
             pst.close();
         }
 
-        // Always set user fields
-        umaker.setText(sess.getU_fname() != null ? sess.getU_fname() : "");
-        user_id.setText(String.valueOf(sess.getU_id()));
+        // ✅ Only set user fields if creating a new task
+        if (t_id.getText().isEmpty() || t_id.getText().equals("0")) {
+            umaker.setText(sess.getU_fname() != null ? sess.getU_fname() : "");
+            user_id.setText(String.valueOf(sess.getU_id()));
+        }
 
         // ✅ Do not overwrite t_id if editing
         if (t_id.getText().isEmpty() || t_id.getText().equals("0")) {
@@ -510,22 +523,52 @@ public class crud_task extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        AdminDashboard ads = new AdminDashboard();
+        UserDashboard ads = new UserDashboard();
             ads.setVisible(true);
-            Taskpage tp = new Taskpage();
+            Taskpageuser tp = new Taskpageuser();
             tp.setVisible(true);
             ads.mainDesktop.add(tp);
             this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-   if (t_id.getText().isEmpty() || 
+    if (t_id.getText().isEmpty() || 
         pname.getSelectedItem() == null || pname.getSelectedItem().equals("Select Project") ||
         umaker.getText().isEmpty() || 
-        assignuser.getSelectedItem() == null ||
         status.getSelectedItem() == null || status.getSelectedItem().toString().equalsIgnoreCase("SELECT")) {
 
         JOptionPane.showMessageDialog(null, "All fields are required and status must be selected!");
+        return;
+    }
+
+    // Task ID validation
+    String taskIdText = t_id.getText().trim();
+    System.out.println("DEBUG: Task ID text = '" + taskIdText + "'");
+    if (taskIdText.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Task ID cannot be empty.");
+        return;
+    }
+
+    int taskId;
+    try {
+        taskId = Integer.parseInt(taskIdText);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Invalid Task ID format: " + taskIdText);
+        return;
+    }
+
+    // User ID (task maker) validation
+    String userIdText = user_id.getText().trim();  // Assuming this field is in your form
+    if (userIdText.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "User ID (task maker) is missing.");
+        return;
+    }
+
+    int u_id;
+    try {
+        u_id = Integer.parseInt(userIdText);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Invalid User ID format: " + userIdText);
         return;
     }
 
@@ -533,15 +576,11 @@ public class crud_task extends javax.swing.JFrame {
 
     try {
         String selectedProject = pname.getSelectedItem().toString();
-        String currentUser = umaker.getText().trim();
-        String selectedUser = assignuser.getSelectedItem().toString();
-        int taskId = Integer.parseInt(t_id.getText().trim());
+        int assignUserId = Session.getInstance().getU_id(); // Logged-in user (assignee)
 
         int p_id = -1;
-        int u_id = -1;      // maker user ID (same as u_maker before)
-        int assignUserId = -1;
 
-        // Get project ID
+        // Get project ID based on project name
         String getPidQuery = "SELECT p_id FROM tbl_project WHERE p_name = ?";
         PreparedStatement pst1 = db.connect.prepareStatement(getPidQuery);
         pst1.setString(1, selectedProject);
@@ -551,63 +590,28 @@ public class crud_task extends javax.swing.JFrame {
             p_id = rs1.getInt("p_id");
         } else {
             JOptionPane.showMessageDialog(null, "Project not found.");
+            rs1.close();
             pst1.close();
             return;
         }
+        rs1.close();
         pst1.close();
 
-        // Get current user ID
-        String getMakerIdQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
-        PreparedStatement pst2 = db.connect.prepareStatement(getMakerIdQuery);
-        pst2.setString(1, currentUser);
-        ResultSet rs2 = pst2.executeQuery();
-
-        if (rs2.next()) {
-            u_id = rs2.getInt("u_id");
-        } else {
-            JOptionPane.showMessageDialog(null, "Current user not found.");
-            pst2.close();
-            return;
-        }
-        pst2.close();
-
-        // Get assigned user ID
-        if (!selectedUser.equalsIgnoreCase("Select User")) {
-            String getAssignUidQuery = "SELECT u_id FROM tbl_users WHERE u_fname = ?";
-            PreparedStatement pstAssignUser = db.connect.prepareStatement(getAssignUidQuery);
-            pstAssignUser.setString(1, selectedUser);
-            ResultSet rsAssignUser = pstAssignUser.executeQuery();
-
-            if (rsAssignUser.next()) {
-                assignUserId = rsAssignUser.getInt("u_id");
-            } else {
-                JOptionPane.showMessageDialog(null, "Assigned user not found.");
-                pstAssignUser.close();
-                return;
-            }
-            pstAssignUser.close();
-        } else {
-            assignUserId = 0; // treat as no user
-        }
-
+        // Get status
         String statusValue = status.getSelectedItem().toString();
         if (statusValue.equalsIgnoreCase("SELECT") || statusValue.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please select a valid status.");
             return;
         }
 
-        // ✅ Use u_id instead of u_maker
+        // Update task with correct values
         String updateQuery = "UPDATE tbl_task SET p_id = ?, u_id = ?, user_assign = ?, t_status = ?, accept = ? WHERE t_id = ?";
         PreparedStatement pst3 = db.connect.prepareStatement(updateQuery);
         pst3.setInt(1, p_id);
-        pst3.setInt(2, u_id);
-        if (assignUserId > 0) {
-            pst3.setInt(3, assignUserId);
-        } else {
-            pst3.setNull(3, java.sql.Types.INTEGER);
-        }
+        pst3.setInt(2, u_id);               // task maker
+        pst3.setInt(3, assignUserId);       // assigned to current user
         pst3.setString(4, statusValue);
-        pst3.setString(5, (assignUserId > 0) ? "Accepted" : "Pending");
+        pst3.setString(5, "Accepted");
         pst3.setInt(6, taskId);
 
         int rowsAffected = pst3.executeUpdate();
@@ -615,21 +619,22 @@ public class crud_task extends javax.swing.JFrame {
 
         if (rowsAffected > 0) {
             JOptionPane.showMessageDialog(null, "Task updated successfully!");
-            AdminDashboard ads = new AdminDashboard();
-            ads.setVisible(true);
-            Taskpage pp = new Taskpage();
-            ads.mainDesktop.add(pp);
-            pp.setVisible(true);
+
+            UserDashboard uds = new UserDashboard();
+            uds.setVisible(true);
+
+            Taskpageuser tp = new Taskpageuser();
+            uds.mainDesktop.add(tp);
+            tp.setVisible(true);
+
             this.dispose();
-        } else {
+        } else { 
             JOptionPane.showMessageDialog(null, "No task was updated. Double-check task ID or values.");
         }
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
         ex.printStackTrace();
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(null, "Invalid task ID format.");
     } finally {
         try {
             if (db.connect != null && !db.connect.isClosed()) {

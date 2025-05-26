@@ -121,6 +121,7 @@ public class Taskpageuser extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        back = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -166,6 +167,17 @@ public class Taskpageuser extends javax.swing.JInternalFrame {
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setText("TASK PAGE");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
+
+        back.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        back.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        back.setText(" BACK ");
+        back.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        back.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backMouseClicked(evt);
+            }
+        });
+        jPanel1.add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 10, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/Untitled Project.jpg"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 540, 380));
@@ -241,123 +253,132 @@ public class Taskpageuser extends javax.swing.JInternalFrame {
 
     private void editbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbuttonActionPerformed
      int rowIndex = userTable.getSelectedRow();
-    if (rowIndex < 0) {
-        JOptionPane.showMessageDialog(null, "Please select a task to edit.");
-        return;
-    }
+if (rowIndex < 0) {
+    JOptionPane.showMessageDialog(null, "Please select a task to edit.");
+    return;
+}
 
-    try {
-        TableModel model = userTable.getModel();
-        int taskIdToEdit = Integer.parseInt(model.getValueAt(rowIndex, 0).toString());
-        System.out.println("Task ID selected for edit: " + taskIdToEdit);
+try {
+    TableModel model = userTable.getModel();
+    int taskIdToEdit = Integer.parseInt(model.getValueAt(rowIndex, 0).toString());
+    System.out.println("Task ID selected for edit: " + taskIdToEdit);
 
-        dbConnector dbc = new dbConnector();
+    dbConnector dbc = new dbConnector();
 
-        String sql = "SELECT t.*, p.p_name, p.p_salary, p.p_date, p.p_duedate, " +
-                     "u.u_fname AS maker_name, u.u_id AS maker_id " +
-                     "FROM tbl_task t " +
-                     "JOIN tbl_project p ON t.p_id = p.p_id " +
-                     "JOIN tbl_users u ON t.u_id = u.u_id " + // project maker
-                     "WHERE t.t_id = ?";
-        PreparedStatement pst = dbc.connect.prepareStatement(sql);
-        pst.setInt(1, taskIdToEdit);
-        ResultSet rs = pst.executeQuery();
+    String sql = "SELECT t.*, p.p_name, p.p_salary, p.p_date, p.p_duedate, " +
+                 "u.u_fname AS maker_name, u.u_id AS maker_id " +
+                 "FROM tbl_task t " +
+                 "JOIN tbl_project p ON t.p_id = p.p_id " +
+                 "JOIN tbl_users u ON t.u_id = u.u_id " + // project maker
+                 "WHERE t.t_id = ?";
+    PreparedStatement pst = dbc.connect.prepareStatement(sql);
+    pst.setInt(1, taskIdToEdit);
+    ResultSet rs = pst.executeQuery();
 
-        if (rs.next()) {
-            crud_task at = new crud_task();
+    if (rs.next()) {
+        crud_task at = new crud_task();
 
-            String projectName = rs.getString("p_name");
-            int assignId = rs.getInt("user_assign");
-            String projectSalary = rs.getString("p_salary");
-            String taskStatus = rs.getString("t_status");
-            java.util.Date startDate = rs.getDate("p_date");
-            java.util.Date dueDate = rs.getDate("p_duedate");
-            String makerName = rs.getString("maker_name");
-            int makerId = rs.getInt("maker_id");
+        String projectName = rs.getString("p_name");
+        int assignId = rs.getInt("user_assign");
+        String projectSalary = rs.getString("p_salary");
+        String taskStatus = rs.getString("t_status");
+        java.util.Date startDate = rs.getDate("p_date");
+        java.util.Date dueDate = rs.getDate("p_duedate");
+        String makerName = rs.getString("maker_name");
+        int makerId = rs.getInt("maker_id");
 
-            // Get the logged-in user's ID
-            int currentUserId = Session.getInstance().getU_id();
+        int currentUserId = Session.getInstance().getU_id();
 
-            // Prevent editing if current user is the project maker
-            if (makerId == currentUserId) {
-                JOptionPane.showMessageDialog(null, "You cannot edit a task where you are the project maker.");
-                rs.close();
-                pst.close();
-                dbc.connect.close();
-                return;
-            }
-
-            // Load project names
-            at.loadProjectNames();
-
-            // Load assignable users
-            at.assignuser.removeAllItems();
-            String selectedUserName = null;
-
-            String userQuery = "SELECT u_id, u_fname FROM tbl_users";
-            PreparedStatement pstUsers = dbc.connect.prepareStatement(userQuery);
-            ResultSet rsUsers = pstUsers.executeQuery();
-
-            while (rsUsers.next()) {
-                int uid = rsUsers.getInt("u_id");
-                String uname = rsUsers.getString("u_fname");
-                at.assignuser.addItem(uname);
-
-                if (uid == assignId) {
-                    selectedUserName = uname;
-                }
-            }
-
-            rsUsers.close();
-            pstUsers.close();
-
-            if (selectedUserName != null) {
-                at.assignuser.setSelectedItem(selectedUserName);
-            }
-
-            // Disable assignuser combo box
-            at.assignuser.setEnabled(false);
-            at.assignuser.setFocusable(false);
-
-            // Populate other fields
-            at.salary.setText(projectSalary);
-            at.umaker.setText(makerName);
-            at.umaker.setEnabled(false); // Disable editing
-            at.date.setDate(startDate);
-            at.due.setDate(dueDate);
-            at.status.setSelectedItem(taskStatus);
-            at.t_id.setText(String.valueOf(taskIdToEdit));
-            at.t_id.setEnabled(false);
-            at.pname.setSelectedItem(projectName);
-            at.pname.setEnabled(false);
-
-            // Button logic
-
-            at.update.setEnabled(true);
-
-            // Show the form
-            at.setVisible(true);
-
-            // Close current window
-            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
-            parent.dispose();
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Error: Task not found.");
+        if (makerId == currentUserId) {
+            JOptionPane.showMessageDialog(null, "You cannot edit a task where you are the project maker.");
+            rs.close();
+            pst.close();
+            dbc.connect.close();
+            return;
         }
 
-        rs.close();
-        pst.close();
-        dbc.connect.close();
+        // Load projects
+        at.loadProjectNames();
 
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(null, "Error loading task: " + ex.getMessage());
-        ex.printStackTrace();
+        // Load users into assign combo box
+        at.assignuser.removeAllItems();
+        String selectedUserName = null;
+
+        String userQuery = "SELECT u_id, u_fname FROM tbl_users";
+        PreparedStatement pstUsers = dbc.connect.prepareStatement(userQuery);
+        ResultSet rsUsers = pstUsers.executeQuery();
+
+        while (rsUsers.next()) {
+            int uid = rsUsers.getInt("u_id");
+            String uname = rsUsers.getString("u_fname");
+            at.assignuser.addItem(uname);
+
+            if (uid == assignId) {
+                selectedUserName = uname;
+            }
+        }
+
+        rsUsers.close();
+        pstUsers.close();
+
+        if (selectedUserName != null) {
+            at.assignuser.setSelectedItem(selectedUserName);
+        }
+
+        // Set form values
+        at.salary.setText(projectSalary);
+        at.umaker.setText(makerName);
+        at.umaker.setEnabled(false);
+        at.date.setDate(startDate);
+        at.due.setDate(dueDate);
+        at.status.setSelectedItem(taskStatus);
+        at.t_id.setText(String.valueOf(taskIdToEdit));
+        at.t_id.setEnabled(false);
+        at.pname.setSelectedItem(projectName);
+        at.pname.setEnabled(false);
+        at.assignuser.setSelectedItem(selectedUserName);
+        at.assignuser.setEnabled(false);
+
+        // ✅ Set maker ID into the hidden field
+        at.user_id.setText(String.valueOf(makerId));
+        at.user_id.setEnabled(false); // optional to avoid user editing
+
+        at.update.setEnabled(true);
+
+        at.setVisible(true);
+
+        // Close current window
+        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+        parent.dispose();
+
+    } else {
+        JOptionPane.showMessageDialog(null, "Error: Task not found.");
     }
+
+    rs.close();
+    pst.close();
+    dbc.connect.close();
+
+} catch (SQLException | NumberFormatException ex) {
+    JOptionPane.showMessageDialog(null, "Error loading task: " + ex.getMessage());
+    ex.printStackTrace();
+}
+
     }//GEN-LAST:event_editbuttonActionPerformed
+
+    private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
+        UserDashboard ads = new UserDashboard();
+            ads.setVisible(true);
+            setting tp = new setting();
+            tp.setVisible(true);
+            ads.mainDesktop.add(tp);
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+        parent.dispose();
+    }//GEN-LAST:event_backMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel back;
     private javax.swing.JButton editbutton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

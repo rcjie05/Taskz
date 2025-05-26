@@ -23,6 +23,7 @@ public class UserDashboard extends javax.swing.JFrame {
     public UserDashboard() {
         initComponents();
         
+        setting s = new setting();
     }
     
     Color navcolor = new Color(51,255,153);
@@ -203,7 +204,10 @@ public class UserDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-      Session sess = Session.getInstance();
+      setting s = new setting();
+      s.setVisible(true);
+      mainDesktop.add(s);
+        Session sess = Session.getInstance();
       
       if(sess.getU_id()==0){
           JOptionPane.showMessageDialog(null,"No Account. Login First!");
